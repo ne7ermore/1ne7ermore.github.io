@@ -1,22 +1,45 @@
-baseurl = "ne7ermore.github.io"
-title = "Ne7ermore"
+baseurl = "http://example.org"
+title = "Dimension"
+theme = "dimension"
 languageCode = "en-us"
+defaultContentLanguage = "en"
 enableRobotsTXT = true
 disableKinds=["RSS"]
 
 [params]
-  description = '懂点数学的码农'
-  logo = "fa-tumblr"
-  copyright = "Tao | 2018"
+  description = '<!--[-->A fully responsive site template designed by <a href="https://html5up.net">HTML5 UP</a> and released<!--]--><br />
+                <!--[-->for free under the <a href="https://html5up.net/license">Creative Commons</a> license.<!--]-->'
+  logo = "fa-diamond"
+  copyright = "Untitled"
 
 [[params.social]]
-  medium = "github"
-  icon = "github"
-  link = "https://github.com/ne7ermore"
+  medium = "twitter"
+  icon = "twitter"
+  link = "#"
+
+[[params.social]]
+  medium = "facebook"
+  icon = "facebook"
+  link = "#"
 
 [[params.social]]
   medium = "instagram"
   icon = "instagram"
-  link = "https://www.zhihu.com/people/liao-yuan-huo-28/activities"
+  link = "#"
 
-description = ''
+[[params.social]]
+  medium = "github"
+  icon = "github"
+  link = "#"
+
+[languages]
+[languages.en]
+languageName = "English"
+weight = 1
+
+[languages.de]
+languageName = "Deutsch"
+weight = 2
+title = "Dimension"
+description = '<!--[-->A fully responsive site template designed by <a href="https://html5up.net">HTML5 UP</a> and released<!--]--><br />
+                <!--[-->for free under the <a href="https://html5up.net/license">Creative Commons</a> license.<!--]-->'
