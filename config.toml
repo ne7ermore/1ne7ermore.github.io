@@ -1,0 +1,22 @@
+baseurl = "ne7ermore.github.io"
+title = "Ne7ermore"
+languageCode = "en-us"
+enableRobotsTXT = true
+disableKinds=["RSS"]
+
+[params]
+  description = '懂点数学的码农'
+  logo = "fa-tumblr"
+  copyright = "Tao | 2018"
+
+[[params.social]]
+  medium = "github"
+  icon = "github"
+  link = "https://github.com/ne7ermore"
+
+[[params.social]]
+  medium = "instagram"
+  icon = "instagram"
+  link = "https://www.zhihu.com/people/liao-yuan-huo-28/activities"
+
+description = ''
