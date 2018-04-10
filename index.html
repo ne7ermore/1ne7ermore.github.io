@@ -19,8 +19,8 @@
 <link href="https://ne7ermore.github.io/css/style.css" rel="stylesheet" id="theme-stylesheet" type='text/css' media='all'>
 
 <link href="https://ne7ermore.github.io/css/custom.css" rel="stylesheet" type='text/css' media='all'>
-<link rel="shortcut icon" href="https://ne7ermore.github.io/img/favicon.ico" type="image/x-icon">
-<link rel="icon" href="https://ne7ermore.github.io/img/favicon.ico" type="image/x-icon">
+<link rel="shortcut icon" href="https://ne7ermore.github.io/img/favicon.jpeg" type="image/x-icon">
+<link rel="icon" href="https://ne7ermore.github.io/img/favicon.jpeg" type="image/x-icon">
 
 <link href="https://ne7ermore.github.io/index.xml" rel="alternate" type="application/rss+xml" title="Nevermore" />
 <link href="https://ne7ermore.github.io/index.xml" rel="feed" type="application/rss+xml" title="Nevermore" />
@@ -42,6 +42,10 @@
     <div class="menu">
 
       <ul id="menu-secondary-items" class="menu-secondary-items">
+        
+        <li id="menu-item" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item">
+          <a href="/categories/code">code</a>
+        </li>
         
 
       </ul>
@@ -141,6 +145,53 @@
 <div id="loop-container" class="loop-container">
 	
 	
+	
+	
+	<div class="post type-post status-publish format-standard has-post-thumbnail hentry category-design tag-memories tag-normal-post tag-standard-2 excerpt zoom full-without-featured odd excerpt">
+		
+			
+
+				
+				<a class="featured-image-link" href="https://ne7ermore.github.io/post/golang-sort/"><div class='featured-image lazy lazy-bg-image'   data-background="https://ne7ermore.github.io/img/portfolio/cityair.jpg"></div></a>
+
+				
+				<div class="excerpt-container">
+					<div class="excerpt-meta">
+						<span class="date">April 10</span>	<span> / </span>
+
+						
+
+						<span class="author">
+							
+							<a href="https://ne7ermore.github.io" title="Posts by Nevermore" rel="author">Nevermore</a>
+							
+						</span>
+						
+
+						
+						<span> / </span>
+						<span class="category">
+							<a href="/categories/code">code</a>
+						</span>
+						
+					</div>
+					<div class='excerpt-header'>
+						<h2 class='excerpt-title'>
+							<a href="https://ne7ermore.github.io/post/golang-sort/ "> Golang源码-sort </a>
+						</h2>
+					</div>
+					<div class='excerpt-content'>
+						<article>
+							Golang sort包相对比较独立，而且可以帮助更好的理解interface的原理和使用
+二分查找 思路： 先定位中间位置 index，如果 fn(index) == true, 就移动j 到index，如果fn(index) == false，就移动I到index+1位置
+func Search(n int, f func(int) bool) int { // Define f(-1) == false and f(n) == true. // Invariant: f(i-1) == false, f(j) == true. i, j := 0, n for i &lt; j { h := i + (j-i)/2 // avoid overflow when computing h // i ≤ h &lt; j if !f(h) { i = h + 1 // preserves f(i-1) == false } else { j = h // preserves f(j) == true } } // i == j, f(i-1) == false, and f(j) (= f(i)) == true =&gt; answer is i.
+
+							<div class="more-link-wrapper"><a class="more-link" href="https://ne7ermore.github.io/post/golang-sort/">Read the post<span class="screen-reader-text">This is a Standard Post</span></a></div>
+						</article>
+					</div>
+				</div>
+			</div>
+			
 		</div>
 
   
