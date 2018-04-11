@@ -6,10 +6,20 @@
     <description>Recent content on Nevermore</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Tue, 10 Apr 2018 13:00:25 +0800</lastBuildDate>
+    <lastBuildDate>Wed, 11 Apr 2018 13:00:25 +0800</lastBuildDate>
     
 	<atom:link href="https://ne7ermore.github.io/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Generating Poetry from VAE</title>
+      <link>https://ne7ermore.github.io/post/vae/</link>
+      <pubDate>Wed, 11 Apr 2018 13:00:25 +0800</pubDate>
+      
+      <guid>https://ne7ermore.github.io/post/vae/</guid>
+      <description>&lt;p&gt;介绍一个Variational Auto-Encoder生成中国五言绝句的算法
+&lt;/p&gt;</description>
+    </item>
     
     <item>
       <title>Bit Sort</title>
@@ -42,16 +52,6 @@
  懂些算法
  Torch Light Deeping Flow  会点Golang
  简易压测工具  </description>
-    </item>
-    
-    <item>
-      <title>Get in touch</title>
-      <link>https://ne7ermore.github.io/contact/</link>
-      <pubDate>Sun, 06 Nov 2016 13:00:25 +0530</pubDate>
-      
-      <guid>https://ne7ermore.github.io/contact/</guid>
-      <description>When she reached the first hills of the Italic Mountains, she had a last view back on the skyline of her hometown Bookmarksgrove, the headline of Alphabet Village and the subline of her own road, the Line Lane. Pityful a rethoric question ran over her cheek, then
-Effects present letters inquiry no an removed or friends. Desire behind latter me though in. Supposing shameless am he engrossed up additions. My possible peculiar together to.</description>
     </item>
     
   </channel>
