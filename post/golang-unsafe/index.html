@@ -2,7 +2,7 @@
 <html lang="en-us">
 <head><meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
- <title>Generating Poetry from VAE </title>
+ <title>Golang源码-unsafe </title>
 
 
 
@@ -143,13 +143,12 @@
       
   <div id="loop-container" class="loop-container">
     
-    <div class="post type-post status-publish format-standard has-post-thumbnail hentry category-design tag-design tag-standard-2 tag-tagalicious tag-travel entry full-without-featured odd excerpt-1">
 
-      <div class='featured-image lazy lazy-bg-image' data-background="https://ne7ermore.github.io/img/vae/1.jpg">
-      </div>
-      
+      <div class="post type-post status-publish format-standard hentry category-standard category-travel entry full-without-featured odd excerpt-1">
+
+        
         <div class="entry-meta">
-          <span class="date">April 11</span>	<span> / </span>
+          <span class="date">April 13</span>	<span> / </span>
 
           <span class="author">
             
@@ -162,199 +161,113 @@
           <span class="category">
             <span> / </span>
 
-            <a href="/categories/deep-learning">deep-learning</a>
+            <a href="/categories/code">code</a>
           </span>
           
 
 
         </div>
         <div class='entry-header'>
-          <h1 class='entry-title'> Generating Poetry from VAE</h1>
+          <h1 class='entry-title'> Golang源码-unsafe</h1>
         </div>
         <div class="entry-container">
           <div class="entry-content">
             <article>
-              <p>介绍一个Variational Auto-Encoder生成中国五言绝句的算法
+              <p>Unsafe包很有意思，源码中短短几行代码，剩下更多的是注释，初略一看感觉并不重要，其实恰恰相反，很多package中都有它的影子，比如reflect
 </p>
 
-<p>模型结构：
-<img src="/img/vae/2.jpg" alt="pic" /></p>
+<p>先从包名讲起，unsafe - 不安全，为什么不安全呢？ <strong>Package unsafe contains operations that step around the type safety of Go programs</strong></p>
 
-<p>模型由三部分组成，Encoder，Decoder和VAE。</p>
+<ul>
+<li>A pointer value of any type can be converted to a Pointer.</li>
+<li>A Pointer can be converted to a pointer value of any type.</li>
+<li>A uintptr can be converted to a Pointer.</li>
+<li>A Pointer can be converted to a uintptr.</li>
+</ul>
 
-<p>Encoder - rnn模型，论文中使用LSTM，通过rnn模型提取样本的序列特征。</p>
-
-<p>Decoder - rnn模型，可以看做一个标准的Recurrent neural network language models（rnnlms）</p>
-
-<p>VAE：能力不够，无法将论文中的意思很好的翻译成中文传达给大家，所以只能附上原文并带上自己的一点浅见：由于高位空间中空间过于庞大，仅仅使用latent variable生成样本会有明显失真，不管图片还是自然语言，所以在latent variable基础上强制使其服从某种有规律的几何概率分布，从而指导decoder生成逼真的样本。</p>
+<p>简单来说就是</p>
 
 <blockquote>
-<p>论文描述
-<img src="/img/vae/3.jpg" alt="pic" /></p>
+<p>指针 &lt;—&gt; unsafe.Pointer &lt;—&gt; unitptr</p>
 </blockquote>
 
-<p>论文中使用 highway network layers 提高模型性能</p>
+<p>例子 - 强制转换类型</p>
 
-<p><img src="/img/vae/4.jpg" alt="pic" /></p>
+<pre><code>type stringHeader struct {
+    Data unsafe.Pointer
+    Len  int
+}
 
-<p>损失函数由两部分组成：
-<img src="/img/vae/5.jpg" alt="pic" /></p>
+var s stinrg = “abc&quot;
 
-<p><a href="https://github.com/ne7ermore/torch_light/tree/master/vae-nlg">全部代码</a></p>
+// *string -&gt; unsafe.Pointer -&gt; *stringHeader
+hdr := (*stringHeader)(unsafe.Pointer(&amp;s))
 
-<p>encoder由一层双向lstm构成，输出时间序列的总体特征。</p>
-
-<pre><code>class Encoder(nn.Module):
-    def __init__(self, embed_dim, hidden_size, num_layers, dropout):
-        super().__init__()
-
-        self.num_layers = num_layers
-        self.hidden_size = hidden_size
-        self.dropout = dropout
-
-        self.rnn = nn.LSTM(embed_dim, hidden_size,
-                num_layers, dropout, bidirectional=True)
-
-    def forward(self, input, hidden):
-        _, hidden = self.rnn(input.transpose(0, 1), hidden)
-        out = F.dropout(torch.cat((hidden[0][-2],
-                    hidden[0][-1]), -1), p=self.dropout)
-
-        return out, hidden
-
-    def init_hidden(self, bsz):
-        size = (self.num_layers*2, bsz, self.hidden_size)
-
-        weight = next(self.parameters()).data
-        return (Variable(weight.new(*size).zero_()),
-                Variable(weight.new(*size).zero_()))
+println(&amp;s) // 0xc42000e260
+println(&amp;hdr.Data) // 0xc42000e260
+println(&amp;hdr.Len) // 0xc42000e268
+hdr.Data = unsafe.Pointer(&amp;b[3])
+hdr.Len = int(b[1])&lt;&lt;8 | int(b[2])
 </code></pre>
 
-<p>decoder为标准rnnlms</p>
+<p>例子 - 通过位置获取值</p>
 
-<pre><code>class Decoder(nn.Module):
-    def __init__(self, embed_dim, latent_dim, hidden_size, num_layers, dropout, vocab_size):
-        super().__init__()
+<pre><code>// 数组
+func add(p unsafe.Pointer, x uintptr) unsafe.Pointer {
+    return unsafe.Pointer(uintptr(p) + x)
+}
 
-        self.hidden_size = hidden_size
-        self.dropout = dropout
-        self.num_layers = num_layers
-        self.latent_dim = latent_dim
-
-        self.rnn = nn.LSTM(embed_dim+latent_dim, hidden_size,
-                num_layers, dropout=dropout, batch_first=True)
-        self.lr = nn.Linear(hidden_size, vocab_size)
-
-        self._init_weight()
-
-    def forward(self, input, z, hidden):
-        bsz, _len, _ = input.size()
-        z = z.unsqueeze(1).expand(bsz, _len, self.latent_dim)
-        input = torch.cat((input, z), -1)
-
-        rnn_out, hidden = self.rnn(input, hidden)
-        rnn_out = F.dropout(rnn_out, p=self.dropout)
-        out = self.lr(rnn_out.contiguous().view(-1, self.hidden_size))
-
-        return F.log_softmax(out), hidden
-
-    def init_hidden(self, bsz):
-        size = (self.num_layers, bsz, self.hidden_size)
-
-        weight = next(self.parameters()).data
-        return (Variable(weight.new(*size).zero_()),
-                Variable(weight.new(*size).zero_()))
-
-    def _init_weight(self, scope=.1):
-        self.lr.weight.data.uniform_(-scope, scope)
-        self.lr.bias.data.fill_(0)
+func main() {
+    ints := []int64{1, 22, 123} // 数组
+    println(&amp;ints[2]) // 第三个成员的地址 0xc42003bf70
+    up := add(unsafe.Pointer(&amp;ints[0]), 2*unsafe.Sizeof(ints[0])) // 根据成员的size，移动Pointer到目标位置
+    println((*int)(up)) // 通过add方法移动到的地址 0xc42003bf70
+    println(*(*int)(up)) // 地址对应的值
+}
 </code></pre>
 
-<p>vae由embedding，highway，encoder， W_mu，W_alpha ，decoder组成</p>
+<p>最后一个例子 - 通过指针强制转换和移动位置修改私有成员</p>
 
-<pre><code>class VAE(nn.Module):
-    def __init__(self, args):
-        super().__init__()
+<p>文件夹 pointer 中定义一个P的类，<strong>P的成员，i和s，都是私有类型</strong>，所以只能查看(<strong>GetI, GetS公有</strong>)而不能修改</p>
 
-        for k, v in args.__dict__.items():
-            self.__setattr__(k, v)
+<pre><code>package pointer
 
-        self.lookup_table = nn.Embedding(self.vocab_size, self.embed_dim)
-        self.lookup_table.weight.data.copy_(torch.from_numpy(self.pre_w2v))
+type P struct {
+    i int32
+    s string
+}
 
-        self.hw = Highway(self.hw_layers, self.hw_hsz, F.relu)
-        self.encode = Encoder(self.embed_dim,
-                    self.enc_hsz, self.enc_layers, self.dropout)
+func (p *P) GetI() int32 {
+    return p.i
+}
 
-        self._enc_mu = nn.Linear(self.enc_hsz*2, self.latent_dim)
-        self._enc_log_sigma = nn.Linear(self.enc_hsz*2, self.latent_dim)
+func (p *P) GetS() string {
+    return p.s
+}
+</code></pre>
 
-        self.decode = Decoder(self.embed_dim, self.latent_dim,
-                self.dec_hsz, self.dec_layers, self.dropout, self.vocab_size)
+<p>然后在包外写一个main文件</p>
 
-        self._init_weight()
+<pre><code>package main
 
-    def forward(self, enc_input, dec_input, enc_hidden, dec_hidden):
-        enc_ = self.lookup_table(enc_input)
-        enc_ = F.dropout(self.hw(enc_), p=self.dropout)
-        enc_output, enc_hidden = self.encode(enc_, enc_hidden)
+import (
+    &quot;pointer&quot;
+)
 
-        z = self._gaussian(enc_output)
+func main() {
+    p := new(pointer.P)
+    println(p.GetI())
+    println(p.GetS())
 
-        dec_ = self.lookup_table(dec_input)
-        dec, dec_hidden = self.decode(dec_, z, dec_hidden)
+    // 修改
+    pointI := (*int32)(unsafe.Pointer(p))
+    *pointI = 20
+    println(p.GetI())
 
-        return dec, self.latent_loss, enc_hidden, dec_hidden
-
-    def _gaussian(self, enc_output):
-        def latent_loss(mu, sigma):
-            pow_mu = mu * mu
-            pow_sigma = sigma * sigma
-            return 0.5 * torch.mean(pow_mu + pow_sigma - torch.log(pow_sigma) - 1)
-
-        mu = self._enc_mu(enc_output)
-        sigma = torch.exp(.5 * self._enc_log_sigma(enc_output))
-        self.latent_loss = latent_loss(mu, sigma)
-
-        weight = next(self.parameters()).data
-        std_z = Variable(weight.new(*sigma.size()), requires_grad=False)
-        std_z.data.copy_(torch.from_numpy(
-                np.random.normal(size=sigma.size())))
-
-        return mu + sigma * std_z
-
-    def _init_weight(self):
-        init.xavier_normal(self._enc_mu.weight)
-        init.xavier_normal(self._enc_log_sigma.weight)
-
-    def generate(self, max_len):
-        size = (1, self.latent_dim)
-
-        weight = next(self.parameters()).data
-        z = Variable(weight.new(*size), volatile=True)
-        z.data.copy_(torch.from_numpy(
-                np.random.normal(size=size)))
-
-        prob = torch.LongTensor([BOS])
-        input = Variable(prob.unsqueeze(1), volatile=True)
-        if weight.is_cuda:
-            input = input.cuda()
-        portry = &quot;&quot;
-        hidden = self.decode.init_hidden(1)
-
-        for index in range(1, max_len+1):
-            encode = self.lookup_table(input)
-            output, hidden = self.decode(encode, z, hidden)
-            prob = output.squeeze().data
-            next_word = torch.max(prob, -1)[1].tolist()[0]
-            input.data.fill_(next_word)
-            if index%5 == 0:
-                portry += self.idx2word[next_word]
-                portry += &quot;，&quot;
-            else:
-                portry += self.idx2word[next_word]
-
-        return portry[:-1] + &quot;。&quot;
+    pointS := (*string)(add(unsafe.Pointer(p), uintptr(8)))
+    *pointS = &quot;我就是我&quot;
+    println(p.GetS())
+}
 </code></pre>
             </article>
           </div>

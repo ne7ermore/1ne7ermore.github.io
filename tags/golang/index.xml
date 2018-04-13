@@ -6,10 +6,20 @@
     <description>Recent content in Golang on Nevermore</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Tue, 10 Apr 2018 13:00:25 +0800</lastBuildDate>
+    <lastBuildDate>Fri, 13 Apr 2018 13:00:25 +0800</lastBuildDate>
     
 	<atom:link href="https://ne7ermore.github.io/tags/golang/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Golang源码-unsafe</title>
+      <link>https://ne7ermore.github.io/post/golang-unsafe/</link>
+      <pubDate>Fri, 13 Apr 2018 13:00:25 +0800</pubDate>
+      
+      <guid>https://ne7ermore.github.io/post/golang-unsafe/</guid>
+      <description>&lt;p&gt;Unsafe包很有意思，源码中短短几行代码，剩下更多的是注释，初略一看感觉并不重要，其实恰恰相反，很多package中都有它的影子，比如reflect
+&lt;/p&gt;</description>
+    </item>
     
     <item>
       <title>Bit Sort</title>

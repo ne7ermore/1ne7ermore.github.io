@@ -45,7 +45,7 @@
         </li>
         
         <li id="menu-item" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item">
-          <a href="/categories/deep-learning">deep learning</a>
+          <a href="/categories/deep-learning">deep-learning</a>
         </li>
         
 
@@ -177,6 +177,66 @@
               <p>Golang sort包相对独立，并且能帮助理解和使用golang中的interface
 </p>
 
+<h5 id="interface">interface</h5>
+
+<p>Golang的interface可以说是开放的，不同于<strong>java</strong>，集成了interface，就要实现其所有的方法。
+就用Golang官网的<a href="https://golang.org/pkg/sort/">例子</a>来说明吧，为了方便阅读，我简化了下原本例子</p>
+
+<p>在看例子之前，我们先看下源码对Interface的定义，其实只有3个方法，长度，大小，交换</p>
+
+<pre><code>type Interface interface {
+    Len() int
+    Less(i, j int) bool
+    Swap(i, j int)
+}
+</code></pre>
+
+<p>例子，实现sort.Interface定义的3个方法</p>
+
+<pre><code>package main
+
+import (
+    &quot;sort&quot;
+)
+
+// 定义类
+type Person struct {
+    Name string
+    Age  int
+}
+
+func (p Person) String() string {
+    return fmt.Sprintf(&quot;%s: %d&quot;, p.Name, p.Age)
+}
+
+type ByAge []Person
+
+// 实现源码中的3个方法
+func (a ByAge) Len() int           { return len(a) }
+func (a ByAge) Swap(i, j int)      { a[i], a[j] = a[j], a[i] }
+func (a ByAge) Less(i, j int) bool { return a[i].Age &lt; a[j].Age }
+
+func main() {
+    people := []Person{
+        {&quot;Bob&quot;, 31},
+        {&quot;John&quot;, 42},
+        {&quot;Michael&quot;, 17},
+        {&quot;Jenny&quot;, 26},
+    }
+
+    println(people)
+
+    // ByAge集成了sort.Interface
+    // 所以可以使用sort.的Sort方法
+    sort.Sort(ByAge(people))
+    println(people)
+}
+</code></pre>
+
+<hr />
+
+<h4 id="以下是通过学习源码-个人复现和说明">以下是通过学习源码，个人复现和说明</h4>
+
 <h5 id="二分查找">二分查找</h5>
 
 <p>思路： 先定位中间位置 index，如果 fn(index) == true,  就移动j 到index，如果fn(index) == false，就移动I到index+1位置</p>
@@ -256,7 +316,7 @@ func heapSort(data *[]int) {
   <div class="entry-categories"><p><span>Categories</span>
     
     <a href="/categories/code" title="View all posts in code">code</a>
-    <a href="/categories/deep-learning" title="View all posts in deep learning">deep learning</a>
+    <a href="/categories/deep-learning" title="View all posts in deep-learning">deep-learning</a>
   </p>
 </div>
 
