@@ -198,6 +198,55 @@
     return i
 }
 </code></pre>
+
+<h5 id="堆排序">堆排序</h5>
+
+<p>思路:</p>
+
+<ul>
+<li>step1 - 先对数组建大顶堆(假设按从大到小排列)</li>
+<li>step2 - 然后将堆顶的数放置数组的末尾</li>
+<li>step3 - 对数组<strong>0 ~ len-1</strong>重复step1和2，直到遍历完数组</li>
+</ul>
+
+<pre><code>func siftDown(data *[]int, lo, hi int) {
+    index := lo
+    for {
+        // index的左儿子
+        child := 2*index + 1
+        if child &gt;= hi {
+            break
+        }
+        // 在左右儿子中找到大的那一个
+        if child+1 &lt; hi &amp;&amp; (*data)[child] &lt; (*data)[child+1] {
+            child++
+        }
+        // 如果父比大的那一个儿子大，就结束
+        if (*data)[index] &gt; (*data)[child] {
+            break
+        }
+        // 否则就把父和较大的儿子替换
+        (*data)[index], (*data)[child] = (*data)[child], (*data)[index]
+        // 位置替换成大儿子的
+        index = child
+    }
+}
+
+func heapSort(data *[]int) {
+    hi := len(*data)
+
+    // 建堆
+    for i := (hi - 1) / 2; i &gt;= 0; i-- {
+        siftDown(data, i, hi)
+    }
+
+    for i := hi - 1; i &gt;= 0; i-- {
+        // 堆顶是最大的值，放到最末尾，长度-1后继续建堆
+        (*data)[0], (*data)[i] = (*data)[i], (*data)[0]
+        siftDown(data, 0, i)
+    }
+}
+</code></pre>
             </article>
           </div>
           
