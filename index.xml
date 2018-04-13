@@ -57,11 +57,14 @@
       <pubDate>Mon, 09 Apr 2018 13:00:25 +0800</pubDate>
       
       <guid>https://ne7ermore.github.io/intro/</guid>
-      <description> 目前： 知乎 - 算法
-学校： 四川大学
- 懂些算法
- Torch Light Deeping Flow  会点Golang
- 简易压测工具  </description>
+      <description>喜欢数学，浪迹过东西南北
+手测网站，压测接口，倒腾tornado，窥探react，我对理查德说过, “以后再也不让人知道我写过前端”
+“同学，算法了解下” 于是写了个简陋的全文搜索引擎
+目前就职于知乎(天府之都)
+本想养只拉布拉多，结果抱回来阿拉斯加，名叫python
+技能树
+懂些算法: Torch Light, Deeping Flow
+会点Golang: 简易压测工具</description>
     </item>
     
   </channel>
