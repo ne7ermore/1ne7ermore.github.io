@@ -2,7 +2,7 @@
 <html lang="en-us">
 <head><meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
- <title>Golang源码-unsafe </title>
+ <title>Actor Critic </title>
 
 
 
@@ -151,12 +151,13 @@
       
   <div id="loop-container" class="loop-container">
     
+    <div class="post type-post status-publish format-standard has-post-thumbnail hentry category-design tag-design tag-standard-2 tag-tagalicious tag-travel entry full-without-featured odd excerpt-1">
 
-      <div class="post type-post status-publish format-standard hentry category-standard category-travel entry full-without-featured odd excerpt-1">
-
-        
+      <div class='featured-image lazy lazy-bg-image' data-background="https://ne7ermore.github.io/img/actorcritic/1.png">
+      </div>
+      
         <div class="entry-meta">
-          <span class="date">April 13</span>	<span> / </span>
+          <span class="date">April 16</span>	<span> / </span>
 
           <span class="author">
             
@@ -169,114 +170,169 @@
           <span class="category">
             <span> / </span>
 
-            <a href="/categories/code">code</a>
+            <a href="/categories/deep-learning">deep-learning</a>
+          </span>
+          
+          <span class="category">
+            <span> / </span>
+
+            <a href="/categories/reinforce-learning">reinforce-learning</a>
+          </span>
+          
+          <span class="category">
+            <span> / </span>
+
+            <a href="/categories/TensorFlow">TensorFlow</a>
           </span>
           
 
 
         </div>
         <div class='entry-header'>
-          <h1 class='entry-title'> Golang源码-unsafe</h1>
+          <h1 class='entry-title'> Actor Critic</h1>
         </div>
         <div class="entry-container">
           <div class="entry-content">
             <article>
-              <p>Unsafe包很有意思，源码中短短几行代码，剩下更多的是注释，初略一看感觉并不重要，其实恰恰相反，很多package中都有它的影子，比如reflect
+              <p>强化学习 - Actor Critic</p>
+
+<p>基于Actor Critic算法使用TensorFlow实现Cart-Pole
 </p>
 
-<p>先从包名讲起，unsafe - 不安全，为什么不安全呢？ <strong>Package unsafe contains operations that step around the type safety of Go programs</strong></p>
+<p>Actor Critic算法是在Policy Gradient基础上加入<strong>评分</strong>系统，并与真实的价值做比较，然后优化</p>
 
-<ul>
-<li>A pointer value of any type can be converted to a Pointer.</li>
-<li>A Pointer can be converted to a pointer value of any type.</li>
-<li>A uintptr can be converted to a Pointer.</li>
-<li>A Pointer can be converted to a uintptr.</li>
-</ul>
+<p>模型也是比较简单的，两层隐藏层足矣，唯一区分的就是输出层一个输出所有action的概率，一个输出一个标量，即当前action的评价分数</p>
 
-<p>简单来说就是</p>
+<p>首先引入gym-CartPole</p>
 
-<blockquote>
-<p>指针 &lt;—&gt; unsafe.Pointer &lt;—&gt; unitptr</p>
-</blockquote>
+<pre><code class="language-python">import gym
+env = gym.make('CartPole-v0').unwrapped
+env.seed(args.seed)
 
-<p>例子 - 强制转换类型</p>
-
-<pre><code>type stringHeader struct {
-    Data unsafe.Pointer
-    Len  int
-}
-
-var s stinrg = “abc&quot;
-
-// *string -&gt; unsafe.Pointer -&gt; *stringHeader
-hdr := (*stringHeader)(unsafe.Pointer(&amp;s))
-
-println(&amp;s) // 0xc42000e260
-println(&amp;hdr.Data) // 0xc42000e260
-println(&amp;hdr.Len) // 0xc42000e268
-hdr.Data = unsafe.Pointer(&amp;b[3])
-hdr.Len = int(b[1])&lt;&lt;8 | int(b[2])
+# state维度
+IN_DIM = env.observation_space.shape[0]
+# action维度
+OUT_DIM = env.action_space.n
 </code></pre>
 
-<p>例子 - 通过位置获取值</p>
+<p>然后定义模型</p>
 
-<pre><code>// 数组
-func add(p unsafe.Pointer, x uintptr) unsafe.Pointer {
-    return unsafe.Pointer(uintptr(p) + x)
-}
+<pre><code class="language-python">import tensorflow as tf
+import numpy as np
 
-func main() {
-    ints := []int64{1, 22, 123} // 数组
-    println(&amp;ints[2]) // 第三个成员的地址 0xc42003bf70
-    up := add(unsafe.Pointer(&amp;ints[0]), 2*unsafe.Sizeof(ints[0])) // 根据成员的size，移动Pointer到目标位置
-    println((*int)(up)) // 通过add方法移动到的地址 0xc42003bf70
-    println(*(*int)(up)) // 地址对应的值
-}
+tf.set_random_seed(args.seed)
+
+
+class ActorCritic(object):
+    def __init__(self, in_dim, out_dim, h_dim):
+        self.global_step = tf.train.get_or_create_global_step()
+
+        with tf.variable_scope('init_variables'):
+            self.state = tf.placeholder(
+                tf.float32, [None, in_dim], name=&quot;state&quot;)
+            self.rewards = tf.placeholder(
+                tf.float32, [None], name=&quot;rewards&quot;)
+            self.selected_actions = tf.placeholder(
+                tf.float32, [None], name=&quot;actions&quot;)
+            self.td_error = tf.placeholder(
+                tf.float32, [None], name=&quot;td_error&quot;)
+
+        # 模型结构，激活函数使用Relu
+        with tf.variable_scope('init_layers'):
+            h_layer = tf.keras.layers.Dense(h_dim, activation=tf.nn.relu)
+            action_layer = tf.keras.layers.Dense(
+                out_dim, activation=tf.nn.softmax)
+            value_layer = tf.keras.layers.Dense(1)
+
+        with tf.variable_scope('init_graph'):
+            hidden = h_layer(self.state)
+            props = action_layer(hidden)
+            self.value = tf.reshape(value_layer(hidden), [-1])
+
+            dist = tf.distributions.Categorical(props)
+            self.action = dist.sample()
+            self.log_scores = dist.log_prob(self.selected_actions)
+
+        with tf.variable_scope('loss'):
+            value_loss = self._smooth_l1_loss(self.value, self.rewards)
+            action_loss = -tf.reduce_sum(self.log_scores * self.td_error)
+
+            self.train_op = tf.train.AdamOptimizer(
+                args.lr).minimize(value_loss + action_loss, global_step=self.global_step)
+
+    # tf没有现成的smooth_l1_loss，自己写一个
+    def _smooth_l1_loss(self, value, rewards):
+        thres = tf.constant(1, dtype=tf.float32)
+        mae = tf.abs(value - rewards)
+        loss = tf.keras.backend.switch(tf.greater(
+            mae, thres), (mae - 0.5), 0.5 * tf.pow(mae, 2))
+
+        return tf.reduce_sum(loss)
 </code></pre>
 
-<p>最后一个例子 - 通过指针强制转换和移动位置修改私有成员</p>
+<p>最后训练</p>
 
-<p>文件夹 pointer 中定义一个P的类，<strong>P的成员，i和s，都是私有类型</strong>，所以只能查看(<strong>GetI, GetS公有</strong>)而不能修改</p>
+<pre><code class="language-python">ac = ActorCritic(IN_DIM, OUT_DIM, args.hidden_dim)
 
-<pre><code>package pointer
 
-type P struct {
-    i int32
-    s string
-}
+def train():
+    init = tf.global_variables_initializer()
+    config = tf.ConfigProto()
+    config.gpu_options.allow_growth = True
+    more = 0
 
-func (p *P) GetI() int32 {
-    return p.i
-}
+    saver = tf.train.Saver()
+    saver_hook = tf.train.CheckpointSaverHook(
+        './train/', save_steps=2, saver=saver)
 
-func (p *P) GetS() string {
-    return p.s
-}
+    summary_op = tf.summary.scalar('value', 1)
+    summary_hook = tf.train.SummarySaverHook(save_steps=2,
+                                             summary_op=summary_op)
+
+    with tf.train.MonitoredTrainingSession(config=config, hooks=[saver_hook, summary_hook]) as sess:
+        for epoch in count(1):
+            state = env.reset()
+            if args.render:
+                env.render()
+            states, policy_rewards, actions, values = [
+                state], [], [], []
+
+            for step in range(10000):
+                action, value = sess.run([ac.action, ac.value], feed_dict={
+                    ac.state: [state]})
+                action, value = action[0], value[0]
+                state, reward, done, _ = env.step(action)
+                policy_rewards.append(reward)
+                actions.append(action)
+                values.append(value)
+                if done:
+                    break
+                states.append(state)
+
+            R, rewards = 0, []
+            for r in policy_rewards[::-1]:
+                R = r + args.gamma * R
+                rewards.insert(0, R)
+
+            rewards = np.asarray(rewards)
+            rewards = (rewards - rewards.mean()) / \
+                (rewards.std() + np.finfo(np.float32).eps)
+            values = np.asarray(values)
+
+            feed_dict = {
+                ac.state: np.asarray(states),
+                ac.rewards: rewards,
+                ac.selected_actions: np.asarray(actions),
+                ac.td_error: (rewards - values),
+            }
+            sess.run([ac.global_step, ac.train_op], feed_dict)
+
+            if more &lt; step:
+                print('Epoch {}\tlength: {:5d}\t'.format(epoch, step))
+                more = step
 </code></pre>
 
-<p>然后在包外写一个main文件</p>
-
-<pre><code>package main
-
-import (
-    &quot;pointer&quot;
-)
-
-func main() {
-    p := new(pointer.P)
-    println(p.GetI())
-    println(p.GetS())
-
-    // 修改
-    pointI := (*int32)(unsafe.Pointer(p))
-    *pointI = 20
-    println(p.GetI())
-
-    pointS := (*string)(add(unsafe.Pointer(p), uintptr(8)))
-    *pointS = &quot;我就是我&quot;
-    println(p.GetS())
-}
-</code></pre>
+<p><a href="https://github.com/ne7ermore/deeping-flow/blob/master/gym/actor_critic.py">猛击查看全部代码</a></p>
             </article>
           </div>
           

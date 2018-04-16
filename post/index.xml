@@ -6,18 +6,20 @@
     <description>Recent content in Posts on Nevermore</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Wed, 11 Apr 2018 13:00:25 +0800</lastBuildDate>
+    <lastBuildDate>Mon, 16 Apr 2018 13:00:25 +0800</lastBuildDate>
     
 	<atom:link href="https://ne7ermore.github.io/post/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
-      <title>Generating Poetry from VAE</title>
-      <link>https://ne7ermore.github.io/post/vae/</link>
-      <pubDate>Wed, 11 Apr 2018 13:00:25 +0800</pubDate>
+      <title>Actor Critic</title>
+      <link>https://ne7ermore.github.io/post/actor-critic/</link>
+      <pubDate>Mon, 16 Apr 2018 13:00:25 +0800</pubDate>
       
-      <guid>https://ne7ermore.github.io/post/vae/</guid>
-      <description>&lt;p&gt;介绍一个Variational Auto-Encoder生成中国五言绝句的算法
+      <guid>https://ne7ermore.github.io/post/actor-critic/</guid>
+      <description>&lt;p&gt;强化学习 - Actor Critic&lt;/p&gt;
+
+&lt;p&gt;基于Actor Critic算法使用TensorFlow实现Cart-Pole
 &lt;/p&gt;</description>
     </item>
     
@@ -28,6 +30,16 @@
       
       <guid>https://ne7ermore.github.io/post/golang-unsafe/</guid>
       <description>&lt;p&gt;Unsafe包很有意思，源码中短短几行代码，剩下更多的是注释，初略一看感觉并不重要，其实恰恰相反，很多package中都有它的影子，比如reflect
+&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>Generating Poetry from VAE</title>
+      <link>https://ne7ermore.github.io/post/vae/</link>
+      <pubDate>Wed, 11 Apr 2018 13:00:25 +0800</pubDate>
+      
+      <guid>https://ne7ermore.github.io/post/vae/</guid>
+      <description>&lt;p&gt;介绍一个Variational Auto-Encoder生成中国五言绝句的算法
 &lt;/p&gt;</description>
     </item>
     
