@@ -3,6 +3,11 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   
   <url>
+    <loc>https://ne7ermore.github.io/post/yolo-v3/</loc>
+    <lastmod>2018-04-27T09:53:42+05:30</lastmod>
+  </url>
+  
+  <url>
     <loc>https://ne7ermore.github.io/post/actor-critic/</loc>
     <lastmod>2018-04-16T13:00:25+08:00</lastmod>
   </url>
@@ -45,7 +50,7 @@
   
   <url>
     <loc>https://ne7ermore.github.io/categories/deep-learning/</loc>
-    <lastmod>2018-04-16T13:00:25+08:00</lastmod>
+    <lastmod>2018-04-27T09:53:42+05:30</lastmod>
     <priority>0</priority>
   </url>
   
@@ -57,19 +62,19 @@
   
   <url>
     <loc>https://ne7ermore.github.io/</loc>
-    <lastmod>2018-04-16T13:00:25+08:00</lastmod>
+    <lastmod>2018-04-27T09:53:42+05:30</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
     <loc>https://ne7ermore.github.io/post/</loc>
-    <lastmod>2018-04-16T13:00:25+08:00</lastmod>
+    <lastmod>2018-04-27T09:53:42+05:30</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
     <loc>https://ne7ermore.github.io/tags/python/</loc>
-    <lastmod>2018-04-16T13:00:25+08:00</lastmod>
+    <lastmod>2018-04-27T09:53:42+05:30</lastmod>
     <priority>0</priority>
   </url>
   
@@ -93,7 +98,7 @@
   
   <url>
     <loc>https://ne7ermore.github.io/tags/%E7%AE%97%E6%B3%95/</loc>
-    <lastmod>2018-04-16T13:00:25+08:00</lastmod>
+    <lastmod>2018-04-27T09:53:42+05:30</lastmod>
     <priority>0</priority>
   </url>
   
