@@ -6,10 +6,20 @@
     <description>Recent content in 算法 on Nevermore</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Fri, 27 Apr 2018 09:53:42 +0530</lastBuildDate>
+    <lastBuildDate>Sun, 13 May 2018 13:00:25 +0800</lastBuildDate>
     
 	<atom:link href="https://ne7ermore.github.io/tags/%E7%AE%97%E6%B3%95/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Facial Beauty Prediction</title>
+      <link>https://ne7ermore.github.io/post/facial-bp/</link>
+      <pubDate>Sun, 13 May 2018 13:00:25 +0800</pubDate>
+      
+      <guid>https://ne7ermore.github.io/post/facial-bp/</guid>
+      <description>&lt;p&gt;我有一个魔(mo)镜(xing)，能告诉你是不是世界上最美|帅的人
+&lt;/p&gt;</description>
+    </item>
     
     <item>
       <title>YOLO-V3</title>
@@ -23,6 +33,16 @@ yolo是一种使用深度卷积神经网络学得的特征来检测对象的目�
     </item>
     
     <item>
+      <title>Generating Poetry from VAE</title>
+      <link>https://ne7ermore.github.io/post/vae/</link>
+      <pubDate>Wed, 11 Apr 2018 13:00:25 +0800</pubDate>
+      
+      <guid>https://ne7ermore.github.io/post/vae/</guid>
+      <description>&lt;p&gt;介绍一个Variational Auto-Encoder生成中国五言绝句的算法
+&lt;/p&gt;</description>
+    </item>
+    
+    <item>
       <title>Actor Critic</title>
       <link>https://ne7ermore.github.io/post/actor-critic/</link>
       <pubDate>Mon, 16 Apr 2018 13:00:25 +0800</pubDate>
@@ -31,16 +51,6 @@ yolo是一种使用深度卷积神经网络学得的特征来检测对象的目�
       <description>&lt;p&gt;强化学习 - Actor Critic&lt;/p&gt;
 
 &lt;p&gt;基于Actor Critic算法使用TensorFlow实现Cart-Pole
-&lt;/p&gt;</description>
-    </item>
-    
-    <item>
-      <title>Generating Poetry from VAE</title>
-      <link>https://ne7ermore.github.io/post/vae/</link>
-      <pubDate>Wed, 11 Apr 2018 13:00:25 +0800</pubDate>
-      
-      <guid>https://ne7ermore.github.io/post/vae/</guid>
-      <description>&lt;p&gt;介绍一个Variational Auto-Encoder生成中国五言绝句的算法
 &lt;/p&gt;</description>
     </item>
     

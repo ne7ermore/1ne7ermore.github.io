@@ -6,10 +6,20 @@
     <description>Recent content in Posts on Nevermore</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Fri, 27 Apr 2018 09:53:42 +0530</lastBuildDate>
+    <lastBuildDate>Sun, 13 May 2018 13:00:25 +0800</lastBuildDate>
     
 	<atom:link href="https://ne7ermore.github.io/post/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Facial Beauty Prediction</title>
+      <link>https://ne7ermore.github.io/post/facial-bp/</link>
+      <pubDate>Sun, 13 May 2018 13:00:25 +0800</pubDate>
+      
+      <guid>https://ne7ermore.github.io/post/facial-bp/</guid>
+      <description>&lt;p&gt;我有一个魔(mo)镜(xing)，能告诉你是不是世界上最美|帅的人
+&lt;/p&gt;</description>
+    </item>
     
     <item>
       <title>YOLO-V3</title>
@@ -19,28 +29,6 @@
       <guid>https://ne7ermore.github.io/post/yolo-v3/</guid>
       <description>&lt;p&gt;Pytorch实现You Only Look Once - V3（下简称yolo）
 yolo是一种使用深度卷积神经网络学得的特征来检测对象的目标检测器
-&lt;/p&gt;</description>
-    </item>
-    
-    <item>
-      <title>Actor Critic</title>
-      <link>https://ne7ermore.github.io/post/actor-critic/</link>
-      <pubDate>Mon, 16 Apr 2018 13:00:25 +0800</pubDate>
-      
-      <guid>https://ne7ermore.github.io/post/actor-critic/</guid>
-      <description>&lt;p&gt;强化学习 - Actor Critic&lt;/p&gt;
-
-&lt;p&gt;基于Actor Critic算法使用TensorFlow实现Cart-Pole
-&lt;/p&gt;</description>
-    </item>
-    
-    <item>
-      <title>Golang源码-unsafe</title>
-      <link>https://ne7ermore.github.io/post/golang-unsafe/</link>
-      <pubDate>Fri, 13 Apr 2018 13:00:25 +0800</pubDate>
-      
-      <guid>https://ne7ermore.github.io/post/golang-unsafe/</guid>
-      <description>&lt;p&gt;Unsafe包很有意思，源码中短短几行代码，剩下更多的是注释，初略一看感觉并不重要，其实恰恰相反，很多package中都有它的影子，比如reflect
 &lt;/p&gt;</description>
     </item>
     
@@ -55,12 +43,12 @@ yolo是一种使用深度卷积神经网络学得的特征来检测对象的目�
     </item>
     
     <item>
-      <title>Bit Sort</title>
-      <link>https://ne7ermore.github.io/post/bitsort/</link>
-      <pubDate>Tue, 10 Apr 2018 13:00:25 +0800</pubDate>
+      <title>Golang源码-unsafe</title>
+      <link>https://ne7ermore.github.io/post/golang-unsafe/</link>
+      <pubDate>Fri, 13 Apr 2018 13:00:25 +0800</pubDate>
       
-      <guid>https://ne7ermore.github.io/post/bitsort/</guid>
-      <description>&lt;p&gt;介绍一个时间和空间复杂度都比较合理的排序方式 - 位排序
+      <guid>https://ne7ermore.github.io/post/golang-unsafe/</guid>
+      <description>&lt;p&gt;Unsafe包很有意思，源码中短短几行代码，剩下更多的是注释，初略一看感觉并不重要，其实恰恰相反，很多package中都有它的影子，比如reflect
 &lt;/p&gt;</description>
     </item>
     
@@ -71,6 +59,28 @@ yolo是一种使用深度卷积神经网络学得的特征来检测对象的目�
       
       <guid>https://ne7ermore.github.io/post/golang-sort/</guid>
       <description>&lt;p&gt;Golang sort包相对独立，并且能帮助理解和使用golang中的interface
+&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>Bit Sort</title>
+      <link>https://ne7ermore.github.io/post/bitsort/</link>
+      <pubDate>Tue, 10 Apr 2018 13:00:25 +0800</pubDate>
+      
+      <guid>https://ne7ermore.github.io/post/bitsort/</guid>
+      <description>&lt;p&gt;介绍一个时间和空间复杂度都比较合理的排序方式 - 位排序
+&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>Actor Critic</title>
+      <link>https://ne7ermore.github.io/post/actor-critic/</link>
+      <pubDate>Mon, 16 Apr 2018 13:00:25 +0800</pubDate>
+      
+      <guid>https://ne7ermore.github.io/post/actor-critic/</guid>
+      <description>&lt;p&gt;强化学习 - Actor Critic&lt;/p&gt;
+
+&lt;p&gt;基于Actor Critic算法使用TensorFlow实现Cart-Pole
 &lt;/p&gt;</description>
     </item>
     
