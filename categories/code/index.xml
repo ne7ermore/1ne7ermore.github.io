@@ -6,10 +6,22 @@
     <description>Recent content in Code on Nevermore</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Fri, 13 Apr 2018 13:00:25 +0800</lastBuildDate>
+    <lastBuildDate>Sun, 13 May 2018 13:00:25 +0800</lastBuildDate>
     
 	<atom:link href="https://ne7ermore.github.io/categories/code/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Pandas使用笔记</title>
+      <link>https://ne7ermore.github.io/post/pandas/</link>
+      <pubDate>Sun, 13 May 2018 13:00:25 +0800</pubDate>
+      
+      <guid>https://ne7ermore.github.io/post/pandas/</guid>
+      <description>&lt;p&gt;Pandas是python的一款第三方包，强大，快速，多使用于数据挖掘和整合&lt;/p&gt;
+
+&lt;p&gt;我会不定期记录使用pandas的心得
+&lt;/p&gt;</description>
+    </item>
     
     <item>
       <title>Golang源码-unsafe</title>

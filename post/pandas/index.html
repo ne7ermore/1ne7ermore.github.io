@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+ <title>Pandas使用笔记 </title>
+
+
+
+<meta name="description" content="工作,生活......想到什么写什么">
+
+
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="all,follow">
+<meta name="googlebot" content="index,follow,snippet,archive">
+<link rel="stylesheet" id="ct-tracks-google-fonts-css" href="//fonts.googleapis.com/css?family=Raleway%3A400%2C700&amp;subset=latin%2Clatin-ext&amp;ver=4.7.2" type="text/css" media="all">
+<link rel="stylesheet" href="https://ne7ermore.github.io/css/font-awesome.min.css" type='text/css' media='all'>
+
+<link href="https://ne7ermore.github.io/css/style.css" rel="stylesheet" id="theme-stylesheet" type='text/css' media='all'>
+
+<link href="https://ne7ermore.github.io/css/custom.css" rel="stylesheet" type='text/css' media='all'>
+<link rel="shortcut icon" href="https://ne7ermore.github.io/img/favicon.jpeg" type="image/x-icon">
+<link rel="icon" href="https://ne7ermore.github.io/img/favicon.jpeg" type="image/x-icon">
+
+
+</head>
+
+
+<body class="post-template-default single single-post single-format-standard ct-body singular singular-post not-front standard">
+  
+  <div id="overflow-container" class="overflow-container">
+    <a class="skip-content" href="#main">Skip to content</a>
+    <header id="site-header" class="site-header" role="banner">
+      <div class='top-navigation'>
+        <div class='container'>
+
+  <div id="menu-secondary" class="menu-container menu-secondary" role="navigation">
+    <button id="toggle-secondary-navigation" class="toggle-secondary-navigation"><i class="fa fa-plus"></i></button>
+
+    <div class="menu">
+
+      <ul id="menu-secondary-items" class="menu-secondary-items">
+        
+        <li id="menu-item" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item">
+          <a href="/categories/tensorflow">TensorFlow</a>
+        </li>
+        
+        <li id="menu-item" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item">
+          <a href="/categories/code">code</a>
+        </li>
+        
+        <li id="menu-item" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item">
+          <a href="/categories/deep-learning">deep-learning</a>
+        </li>
+        
+        <li id="menu-item" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item">
+          <a href="/categories/reinforce-learning">reinforce-learning</a>
+        </li>
+        
+
+      </ul>
+
+    </div>
+
+  </div>
+
+
+  <ul class="social-media-icons">
+
+
+    
+
+    
+
+    
+
+    
+    <li>
+      <a href="https://www.zhihu.com/people/liao-yuan-huo-28/activities" data-animate-hover="pulse" class="twitter" target="_blank">
+        <i class="fa fa-instagram" title="instagram"></i>
+        <span class="screen-reader-text">instagram</span>
+      </a>
+    </li>
+    
+
+    
+    <li>
+      <a href="mailto:liaoyuanhuo1987@gmail.com" data-animate-hover="pulse" class="email">
+        <i class="fa fa-envelope" title="email"></i>
+        <span class="screen-reader-text">email</span>
+      </a>
+    </li>
+    
+
+    
+
+    
+
+
+    
+    <li>
+      <a href="https://github.com/ne7ermore" data-animate-hover="pulse" class="github" target="_blank">
+        <i class="fa fa-github" title="github"></i>
+        <span class="screen-reader-text">github</span>
+      </a>
+    </li>
+    
+
+  </ul></div>
+
+      </div>
+
+      <div class="container">
+        <div id="title-info" class="title-info">
+  <div id='site-title' class='site-title'>
+    
+    <a href="/"> Nevermore </a>
+    </div>
+  </div>
+  <button id="toggle-navigation" class="toggle-navigation">
+    <i class="fa fa-bars"></i>
+  </button>
+
+  <div id="menu-primary-tracks" class="menu-primary-tracks"></div>
+  <div id="menu-primary" class="menu-container menu-primary" role="navigation">
+    
+    <p class="site-description">懂点数学的码农</p>
+    
+
+    <div class="menu">
+      <ul id="menu-primary-items" class="menu-primary-items">
+        
+        
+        <li id="menu-item" class='menu-item menu-item-type-custom menu-item-object-custom '>
+          <a href="https://ne7ermore.github.io/">Home</a>
+        </li>
+        
+        <li id="menu-item" class='menu-item menu-item-type-post_type menu-item-object-page '>
+          <a href="https://ne7ermore.github.io/intro/">Intro</a>
+        </li>
+        
+      </ul>
+    </div>
+
+  </div>
+
+      </div>
+    </header>
+
+    <div id="main" class="main" role="main">
+
+      
+  <div id="loop-container" class="loop-container">
+    
+
+      <div class="post type-post status-publish format-standard hentry category-standard category-travel entry full-without-featured odd excerpt-1">
+
+        
+        <div class="entry-meta">
+          <span class="date">May 13</span>	<span> / </span>
+
+          <span class="author">
+            
+            <a href="https://ne7ermore.github.io" title="Posts by Nevermore" rel="author">Nevermore</a>
+            
+          </span>
+
+
+          
+          <span class="category">
+            <span> / </span>
+
+            <a href="/categories/code">code</a>
+          </span>
+          
+
+
+        </div>
+        <div class='entry-header'>
+          <h1 class='entry-title'> Pandas使用笔记</h1>
+        </div>
+        <div class="entry-container">
+          <div class="entry-content">
+            <article>
+              <p>Pandas是python的一款第三方包，强大，快速，多使用于数据挖掘和整合</p>
+
+<p>我会不定期记录使用pandas的心得
+</p>
+
+<blockquote>
+<p>以下内容均代表个人立场</p>
+</blockquote>
+
+<p>Here we go</p>
+
+<p>pd中常用的对象: Series, DataFrame(以下简称df)</p>
+
+<h5 id="加载csv文件">加载csv文件</h5>
+
+<pre><code># 加载，df的数据类型为DataFrame
+df = pd.read_csv(&quot;16号线坡度表.csv&quot;)
+
+# 显示前5行
+df.head()
+
+   序号  行别         起点里程         终点里程   坡度（‰）     坡长（m）  起标高（m）  长链（m）  短链（m）  \
+0   1  上行  +K00000.000  +K00355.000   2.000   355.002   38.33  0.002    NaN
+1   2  上行  +K00355.000  +K00780.000  -2.000   425.000   39.04    NaN    NaN
+2   3  上行  +K00780.000  +K01180.000 -28.000   400.000   38.19    NaN    NaN
+3   4  上行  +K01180.000  +K01840.000 -19.500   660.000   26.99    NaN    NaN
+4   5  上行  +K01840.000  +K02980.000  15.401  1141.220   14.12  1.220    NaN
+
+   Unnamed: 9
+0         NaN
+1         NaN
+2         NaN
+3         NaN
+4         NaN
+</code></pre>
+
+<h5 id="df每一列就是一个series">df每一列就是一个Series</h5>
+
+<pre><code>df[&quot;起点里程&quot;]
+
+0     +K00000.000
+1     +K00355.000
+2     +K00780.000
+3     +K01180.000
+         ...
+69    +K19450.000
+70    +K19720.000
+71    +K19980.000
+Name: 起点里程, Length: 72, dtype: object
+</code></pre>
+
+<h5 id="过滤掉不需要的内容">过滤掉不需要的内容</h5>
+
+<pre><code>df = df.filter(items=[&quot;行别&quot;, &quot;起点里程&quot;, &quot;终点里程&quot;, &quot;坡度（‰）&quot;])
+df.head()
+
+   行别         起点里程         终点里程   坡度（‰）
+0  上行  +K00000.000  +K00355.000   2.000
+1  上行  +K00355.000  +K00780.000  -2.000
+2  上行  +K00780.000  +K01180.000 -28.000
+3  上行  +K01180.000  +K01840.000 -19.500
+4  上行  +K01840.000  +K02980.000  15.401
+</code></pre>
+
+<h5 id="替换df的列名称">替换df的列名称</h5>
+
+<pre><code>df.columns = [&quot;a&quot;, &quot;b&quot;, &quot;c&quot;, &quot;d&quot;]
+df.head()
+
+    a            b            c       d
+0  上行  +K00000.000  +K00355.000   2.000
+1  上行  +K00355.000  +K00780.000  -2.000
+2  上行  +K00780.000  +K01180.000 -28.000
+3  上行  +K01180.000  +K01840.000 -19.500
+4  上行  +K01840.000  +K02980.000  15.401
+</code></pre>
+
+<h5 id="对df某一列处理">对df某一列处理</h5>
+
+<pre><code>df[&quot;b&quot;] = df[&quot;b&quot;].apply(lambda x: float(x[2:]))
+df.head()
+
+    a       b            c       d
+0  上行     0.0  +K00355.000   2.000
+1  上行   355.0  +K00780.000  -2.000
+2  上行   780.0  +K01180.000 -28.000
+3  上行  1180.0  +K01840.000 -19.500
+4  上行  1840.0  +K02980.000  15.401
+</code></pre>
+
+<h5 id="找出nan行并过滤掉">找出Nan行并过滤掉</h5>
+
+<pre><code># b列3行更新为nan
+df[&quot;b&quot;][2] = np.nan
+
+# 找出为nan的行
+df[df.isnull().values == True]
+
+    a   b            c     d
+2  上行 NaN  +K01180.000 -28.0
+</code></pre>
+            </article>
+          </div>
+          
+      <div class='entry-meta-bottom'>
+        
+
+  <div class="entry-categories"><p><span>Categories</span>
+    
+    <a href="/categories/tensorflow" title="View all posts in TensorFlow">TensorFlow</a>
+    <a href="/categories/code" title="View all posts in code">code</a>
+    <a href="/categories/deep-learning" title="View all posts in deep-learning">deep-learning</a>
+    <a href="/categories/reinforce-learning" title="View all posts in reinforce-learning">reinforce-learning</a>
+  </p>
+</div>
+
+
+
+<div class="entry-tags"><p><span>Tags</span>
+  
+  <a href="/tags/golang" title="View all posts tagged golang">golang</a>
+  
+  <a href="/tags/python" title="View all posts tagged python">python</a>
+  
+  <a href="/tags/%E7%AE%97%E6%B3%95" title="View all posts tagged 算法">算法</a>
+  
+
+</p></div>	</div>
+
+<div class="author-meta">
+
+  <div class="author">
+    <img alt='Nevermore' src="https://www.gravatar.com/avatar/441d6f3623599f66569ae8478cf21f68?s=100&d=identicon" class='avatar avatar-72 photo' height='72' width='72'>
+
+    <span>
+      Written by:<a href="https://ne7ermore.github.io" title="Posts by Nevermore" rel="author">Nevermore</a>        </span>
+    </div>
+    <div class="bio">
+      
+      <p>工作, 生活......写到什么是什么</p>
+      
+      <p>重度佛系患者</p>
+      
+
+
+      
+
+    
+
+
+  
+
+
+
+<a class="email" target="_blank"
+href="mailto:liaoyuanhuo1987@gmail.com">
+<i class="fa fa-envelope"
+title="email icon"></i>
+</a>
+
+
+
+<a class="instagram" target="_blank"
+href="https://www.zhihu.com/people/liao-yuan-huo-28/activities">
+<i class="fa fa-instagram"
+title="instagram icon"></i>
+</a>
+
+
+
+
+
+<a class="github" target="_blank"
+href="https://github.com/ne7ermore">
+<i class="fa fa-github"
+title="github icon"></i>
+</a>
+
+
+</div>
+</div>
+
+</div>
+</div>
+
+<section id="comments" class="comments">
+  
+
+  
+
+
+
+
+</section>
+</div>
+
+ 
+
+
+
+    </div>
+
+    <footer id="site-footer" class="site-footer" role="contentinfo">
+	<h1>
+    
+    <a href=""> Nevermore </a>
+    
+	</h1>
+
+			
+			<p class="site-description">懂点数学的码农</p>
+			
+
+		<div id="menu-footer" class="menu-container menu-footer" role="navigation">
+		<div class="menu">
+
+      <ul id="menu-footer-items" class="menu-footer-items">
+        
+</ul>
+
+</div>	</div>
+
+<ul class="social-media-icons">
+
+        
+
+        
+
+
+        
+
+        
+        <li>
+        <a href="https://www.zhihu.com/people/liao-yuan-huo-28/activities"  class="twitter" target="_blank">
+            <i class="fa fa-instagram" title="instagram"></i>
+            <span class="screen-reader-text">instagram</span>
+        </a>
+        </li>
+        
+
+        
+        <li>
+        <a href="mailto:liaoyuanhuo1987@gmail.com"  class="email">
+            <i class="fa fa-envelope" title="email"></i>
+            <span class="screen-reader-text">email</span>
+        </a>
+        </li>
+        
+
+        
+
+        
+
+
+        
+        <li>
+        <a href="https://github.com/ne7ermore"  class="github" target="_blank">
+            <i class="fa fa-github" title="github"></i>
+            <span class="screen-reader-text">github</span>
+        </a>
+        </li>
+        
+				</ul>	<div class="design-credit">
+		
+		<p>&copy; Nevermore | 2018</p>
+		
+	</div>
+</footer>
+
+  </div>
+  <script src="https://ne7ermore.github.io/js/jquery.min.js"></script>
+<script src="https://ne7ermore.github.io/js/jquerymigrate.js"></script>
+<script src="https://ne7ermore.github.io/js/production.min.js"></script>
+
+</body>
+</html>
