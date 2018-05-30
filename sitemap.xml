@@ -3,6 +3,11 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   
   <url>
+    <loc>https://ne7ermore.github.io/post/go-rbac/</loc>
+    <lastmod>2018-05-30T13:00:25+08:00</lastmod>
+  </url>
+  
+  <url>
     <loc>https://ne7ermore.github.io/post/facial-bp/</loc>
     <lastmod>2018-05-13T13:00:25+08:00</lastmod>
   </url>
@@ -54,7 +59,7 @@
   
   <url>
     <loc>https://ne7ermore.github.io/categories/code/</loc>
-    <lastmod>2018-05-13T13:00:25+08:00</lastmod>
+    <lastmod>2018-05-30T13:00:25+08:00</lastmod>
     <priority>0</priority>
   </url>
   
@@ -66,19 +71,19 @@
   
   <url>
     <loc>https://ne7ermore.github.io/tags/golang/</loc>
-    <lastmod>2018-04-13T13:00:25+08:00</lastmod>
+    <lastmod>2018-05-30T13:00:25+08:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
     <loc>https://ne7ermore.github.io/</loc>
-    <lastmod>2018-05-13T13:00:25+08:00</lastmod>
+    <lastmod>2018-05-30T13:00:25+08:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
     <loc>https://ne7ermore.github.io/post/</loc>
-    <lastmod>2018-05-13T13:00:25+08:00</lastmod>
+    <lastmod>2018-05-30T13:00:25+08:00</lastmod>
     <priority>0</priority>
   </url>
   
@@ -96,7 +101,7 @@
   
   <url>
     <loc>https://ne7ermore.github.io/tags/</loc>
-    <lastmod>2018-04-13T13:00:25+08:00</lastmod>
+    <lastmod>2018-05-30T13:00:25+08:00</lastmod>
     <priority>0</priority>
   </url>
   

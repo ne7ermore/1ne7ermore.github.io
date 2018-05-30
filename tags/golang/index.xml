@@ -6,10 +6,21 @@
     <description>Recent content in Golang on Nevermore</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Fri, 13 Apr 2018 13:00:25 +0800</lastBuildDate>
+    <lastBuildDate>Wed, 30 May 2018 13:00:25 +0800</lastBuildDate>
     
 	<atom:link href="https://ne7ermore.github.io/tags/golang/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Golang实现RBAC</title>
+      <link>https://ne7ermore.github.io/post/go-rbac/</link>
+      <pubDate>Wed, 30 May 2018 13:00:25 +0800</pubDate>
+      
+      <guid>https://ne7ermore.github.io/post/go-rbac/</guid>
+      <description>&lt;p&gt;Role-Based Access Control(下简称rbac)
+以角色为基础的访问控制模型，通过角色连接用户和权限，达到两者解耦的目的
+&lt;/p&gt;</description>
+    </item>
     
     <item>
       <title>Golang源码-unsafe</title>

@@ -207,7 +207,7 @@ for i := 0; i &lt; top; i++ {
 
 <p><a href="https://github.com/ne7ermore/playground/blob/master/golang/sort/bitsort.go">全部代码</a></p>
 
-<pre><code>func bitsort(list []uint, max uint) []uint {
+<pre><code class="language-Golang">func bitsort(list []uint, max uint) []uint {
     var SHIFT, MASK uint = 5, 0x1f
     var BITSPERWORD int = 32
     top := int(len(list)/BITSPERWORD) + 1

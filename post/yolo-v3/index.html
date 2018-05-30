@@ -203,7 +203,7 @@ yolo是一种使用深度卷积神经网络学得的特征来检测对象的目�
 
 <p>卷积层(不带bias)+BatchNorm+LeakyReLU</p>
 
-<pre><code>class BasicConv(nn.Module):
+<pre><code class="language-python">class BasicConv(nn.Module):
     def __init__(self, ind, outd, kr_size, stride, padding, lr=0.1, bias=False):
         super().__init__()
 
@@ -219,7 +219,7 @@ yolo是一种使用深度卷积神经网络学得的特征来检测对象的目�
 
 <p>网络中间循环层：1、2、8、8、4</p>
 
-<pre><code>class BasicLayer(nn.Module):
+<pre><code class="language-python">class BasicLayer(nn.Module):
     def __init__(self, conv_1, conv_2, times):
         super().__init__()
 
@@ -241,7 +241,7 @@ yolo是一种使用深度卷积神经网络学得的特征来检测对象的目�
 
 <p>预测层</p>
 
-<pre><code>class BasicPred(nn.Module):
+<pre><code class="language-python">class BasicPred(nn.Module):
     def __init__(self,
                  structs,
                  use_cuda,
@@ -286,7 +286,7 @@ yolo是一种使用深度卷积神经网络学得的特征来检测对象的目�
 
 <p>5组循环层</p>
 
-<pre><code>class LayerOne(BasicLayer):
+<pre><code class="language-python">class LayerOne(BasicLayer):
     def __init__(self):
         super().__init__((64, 32, 1, 1, 0),
                          (32, 64, 3, 1, 1), 1)
@@ -318,7 +318,7 @@ class LayerFive(BasicLayer):
 
 <p>预测层结构和实现</p>
 
-<pre><code>DETECT_DICT = {
+<pre><code class="language-python">DETECT_DICT = {
     'first': [1024, (512, 1, 1, 0), (1024, 3, 1, 1), (512, 1, 1, 0), (1024, 3, 1, 1), (512, 1, 1, 0), (1024, 3, 1, 1), (255, 1, 1, 0, 0)],
     'second': [768, (256, 1, 1, 0), (512, 3, 1, 1), (256, 1, 1, 0), (512, 3, 1, 1), (256, 1, 1, 0), (512, 3, 1, 1), (255, 1, 1, 0, 0)],
     'third': [384, (128, 1, 1, 0), (256, 3, 1, 1), (128, 1, 1, 0), (256, 3, 1, 1), (128, 1, 1, 0), (256, 3, 1, 1), (255, 1, 1, 0, 0)],
@@ -355,7 +355,7 @@ class ThirdPred(BasicPred):
 
 <p>整个网络结构实现，可以结合darknet图阅读代码</p>
 
-<pre><code>class DarkNet(nn.Module):
+<pre><code class="language-python">class DarkNet(nn.Module):
     def __init__(self, use_cuda):
         super().__init__()
 
@@ -430,7 +430,7 @@ class ThirdPred(BasicPred):
 
 <p><img src="/img/yolo/transform2.png" alt="pic" /></p>
 
-<pre><code>def predict_transform(self, prediction):
+<pre><code class="language-python">def predict_transform(self, prediction):
     &quot;&quot;&quot; borrowed from https://github.com/ayooshkathuria/YOLO_v3_tutorial_from_scratch/blob/master/util.py#L47
     &quot;&quot;&quot;
     batch_size = prediction.size(0)
@@ -483,7 +483,7 @@ class ThirdPred(BasicPred):
 
 <p>iou原理：(图a 交 图b) / (图a 并 图b)</p>
 
-<pre><code>def iou(box1, box2):
+<pre><code class="language-python">def iou(box1, box2):
     x1, y1 = box1[:, 0], box1[:, 1]
     b1_w, b1_h = box1[:, 2] - x1 + .1, box1[:, 3] - y1 + .1
 
@@ -503,7 +503,7 @@ class ThirdPred(BasicPred):
 
 <p>预测代码</p>
 
-<pre><code>def predict(self, prediction, nms_conf=0.4):
+<pre><code class="language-python">def predict(self, prediction, nms_conf=0.4):
     &quot;&quot;&quot;
     prediction:
         0:3 - x, y, h, w
@@ -599,7 +599,7 @@ class ThirdPred(BasicPred):
 
 <p>绘图代码</p>
 
-<pre><code>def tensor2img(self, tensor, index, name):
+<pre><code class="language-python">def tensor2img(self, tensor, index, name):
     imgs_dim = self.imgs_dim[index] / self.img_size
     img = self.imgs[index]
     draw = ImageDraw.Draw(img)

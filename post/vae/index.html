@@ -212,7 +212,7 @@
 
 <p>encoder由一层双向lstm构成，输出时间序列的总体特征。</p>
 
-<pre><code>class Encoder(nn.Module):
+<pre><code class="language-python">class Encoder(nn.Module):
     def __init__(self, embed_dim, hidden_size, num_layers, dropout):
         super().__init__()
 
@@ -240,7 +240,7 @@
 
 <p>decoder为标准rnnlms</p>
 
-<pre><code>class Decoder(nn.Module):
+<pre><code class="language-python">class Decoder(nn.Module):
     def __init__(self, embed_dim, latent_dim, hidden_size, num_layers, dropout, vocab_size):
         super().__init__()
 
@@ -280,7 +280,7 @@
 
 <p>vae由embedding，highway，encoder， W_mu，W_alpha ，decoder组成</p>
 
-<pre><code>class VAE(nn.Module):
+<pre><code class="language-python">class VAE(nn.Module):
     def __init__(self, args):
         super().__init__()
 

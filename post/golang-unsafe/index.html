@@ -201,7 +201,7 @@
 
 <p>例子 - 强制转换类型</p>
 
-<pre><code>type stringHeader struct {
+<pre><code class="language-golang">type stringHeader struct {
     Data unsafe.Pointer
     Len  int
 }
@@ -220,7 +220,7 @@ hdr.Len = int(b[1])&lt;&lt;8 | int(b[2])
 
 <p>例子 - 通过位置获取值</p>
 
-<pre><code>// 数组
+<pre><code class="language-golang">// 数组
 func add(p unsafe.Pointer, x uintptr) unsafe.Pointer {
     return unsafe.Pointer(uintptr(p) + x)
 }
@@ -238,7 +238,7 @@ func main() {
 
 <p>文件夹 pointer 中定义一个P的类，<strong>P的成员，i和s，都是私有类型</strong>，所以只能查看(<strong>GetI, GetS公有</strong>)而不能修改</p>
 
-<pre><code>package pointer
+<pre><code class="language-golang">package pointer
 
 type P struct {
     i int32
@@ -256,7 +256,7 @@ func (p *P) GetS() string {
 
 <p>然后在包外写一个main文件</p>
 
-<pre><code>package main
+<pre><code class="language-golang">package main
 
 import (
     &quot;pointer&quot;

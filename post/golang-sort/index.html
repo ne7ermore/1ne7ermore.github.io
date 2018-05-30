@@ -192,7 +192,7 @@
 
 <p>在看例子之前，我们先看下源码对Interface的定义，其实只有3个方法，长度，大小，交换</p>
 
-<pre><code>type Interface interface {
+<pre><code class="language-golang">type Interface interface {
     Len() int
     Less(i, j int) bool
     Swap(i, j int)
@@ -201,7 +201,7 @@
 
 <p>例子，实现sort.Interface定义的3个方法</p>
 
-<pre><code>package main
+<pre><code class="language-golang">package main
 
 import (
     &quot;sort&quot;
@@ -249,7 +249,7 @@ func main() {
 
 <p>思路： 先定位中间位置 index，如果 fn(index) == true,  就移动j 到index，如果fn(index) == false，就移动I到index+1位置</p>
 
-<pre><code>func Search(n int, f func(int) bool) int {
+<pre><code class="language-golang">func Search(n int, f func(int) bool) int {
     // Define f(-1) == false and f(n) == true.
     // Invariant: f(i-1) == false, f(j) == true.
     i, j := 0, n
@@ -277,7 +277,7 @@ func main() {
 <li>step3 - 对数组<strong>0 ~ len-1</strong>重复step1和2，直到遍历完数组</li>
 </ul>
 
-<pre><code>func siftDown(data *[]int, lo, hi int) {
+<pre><code class="language-golang">func siftDown(data *[]int, lo, hi int) {
     index := lo
     for {
         // index的左儿子
