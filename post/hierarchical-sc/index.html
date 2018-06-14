@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+ <title>分层模型同时提高阅读理解和情感分类 </title>
+
+
+
+<meta name="description" content="工作,生活......想到什么写什么">
+
+
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="all,follow">
+<meta name="googlebot" content="index,follow,snippet,archive">
+<link rel="stylesheet" id="ct-tracks-google-fonts-css" href="//fonts.googleapis.com/css?family=Raleway%3A400%2C700&amp;subset=latin%2Clatin-ext&amp;ver=4.7.2" type="text/css" media="all">
+<link rel="stylesheet" href="https://ne7ermore.github.io/css/font-awesome.min.css" type='text/css' media='all'>
+
+<link href="https://ne7ermore.github.io/css/style.css" rel="stylesheet" id="theme-stylesheet" type='text/css' media='all'>
+
+<link href="https://ne7ermore.github.io/css/custom.css" rel="stylesheet" type='text/css' media='all'>
+<link rel="shortcut icon" href="https://ne7ermore.github.io/img/favicon.jpeg" type="image/x-icon">
+<link rel="icon" href="https://ne7ermore.github.io/img/favicon.jpeg" type="image/x-icon">
+
+
+</head>
+
+
+<body class="post-template-default single single-post single-format-standard ct-body singular singular-post not-front standard">
+  
+  <div id="overflow-container" class="overflow-container">
+    <a class="skip-content" href="#main">Skip to content</a>
+    <header id="site-header" class="site-header" role="banner">
+      <div class='top-navigation'>
+        <div class='container'>
+
+  <div id="menu-secondary" class="menu-container menu-secondary" role="navigation">
+    <button id="toggle-secondary-navigation" class="toggle-secondary-navigation"><i class="fa fa-plus"></i></button>
+
+    <div class="menu">
+
+      <ul id="menu-secondary-items" class="menu-secondary-items">
+        
+        <li id="menu-item" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item">
+          <a href="/categories/tensorflow">TensorFlow</a>
+        </li>
+        
+        <li id="menu-item" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item">
+          <a href="/categories/code">code</a>
+        </li>
+        
+        <li id="menu-item" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item">
+          <a href="/categories/deep-learning">deep-learning</a>
+        </li>
+        
+        <li id="menu-item" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item">
+          <a href="/categories/reinforce-learning">reinforce-learning</a>
+        </li>
+        
+
+      </ul>
+
+    </div>
+
+  </div>
+
+
+  <ul class="social-media-icons">
+
+
+    
+
+    
+
+    
+
+    
+    <li>
+      <a href="https://www.zhihu.com/people/liao-yuan-huo-28/activities" data-animate-hover="pulse" class="twitter" target="_blank">
+        <i class="fa fa-instagram" title="instagram"></i>
+        <span class="screen-reader-text">instagram</span>
+      </a>
+    </li>
+    
+
+    
+    <li>
+      <a href="mailto:liaoyuanhuo1987@gmail.com" data-animate-hover="pulse" class="email">
+        <i class="fa fa-envelope" title="email"></i>
+        <span class="screen-reader-text">email</span>
+      </a>
+    </li>
+    
+
+    
+
+    
+
+
+    
+    <li>
+      <a href="https://github.com/ne7ermore" data-animate-hover="pulse" class="github" target="_blank">
+        <i class="fa fa-github" title="github"></i>
+        <span class="screen-reader-text">github</span>
+      </a>
+    </li>
+    
+
+  </ul></div>
+
+      </div>
+
+      <div class="container">
+        <div id="title-info" class="title-info">
+  <div id='site-title' class='site-title'>
+    
+    <a href="/"> Nevermore </a>
+    </div>
+  </div>
+  <button id="toggle-navigation" class="toggle-navigation">
+    <i class="fa fa-bars"></i>
+  </button>
+
+  <div id="menu-primary-tracks" class="menu-primary-tracks"></div>
+  <div id="menu-primary" class="menu-container menu-primary" role="navigation">
+    
+    <p class="site-description">懂点数学的码农</p>
+    
+
+    <div class="menu">
+      <ul id="menu-primary-items" class="menu-primary-items">
+        
+        
+        <li id="menu-item" class='menu-item menu-item-type-custom menu-item-object-custom '>
+          <a href="https://ne7ermore.github.io/">Home</a>
+        </li>
+        
+        <li id="menu-item" class='menu-item menu-item-type-post_type menu-item-object-page '>
+          <a href="https://ne7ermore.github.io/intro/">Intro</a>
+        </li>
+        
+      </ul>
+    </div>
+
+  </div>
+
+      </div>
+    </header>
+
+    <div id="main" class="main" role="main">
+
+      
+  <div id="loop-container" class="loop-container">
+    
+    <div class="post type-post status-publish format-standard has-post-thumbnail hentry category-design tag-design tag-standard-2 tag-tagalicious tag-travel entry full-without-featured odd excerpt-1">
+
+      <div class='featured-image lazy lazy-bg-image' data-background="https://ne7ermore.github.io/img/hierarchical-sc/1.png">
+      </div>
+      
+        <div class="entry-meta">
+          <span class="date">June 07</span>	<span> / </span>
+
+          <span class="author">
+            
+            <a href="https://ne7ermore.github.io" title="Posts by Nevermore" rel="author">Nevermore</a>
+            
+          </span>
+
+
+          
+          <span class="category">
+            <span> / </span>
+
+            <a href="/categories/deep-learning">deep-learning</a>
+          </span>
+          
+
+
+        </div>
+        <div class='entry-header'>
+          <h1 class='entry-title'> 分层模型同时提高阅读理解和情感分类</h1>
+        </div>
+        <div class="entry-container">
+          <div class="entry-content">
+            <article>
+              <p>介绍一篇阅读理解和情感分类耦合的论文
+</p>
+
+<p>论文地址: <a href="https://arxiv.org/pdf/1805.01089.pdf">戳我</a></p>
+
+<p>训练使用Amazon SNAP Review Dataset(SNAP)</p>
+
+<p>下载过程可以参考<a href="https://github.com/ne7ermore/torch_light/tree/master/hierarchical-sc">repo</a></p>
+
+<p><img src="/img/hierarchical-sc/2.png" style="height: 130px" alt="python"></p>
+
+<p>模型不是很复杂，主要建立在seq2seq基础上，巧妙的将阅读理解和分类结合起来，共同优化，不过文中有些细节并没有交代太清楚，我也只能靠猜测，所以我的结果没有论文效果好</p>
+
+<ul>
+<li>第一层：经过embedding，喂入双向lstm，获取最后一个时间序列的hidden和整个时间序列的hidden，然后将正向和逆向的特征加起来</li>
+<li>第二层：最后一个时间序列作为decode的初始化hidden，这是传统做法就不详细解释，重点来了，decode时按时间维度，一步一步对下一个word做出预测，并将当前hidden做attention，相同结构不同权重的得出阅读理解和情绪分类的特征，并保存起来，直到时间序列结束</li>
+<li>第三层：将第二层保存的时间序列的情绪分类特征和第一层encode整个时间序列的hidden按时间维度拼接起来，过一全连接层得出概率</li>
+</ul>
+
+<blockquote>
+<p>疑问：
+1、论文提到了highway，我不太理解文中所述highway仅仅是第三层中加上了encode的输出呢，还是一篇论文中的highway
+2、最后在全连接层之前，降维细节没有说明，我使用简单粗暴的flatten</p>
+</blockquote>
+
+<p>给其中一位作者发了邮件，可能太忙没回，如果论文作者看见并有时间可以解释下，非常感谢：)</p>
+
+<blockquote>
+<p>代码</p>
+</blockquote>
+
+<p><a href="https://github.com/ne7ermore/torch_light/tree/master/hierarchical-sc/">Pytorch版</a></p>
+
+<p><a href="https://github.com/ne7ermore/deeping-flow/tree/master/hierarchical-sc/">Tensorflow版</a></p>
+
+<p>数据预处理就不多说了，具体可以参见项目的readme</p>
+
+<p>以下是pytorch代码，tensorflow请移步github</p>
+
+<p>模型视图</p>
+
+<pre><code class="language-python">class Model(nn.Module):
+    def __init__(self, args, use_cuda):
+
+        super().__init__()
+
+        for k, v in args.__dict__.items():
+            self.__setattr__(k, v)
+
+        self.torch = torch.cuda if use_cuda else torch
+
+        self.emb = nn.Embedding(self.dict_size, self.emb_dim)
+        self.encode = torch.nn.LSTM(input_size=self.emb_dim,
+                                    hidden_size=self.rnn_hsz,
+                                    num_layers=1,
+                                    bidirectional=True)
+        self.decode = torch.nn.LSTM(input_size=self.rnn_hsz,
+                                    hidden_size=self.rnn_hsz,
+                                    num_layers=1)
+        self.summ_att_w = nn.Linear(self.rnn_hsz,
+                                    self.rnn_hsz,
+                                    bias=False)
+        self.cls_att_w = nn.Linear(self.rnn_hsz,
+                                   self.rnn_hsz,
+                                   bias=False)
+        self.summ_gen = nn.Linear(self.rnn_hsz, self.dict_size)
+        self.cls_pred = nn.Linear(
+            (self.max_ori_len + self.max_sum_len) * self.rnn_hsz, self.label_size)
+
+        self.dropout = nn.Dropout(self.dropout)
+
+        self._reset_parameters()
+
+    def _reset_parameters(self):
+        stdv = 1. / math.sqrt(self.emb_dim)
+
+        self.emb.weight.data.uniform_(-stdv, stdv)
+
+        self.summ_att_w.weight.data.uniform_(-stdv, stdv)
+
+        self.cls_att_w.weight.data.uniform_(-stdv, stdv)
+
+        self.summ_gen.weight.data.uniform_(-stdv, stdv)
+        self.summ_gen.bias.data.fill_(0)
+
+        self.cls_pred.weight.data.uniform_(-stdv, stdv)
+        self.cls_pred.bias.data.fill_(0)
+
+    def forward(self, original):
+        bsz = original.size(0)
+
+        ori_emb = self.emb(original)
+        ori_emb_t = ori_emb.transpose(0, 1)
+
+        encodes, (h, _) = self.encode(ori_emb_t)
+        ori_memory = encodes[:, :, :self.rnn_hsz] + \
+            encodes[:, :, self.rnn_hsz:]
+
+        ori_hidden = (h[0] + h[1]).unsqueeze(0)
+        c = Variable(next(self.parameters()).data.new(
+            1, bsz, self.rnn_hsz).zero_())
+
+        ori_memory = self.dropout(ori_memory)
+        ori_hidden = self.dropout(ori_hidden)
+
+        dec_hidden = (ori_hidden, c)
+
+        word = Variable(self.torch.LongTensor([[BOS]] * bsz))
+        v_ts, summ_props = [], []
+        for _ in range(self.max_sum_len):
+            summ_emb = self.emb(word).transpose(0, 1)
+            _, dec_hidden = self.decode(summ_emb, dec_hidden)
+            h_state = self.dropout(dec_hidden[0])
+
+            v_c = multi_view_att(ori_memory,
+                                 self.summ_att_w,
+                                 h_state, bsz,
+                                 self.max_ori_len,
+                                 self.rnn_hsz)
+            v_t = multi_view_att(ori_memory,
+                                 self.cls_att_w,
+                                 h_state, bsz,
+                                 self.max_ori_len,
+                                 self.rnn_hsz)
+
+            props = F.log_softmax(self.summ_gen(v_c), -1)
+            _, word = torch.max(props, -1, keepdim=True)
+
+            v_ts.append(v_t.unsqueeze(1))
+            summ_props.append(props.unsqueeze(1))
+
+        summ_props = torch.cat(summ_props, 1)
+        v_ts = self.dropout(torch.cat(v_ts, 1))
+        r = torch.cat([v_ts, ori_memory.transpose(0, 1)], 1)
+        l_props = self.cls_pred(r.view(bsz, -1))
+
+        return summ_props, l_props
+</code></pre>
+
+<p>attention代码</p>
+
+<pre><code class="language-python">def multi_view_att(ori_memory, att_w, dec_hidden, *args):
+    bsz, max_len, rnn_hsz = args
+
+    dec_hidden = att_w(dec_hidden.squeeze())
+    ori_memory_t = ori_memory.transpose(1, 2)
+
+    beta_is = torch.exp(torch.tanh(torch.matmul(dec_hidden, ori_memory_t)))
+    beta_i_sum = torch.sum(beta_is, 0, keepdim=True)
+    beta_is = torch.div(beta_is, beta_i_sum)
+
+    return torch.sum(torch.matmul(beta_is, ori_memory), dim=0)
+</code></pre>
+
+<p>阅读理解算loss时，需要去除pad，所以交叉熵的api CrossEntropyLoss就不实用</p>
+
+<pre><code class="language-python">class NlpCrossEntropy(nn.Module):
+    def __init__(self):
+        super().__init__()
+
+    def forward(self, props, tgt):
+        tgt_props = props.gather(2, tgt.unsqueeze(2)).squeeze()
+        mask = (tgt &gt; 0).float()
+        return -(tgt_props * mask).sum() / mask.sum()
+</code></pre>
+
+<p>优化函数需要定制</p>
+
+<pre><code class="language-python">class ScheduledOptim(object):
+    def __init__(self, optimizer, parameters, lr, clip):
+        self.optimizer = optimizer
+        self.parameters = parameters
+        self.n_current_epochs = 0
+        self.lr = lr
+        self.clip = clip
+
+    def step(self):
+        self.optimizer.step()
+
+    def zero_grad(self):
+        self.optimizer.zero_grad()
+
+    def clip_grad_norm(self):
+        torch.nn.utils.clip_grad_norm_(self.parameters, self.clip)
+
+    def update_learning_rate(self):
+        self.n_current_epochs += 1
+
+        if self.n_current_epochs &gt; 4:
+            self.lr = self.lr / 2
+            print(&quot;| learning rate updated - {}&quot;.format(self.lr))
+            print('-' * 90)
+            for param_group in self.optimizer.param_groups:
+                param_group['lr'] = self.lr
+</code></pre>
+            </article>
+          </div>
+          
+      <div class='entry-meta-bottom'>
+        
+
+  <div class="entry-categories"><p><span>Categories</span>
+    
+    <a href="/categories/tensorflow" title="View all posts in TensorFlow">TensorFlow</a>
+    <a href="/categories/code" title="View all posts in code">code</a>
+    <a href="/categories/deep-learning" title="View all posts in deep-learning">deep-learning</a>
+    <a href="/categories/reinforce-learning" title="View all posts in reinforce-learning">reinforce-learning</a>
+  </p>
+</div>
+
+
+
+<div class="entry-tags"><p><span>Tags</span>
+  
+  <a href="/tags/golang" title="View all posts tagged golang">golang</a>
+  
+  <a href="/tags/python" title="View all posts tagged python">python</a>
+  
+  <a href="/tags/%E7%AE%97%E6%B3%95" title="View all posts tagged 算法">算法</a>
+  
+
+</p></div>	</div>
+
+<div class="author-meta">
+
+  <div class="author">
+    <img alt='Nevermore' src="https://www.gravatar.com/avatar/441d6f3623599f66569ae8478cf21f68?s=100&d=identicon" class='avatar avatar-72 photo' height='72' width='72'>
+
+    <span>
+      Written by:<a href="https://ne7ermore.github.io" title="Posts by Nevermore" rel="author">Nevermore</a>        </span>
+    </div>
+    <div class="bio">
+      
+      <p>工作, 生活......写到什么是什么</p>
+      
+      <p>重度佛系患者</p>
+      
+
+
+      
+
+    
+
+
+  
+
+
+
+<a class="email" target="_blank"
+href="mailto:liaoyuanhuo1987@gmail.com">
+<i class="fa fa-envelope"
+title="email icon"></i>
+</a>
+
+
+
+<a class="instagram" target="_blank"
+href="https://www.zhihu.com/people/liao-yuan-huo-28/activities">
+<i class="fa fa-instagram"
+title="instagram icon"></i>
+</a>
+
+
+
+
+
+<a class="github" target="_blank"
+href="https://github.com/ne7ermore">
+<i class="fa fa-github"
+title="github icon"></i>
+</a>
+
+
+</div>
+</div>
+
+</div>
+</div>
+
+<section id="comments" class="comments">
+  
+
+  
+
+
+
+
+</section>
+</div>
+
+ 
+
+
+
+    </div>
+
+    <footer id="site-footer" class="site-footer" role="contentinfo">
+	<h1>
+    
+    <a href=""> Nevermore </a>
+    
+	</h1>
+
+			
+			<p class="site-description">懂点数学的码农</p>
+			
+
+		<div id="menu-footer" class="menu-container menu-footer" role="navigation">
+		<div class="menu">
+
+      <ul id="menu-footer-items" class="menu-footer-items">
+        
+</ul>
+
+</div>	</div>
+
+<ul class="social-media-icons">
+
+        
+
+        
+
+
+        
+
+        
+        <li>
+        <a href="https://www.zhihu.com/people/liao-yuan-huo-28/activities"  class="twitter" target="_blank">
+            <i class="fa fa-instagram" title="instagram"></i>
+            <span class="screen-reader-text">instagram</span>
+        </a>
+        </li>
+        
+
+        
+        <li>
+        <a href="mailto:liaoyuanhuo1987@gmail.com"  class="email">
+            <i class="fa fa-envelope" title="email"></i>
+            <span class="screen-reader-text">email</span>
+        </a>
+        </li>
+        
+
+        
+
+        
+
+
+        
+        <li>
+        <a href="https://github.com/ne7ermore"  class="github" target="_blank">
+            <i class="fa fa-github" title="github"></i>
+            <span class="screen-reader-text">github</span>
+        </a>
+        </li>
+        
+				</ul>	<div class="design-credit">
+		
+		<p>&copy; Nevermore | 2018</p>
+		
+	</div>
+</footer>
+
+  </div>
+  <script src="https://ne7ermore.github.io/js/jquery.min.js"></script>
+<script src="https://ne7ermore.github.io/js/jquerymigrate.js"></script>
+<script src="https://ne7ermore.github.io/js/production.min.js"></script>
+
+</body>
+</html>
