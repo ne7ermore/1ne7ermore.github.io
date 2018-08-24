@@ -186,15 +186,15 @@
 <p>我会不定期记录使用pandas的心得
 </p>
 
-<blockquote>
-<p>以下内容仅来自于个人经验，可能不是最优使用方式</p>
-</blockquote>
+<p><strong>以下内容仅来自于个人经验，可能不是最优使用方式</strong></p>
 
 <p>Here we go</p>
 
-<p>pd中常用的对象: Series, DataFrame(以下简称df)</p>
+<p>pd中常用的对象: Series, DataFrame</p>
 
-<h5 id="加载csv文件">加载csv文件</h5>
+<blockquote>
+<p>加载csv文件</p>
+</blockquote>
 
 <pre><code class="language-python"># 加载，df的数据类型为DataFrame
 df = pd.read_csv(&quot;16号线坡度表.csv&quot;)
@@ -217,7 +217,9 @@ df.head()
 4         NaN
 </code></pre>
 
-<h5 id="df每一列就是一个series">df每一列就是一个Series</h5>
+<blockquote>
+<p>DataFrame每一列就是一个Series</p>
+</blockquote>
 
 <pre><code class="language-python">df[&quot;起点里程&quot;]
 
@@ -232,7 +234,9 @@ df.head()
 Name: 起点里程, Length: 72, dtype: object
 </code></pre>
 
-<h5 id="过滤掉不需要的内容">过滤掉不需要的内容</h5>
+<blockquote>
+<p>过滤掉不需要的内容</p>
+</blockquote>
 
 <pre><code class="language-python">df = df.filter(items=[&quot;行别&quot;, &quot;起点里程&quot;, &quot;终点里程&quot;, &quot;坡度（‰）&quot;])
 df.head()
@@ -245,7 +249,9 @@ df.head()
 4  上行  +K01840.000  +K02980.000  15.401
 </code></pre>
 
-<h5 id="替换df的列名称">替换df的列名称</h5>
+<blockquote>
+<p>替换df的列名称</p>
+</blockquote>
 
 <pre><code class="language-python">df.columns = [&quot;a&quot;, &quot;b&quot;, &quot;c&quot;, &quot;d&quot;]
 df.head()
@@ -258,7 +264,9 @@ df.head()
 4  上行  +K01840.000  +K02980.000  15.401
 </code></pre>
 
-<h5 id="对df某一列处理">对df某一列处理</h5>
+<blockquote>
+<p>对df某一列处理</p>
+</blockquote>
 
 <pre><code class="language-python">df[&quot;b&quot;] = df[&quot;b&quot;].apply(lambda x: float(x[2:]))
 df.head()
@@ -271,7 +279,9 @@ df.head()
 4  上行  1840.0  +K02980.000  15.401
 </code></pre>
 
-<h5 id="找出nan行并过滤掉">找出Nan行并过滤掉</h5>
+<blockquote>
+<p>找出Nan行并过滤掉</p>
+</blockquote>
 
 <pre><code class="language-python"># b列3行更新为nan
 df[&quot;b&quot;][2] = np.nan
@@ -281,6 +291,112 @@ df[df.isnull().values == True]
 
     a   b            c     d
 2  上行 NaN  +K01180.000 -28.0
+</code></pre>
+
+<blockquote>
+<p>拼接多个DataFrame</p>
+</blockquote>
+
+<pre><code class="language-python"># 按列拼接
+df = pd.concat([df1, df2], axis=1)
+
+# 按行拼接
+df = pd.concat([df1, df2], axis=0)
+</code></pre>
+
+<blockquote>
+<p>DataFrame转换数据类型</p>
+</blockquote>
+
+<pre><code class="language-python">df = df.astype(&quot;float32&quot;)
+</code></pre>
+
+<blockquote>
+<p>将unix时间戳转换成常用时间</p>
+</blockquote>
+
+<pre><code class="language-python">df = pd.read_csv(&quot;in_file&quot;)
+print(df.head())
+
+    Timestamp  Weighted_Price
+0  1417411980           300.0
+1  1417412040           300.0
+2  1417412100           300.0
+3  1417412160           300.0
+4  1417412220           300.0
+
+# pd.to_datetime(df['Timestamp'], unit='s')
+# 按秒返回datetime类型
+# pd.Series.dt.date 按天返回结果
+df['date'] = pd.to_datetime(df['Timestamp'], unit='s').dt.date
+print(df.head())
+
+    Timestamp  Weighted_Price        date
+0  1417411980           300.0  2014-12-01
+1  1417412040           300.0  2014-12-01
+2  1417412100           300.0  2014-12-01
+3  1417412160           300.0  2014-12-01
+4  1417412220           300.0  2014-12-01
+</code></pre>
+
+<blockquote>
+<p>聚合</p>
+</blockquote>
+
+<pre><code class="language-python">df = pd.read_csv(&quot;in_file&quot;)
+print(df.head())
+
+    Timestamp  Weighted_Price        date
+0  1417411980           300.0  2014-12-01
+1  1417412040           300.0  2014-12-01
+2  1417412100           300.0  2014-12-01
+3  1417412160           300.0  2014-12-01
+4  1417412220           300.0  2014-12-01
+
+# 按date聚合
+group = df.groupby('date')
+
+# 计算Weighted_Price列的平均值
+mean_price = group['Weighted_Price'].mean()
+
+# 转换为DataFrame
+df = pd.DataFrame(mean_price)
+print(df.head())
+
+            Weighted_Price
+date
+2014-12-01      366.775068
+2014-12-02      375.943001
+2014-12-03      377.882701
+2014-12-04      377.991743
+2014-12-06      378.000000
+</code></pre>
+
+<blockquote>
+<p>随机打乱DataFrame</p>
+</blockquote>
+
+<pre><code class="language-python">from sklearn.utils import shuffle
+
+df = pd.read_csv(&quot;in_file&quot;)
+print(df.head())
+
+    Timestamp  Weighted_Price
+0  1417411980           300.0
+1  1417412040           300.0
+2  1417412100           300.0
+3  1417412160           300.0
+4  1417412220           300.0
+
+df = shuffle(df)
+print(df.head())
+
+          Timestamp  Weighted_Price
+73203    1425305400      260.685737
+8789     1421332380      150.000000
+24615    1422390120      263.547273
+1357887  1502386440     3417.436340
+1073833  1485343200      895.790112
 </code></pre>
             </article>
           </div>
