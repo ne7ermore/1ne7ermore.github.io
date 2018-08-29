@@ -1,0 +1,656 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+ <title>爬取点评成都美食后排序 </title>
+
+
+
+<meta name="description" content="工作,生活......想到什么写什么">
+
+
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="all,follow">
+<meta name="googlebot" content="index,follow,snippet,archive">
+<link rel="stylesheet" id="ct-tracks-google-fonts-css" href="//fonts.googleapis.com/css?family=Raleway%3A400%2C700&amp;subset=latin%2Clatin-ext&amp;ver=4.7.2" type="text/css" media="all">
+<link rel="stylesheet" href="https://ne7ermore.github.io/css/font-awesome.min.css" type='text/css' media='all'>
+
+<link href="https://ne7ermore.github.io/css/style.css" rel="stylesheet" id="theme-stylesheet" type='text/css' media='all'>
+
+<link href="https://ne7ermore.github.io/css/custom.css" rel="stylesheet" type='text/css' media='all'>
+<link rel="shortcut icon" href="https://ne7ermore.github.io/img/favicon.jpeg" type="image/x-icon">
+<link rel="icon" href="https://ne7ermore.github.io/img/favicon.jpeg" type="image/x-icon">
+
+
+</head>
+
+
+<body class="post-template-default single single-post single-format-standard ct-body singular singular-post not-front standard">
+  
+  <div id="overflow-container" class="overflow-container">
+    <a class="skip-content" href="#main">Skip to content</a>
+    <header id="site-header" class="site-header" role="banner">
+      <div class='top-navigation'>
+        <div class='container'>
+
+  <div id="menu-secondary" class="menu-container menu-secondary" role="navigation">
+    <button id="toggle-secondary-navigation" class="toggle-secondary-navigation"><i class="fa fa-plus"></i></button>
+
+    <div class="menu">
+
+      <ul id="menu-secondary-items" class="menu-secondary-items">
+        
+        <li id="menu-item" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item">
+          <a href="/categories/tensorflow">TensorFlow</a>
+        </li>
+        
+        <li id="menu-item" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item">
+          <a href="/categories/code">code</a>
+        </li>
+        
+        <li id="menu-item" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item">
+          <a href="/categories/deep-learning">deep-learning</a>
+        </li>
+        
+        <li id="menu-item" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item">
+          <a href="/categories/reinforce-learning">reinforce-learning</a>
+        </li>
+        
+
+      </ul>
+
+    </div>
+
+  </div>
+
+
+  <ul class="social-media-icons">
+
+
+    
+
+    
+
+    
+
+    
+    <li>
+      <a href="https://www.zhihu.com/people/liao-yuan-huo-28/activities" data-animate-hover="pulse" class="twitter" target="_blank">
+        <i class="fa fa-instagram" title="instagram"></i>
+        <span class="screen-reader-text">instagram</span>
+      </a>
+    </li>
+    
+
+    
+    <li>
+      <a href="mailto:liaoyuanhuo1987@gmail.com" data-animate-hover="pulse" class="email">
+        <i class="fa fa-envelope" title="email"></i>
+        <span class="screen-reader-text">email</span>
+      </a>
+    </li>
+    
+
+    
+
+    
+
+
+    
+    <li>
+      <a href="https://github.com/ne7ermore" data-animate-hover="pulse" class="github" target="_blank">
+        <i class="fa fa-github" title="github"></i>
+        <span class="screen-reader-text">github</span>
+      </a>
+    </li>
+    
+
+  </ul></div>
+
+      </div>
+
+      <div class="container">
+        <div id="title-info" class="title-info">
+  <div id='site-title' class='site-title'>
+    
+    <a href="/"> Nevermore </a>
+    </div>
+  </div>
+  <button id="toggle-navigation" class="toggle-navigation">
+    <i class="fa fa-bars"></i>
+  </button>
+
+  <div id="menu-primary-tracks" class="menu-primary-tracks"></div>
+  <div id="menu-primary" class="menu-container menu-primary" role="navigation">
+    
+    <p class="site-description">懂点数学的码农</p>
+    
+
+    <div class="menu">
+      <ul id="menu-primary-items" class="menu-primary-items">
+        
+        
+        <li id="menu-item" class='menu-item menu-item-type-custom menu-item-object-custom '>
+          <a href="https://ne7ermore.github.io/">Home</a>
+        </li>
+        
+        <li id="menu-item" class='menu-item menu-item-type-post_type menu-item-object-page '>
+          <a href="https://ne7ermore.github.io/intro/">Intro</a>
+        </li>
+        
+      </ul>
+    </div>
+
+  </div>
+
+      </div>
+    </header>
+
+    <div id="main" class="main" role="main">
+
+      
+  <div id="loop-container" class="loop-container">
+    
+
+      <div class="post type-post status-publish format-standard hentry category-standard category-travel entry full-without-featured odd excerpt-1">
+
+        
+        <div class="entry-meta">
+          <span class="date">August 28</span>	<span> / </span>
+
+          <span class="author">
+            
+            <a href="https://ne7ermore.github.io" title="Posts by Nevermore" rel="author">Nevermore</a>
+            
+          </span>
+
+
+          
+          <span class="category">
+            <span> / </span>
+
+            <a href="/categories/code">code</a>
+          </span>
+          
+
+
+        </div>
+        <div class='entry-header'>
+          <h1 class='entry-title'> 爬取点评成都美食后排序</h1>
+        </div>
+        <div class="entry-container">
+          <div class="entry-content">
+            <article>
+              <p>爬取大众点评成都地区餐厅数据，然后根据各个维度特征进行排序
+</p>
+
+<h3 id="爬虫">爬虫</h3>
+
+<blockquote>
+<p>第三方包介绍</p>
+</blockquote>
+
+<ul>
+<li>requests - http客户端</li>
+<li>bs4 - 解析html文件</li>
+<li>pandas - 处理和保存数据</li>
+</ul>
+
+<blockquote>
+<p>构造url</p>
+</blockquote>
+
+<p>url按照菜系码+页数组成，每个菜系最多50页</p>
+
+<pre><code class="language-python">for k, v in FOOD_C.items():
+    print(f&quot;爬{k}ing......&quot;)
+    for num in range(1, 51):
+        url = f&quot;{CHENGDU}/{v}p{num}&quot;
+        self._page_parse(url, k, results)
+</code></pre>
+
+<p>解析页面中需要的特征,包括：
+等级，价格，评论数，味道，环境，服务</p>
+
+<pre><code class="language-python">def _parse_infos(self, shop, foodtype):
+    if not self._is_spide(shop):
+        return None
+
+    name = shop.find(&quot;h4&quot;).renderContents().decode()
+    info = shop.find(
+        &quot;a&quot;, {&quot;data-click-name&quot;: &quot;shop_title_click&quot;})
+
+    _id = info[&quot;data-shopid&quot;]
+    url = info[&quot;href&quot;]
+
+    price = shop.find(&quot;a&quot;, {&quot;class&quot;: &quot;mean-price&quot;}
+                      ).renderContents().decode()
+    price = re.search('￥(.+)&lt;', price)
+    if price is None:
+        price = -1
+    else:
+        price = price.group(1)
+
+    comment_list = shop.find(
+        &quot;span&quot;, {&quot;class&quot;: &quot;comment-list&quot;})
+
+    comments = comment_list.find_all(&quot;b&quot;)
+    comments = self.comments._make(
+        [c.renderContents().decode() for c in comments])
+
+    review = shop.find(&quot;a&quot;, {&quot;class&quot;: &quot;review-num&quot;}
+                       )
+    if review is None:
+        review = -1
+    else:
+        review = review.b.renderContents().decode()
+
+    level = shop.find(&quot;span&quot;, {&quot;class&quot;: &quot;sml-rank-stars&quot;})
+    if level is None:
+        level = &quot;无&quot;
+    else:
+        level = level[&quot;title&quot;]
+
+    result = self.shop_info._make(
+        [foodtype, name, _id, url, level, price, comments, review])
+    return result
+</code></pre>
+
+<blockquote>
+<p>结果</p>
+</blockquote>
+
+<p>手动打个码 :)</p>
+
+<pre><code>,foodtype,name,id,url,level,price,taste,envi,service,review
+0,火锅,***,***,http://www.dianping.com/shop/***,五星商户,78,8.9,9.1,9.0,1066
+1,火锅,***,***,http://www.dianping.com/shop/***,五星商户,137,9.0,8.9,9.0,4280
+2,火锅,***,***,http://www.dianping.com/shop/***,五星商户,105,9.0,9.2,9.0,1629
+3,火锅,***,***,http://www.dianping.com/shop/***,准五星商户,148,8.2,9.2,8.7,2839
+4,火锅,***,***,http://www.dianping.com/shop/***,准五星商户,92,8.5,8.8,8.9,175
+5,火锅,***,***,http://www.dianping.com/shop/***,四星商户,65,7.8,7.8,7.8,414
+</code></pre>
+
+<h3 id="数据分析">数据分析</h3>
+
+<blockquote>
+<p>第三方包介绍</p>
+</blockquote>
+
+<ul>
+<li>numpy - 科学计算</li>
+<li>sklearn - 仅仅使用了归一化函数MinMaxScaler</li>
+<li>pandas - 处理和保存数据</li>
+</ul>
+
+<blockquote>
+<p>初始化</p>
+</blockquote>
+
+<p>将dz的自有等级转换为float
+可能同一家餐厅出现在多个菜系中，所以根据id去重</p>
+
+<pre><code class="language-python">def __init__(self,
+             norml=&quot;mms&quot;,
+             inf=&quot;../shops_info.csv&quot;):
+    &quot;&quot;&quot;
+    参数：
+        columns - 排序列，类型：list 可以有多个成员
+        foodc - 菜系，默认为所有餐厅
+    &quot;&quot;&quot;
+
+    self.df = pd.read_csv(inf)
+    self.df[&quot;level&quot;] = self.df[&quot;level&quot;].apply(lambda x: LEVEL[x])  # 转换格式
+    self.df = self.df.drop_duplicates([&quot;id&quot;])  # 去重
+
+    if norml == &quot;mms&quot;:
+        self._mm_normal()
+    elif norml == &quot;std&quot;:
+        self._std_normal()
+    else:
+        raise Exception(&quot;目前支持mms和std&quot;)
+</code></pre>
+
+<blockquote>
+<p>归一化</p>
+</blockquote>
+
+<ul>
+<li>方式1：公式 (x - x_mean) / x_std</li>
+</ul>
+
+<pre><code class="language-python">def _std_normal(self):
+    # 归一化
+    def norml(x):
+        std = x.std()
+        mean = x.mean()
+        return x.apply(lambda x: (x - mean) / std)
+
+    self.df[&quot;level_std&quot;] = norml(self.df[&quot;level&quot;])
+    self.df[&quot;taste_std&quot;] = norml(self.df[&quot;taste&quot;])
+    self.df[&quot;envi_std&quot;] = norml(self.df[&quot;envi&quot;])
+    self.df[&quot;service_std&quot;] = norml(self.df[&quot;service&quot;])
+    self.df[&quot;review_std&quot;] = norml(self.df[&quot;review&quot;])
+
+    # 先乘以权重再累加
+    self.df[&quot;sissi_std&quot;] = self.df.apply(lambda x: sum(
+        [x[k + &quot;_std&quot;] * v for k, v in SISSISTD.items()]), axis=1)
+</code></pre>
+
+<ul>
+<li>方式2：公式 (x - x.min) / (x.max - X.min)</li>
+</ul>
+
+<pre><code class="language-python">def _mm_normal(self):
+    filter_list = [&quot;level&quot;, &quot;taste&quot;, &quot;envi&quot;, &quot;service&quot;, &quot;review&quot;]
+    df = self.df.filter(items=filter_list)
+    data = MinMaxScaler().fit_transform(df)
+
+    df = pd.DataFrame(data, columns=filter_list)
+
+    self.df[&quot;sissi_std&quot;] = df.apply(lambda x: sum(
+        [x[k] * v for k, v in SISSISTD.items()]), axis=1)
+</code></pre>
+
+<blockquote>
+<p>预测</p>
+</blockquote>
+
+<pre><code class="language-python">def _rank_by_foodc(self, columns, foodc):
+    &quot;&quot;&quot;
+    参数：
+        columns - 排序列，类型：list 可以有多个成员
+        foodc - 菜系，默认为所有餐厅
+    &quot;&quot;&quot;
+
+    if foodc == &quot;all&quot;:
+        temp = self.df
+    elif foodc in FOOD_C.keys():
+        temp = self.df[self.df[&quot;foodtype&quot;] == foodc]
+    else:
+        raise Exception(f&quot;没有当前菜系 - {foodc}&quot;)
+
+    return temp.sort_values(by=columns, ascending=False)
+
+def divine(self, columns,
+           foodc=&quot;all&quot;,
+           out_nums=40,
+           show_names=True,
+           show_pic=False):
+    &quot;&quot;&quot;
+    按需展示排序结果,画图会出现中文乱码问题，解决办法请google :)
+    参数：
+        columns - 排序列，类型：list 可以有多个成员
+        foodc - 菜系
+        out_nums - 输出结果数
+        show_names - 为True时显示餐厅名字
+        show_pic - 为True时显示餐厅柱状图,仅仅在mac上可用，linux和windows不管
+    &quot;&quot;&quot;
+
+    ranked = self._rank_by_foodc(columns, foodc).head(out_nums)
+
+    names = ranked[&quot;name&quot;]
+    stds = ranked[&quot;sissi_std&quot;]
+    tastes = ranked[&quot;taste&quot;]
+    envis = ranked[&quot;envi&quot;]
+    # services = ranked[&quot;service&quot;]
+    reviews = ranked[&quot;review&quot;]
+
+    if show_names:
+        print(f&quot;筛选得到餐厅：\n{names}&quot;)
+
+    if show_pic:
+        import matplotlib.pyplot as plt
+        plt.rcParams['font.sans-serif'] = ['SimHei']
+        plt.rcParams['axes.unicode_minus'] = False
+
+        fig, ax = plt.subplots()
+        n_groups = len(ranked)
+        index = np.arange(n_groups)
+
+        bar_width = 0.1
+        opacity = 0.4
+        error_config = {'ecolor': '0.3'}
+
+        ax.bar(index, stds, bar_width, alpha=opacity,
+               color='b', error_kw=error_config, label=u'标准')
+
+        ax.bar(index + bar_width, tastes, bar_width, alpha=opacity,
+               color='r', error_kw=error_config, label='口味')
+
+        ax.bar(index + 2 * bar_width, envis, bar_width, alpha=opacity,
+               color='g', error_kw=error_config, label='服务')
+
+        ax.set_xlabel(foodc)
+        ax.set_ylabel('Scores')
+        ax.set_title('{}-top{}'.format(foodc, n_groups))
+        ax.set_xticks(index + bar_width / 2)
+        ax.set_xticklabels(names, fontsize=8)
+        ax.legend()
+
+        fig.tight_layout()
+        plt.show()
+</code></pre>
+
+<blockquote>
+<p>结果</p>
+</blockquote>
+
+<pre><code>筛选得到餐厅：
+7781          清漫香草海鲜火锅(保利198店)
+7788          青柠记忆泰式海鲜火锅(优品道店)
+7780         曼忆莲·泰式海鲜火锅(武侯万达店)
+7795            阿诺泰·泰国菜餐厅(光华店)
+7789             Breeze In微风小馆
+7802                  萌新儿越南pho
+7792         GOGO Plate(环球中心店)
+7784            卷恋越南料理(凯德来福士店)
+7787                    心悦轩泰餐厅
+7786            清迈泰式海鲜火锅(铁像寺店)
+7867                      印度甩饼
+7798                  可美马来西亚餐厅
+7866                  咖喱屋(北辰店)
+7799    青柠叶·泰式冬阴功海鲜火锅(龙湖北城天街店)
+7804            叁月拾二泰餐厅(东能财富店)
+7828                      泰色天香
+7783           万象·泰式海鲜火锅(创意山店)
+7863               泰龙风·纯正东南亚味道
+7797                    泰悦泰式料理
+7875                        茗苑
+7793                  6号泰式海鲜火锅
+7864                      灵魂咖喱
+7803                      十里春风
+7791       泰柠小馆泰式料理·火锅(伊藤洋华堂店)
+7801            苏梅泰式海鲜火锅(都江堰店)
+7868                  稻米香冻粑叶儿粑
+7800               辛格印度餐厅(新都店)
+7794             青葵泰式海鲜火锅(郫县店)
+7870                    力泰亚洲小厨
+7807                小象花园泰式海鲜火锅
+7805              泰Basil泰式特色餐厅
+7860                    马六甲宴会厅
+7811                泰Basil泰国餐厅
+7748           泰香米泰国餐厅(春熙路群光店)
+7809                 你好北柳泰国传统菜
+7833                  泰喜欢(环球店)
+7865                       特味轩
+7872            新加坡业园区2站自行车租赁点
+7790                    泰乙泰国餐厅
+7869                      印巴精舍
+Name: name, dtype: object
+</code></pre>
+            </article>
+          </div>
+          
+      <div class='entry-meta-bottom'>
+        
+
+  <div class="entry-categories"><p><span>Categories</span>
+    
+    <a href="/categories/tensorflow" title="View all posts in TensorFlow">TensorFlow</a>
+    <a href="/categories/code" title="View all posts in code">code</a>
+    <a href="/categories/deep-learning" title="View all posts in deep-learning">deep-learning</a>
+    <a href="/categories/reinforce-learning" title="View all posts in reinforce-learning">reinforce-learning</a>
+  </p>
+</div>
+
+
+
+<div class="entry-tags"><p><span>Tags</span>
+  
+  <a href="/tags/golang" title="View all posts tagged golang">golang</a>
+  
+  <a href="/tags/python" title="View all posts tagged python">python</a>
+  
+  <a href="/tags/%E7%AE%97%E6%B3%95" title="View all posts tagged 算法">算法</a>
+  
+
+</p></div>	</div>
+
+<div class="author-meta">
+
+  <div class="author">
+    <img alt='Nevermore' src="https://www.gravatar.com/avatar/441d6f3623599f66569ae8478cf21f68?s=100&d=identicon" class='avatar avatar-72 photo' height='72' width='72'>
+
+    <span>
+      Written by:<a href="https://ne7ermore.github.io" title="Posts by Nevermore" rel="author">Nevermore</a>        </span>
+    </div>
+    <div class="bio">
+      
+      <p>工作, 生活......写到什么是什么</p>
+      
+      <p>重度佛系患者</p>
+      
+
+
+      
+
+    
+
+
+  
+
+
+
+<a class="email" target="_blank"
+href="mailto:liaoyuanhuo1987@gmail.com">
+<i class="fa fa-envelope"
+title="email icon"></i>
+</a>
+
+
+
+<a class="instagram" target="_blank"
+href="https://www.zhihu.com/people/liao-yuan-huo-28/activities">
+<i class="fa fa-instagram"
+title="instagram icon"></i>
+</a>
+
+
+
+
+
+<a class="github" target="_blank"
+href="https://github.com/ne7ermore">
+<i class="fa fa-github"
+title="github icon"></i>
+</a>
+
+
+</div>
+</div>
+
+</div>
+</div>
+
+<section id="comments" class="comments">
+  
+
+  
+
+
+
+
+</section>
+</div>
+
+ 
+
+
+
+    </div>
+
+    <footer id="site-footer" class="site-footer" role="contentinfo">
+	<h1>
+    
+    <a href=""> Nevermore </a>
+    
+	</h1>
+
+			
+			<p class="site-description">懂点数学的码农</p>
+			
+
+		<div id="menu-footer" class="menu-container menu-footer" role="navigation">
+		<div class="menu">
+
+      <ul id="menu-footer-items" class="menu-footer-items">
+        
+</ul>
+
+</div>	</div>
+
+<ul class="social-media-icons">
+
+        
+
+        
+
+
+        
+
+        
+        <li>
+        <a href="https://www.zhihu.com/people/liao-yuan-huo-28/activities"  class="twitter" target="_blank">
+            <i class="fa fa-instagram" title="instagram"></i>
+            <span class="screen-reader-text">instagram</span>
+        </a>
+        </li>
+        
+
+        
+        <li>
+        <a href="mailto:liaoyuanhuo1987@gmail.com"  class="email">
+            <i class="fa fa-envelope" title="email"></i>
+            <span class="screen-reader-text">email</span>
+        </a>
+        </li>
+        
+
+        
+
+        
+
+
+        
+        <li>
+        <a href="https://github.com/ne7ermore"  class="github" target="_blank">
+            <i class="fa fa-github" title="github"></i>
+            <span class="screen-reader-text">github</span>
+        </a>
+        </li>
+        
+				</ul>	<div class="design-credit">
+		
+		<p>&copy; Nevermore | 2018</p>
+		
+	</div>
+</footer>
+
+  </div>
+  <script src="https://ne7ermore.github.io/js/jquery.min.js"></script>
+<script src="https://ne7ermore.github.io/js/jquerymigrate.js"></script>
+<script src="https://ne7ermore.github.io/js/production.min.js"></script>
+
+</body>
+</html>
