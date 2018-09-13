@@ -6,10 +6,20 @@
     <description>Recent content on Nevermore</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Tue, 28 Aug 2018 13:00:25 +0800</lastBuildDate>
+    <lastBuildDate>Mon, 10 Sep 2018 13:00:25 +0800</lastBuildDate>
     
 	<atom:link href="https://ne7ermore.github.io/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Alpha Zero介绍附Pytorch代码</title>
+      <link>https://ne7ermore.github.io/post/alpha-zero/</link>
+      <pubDate>Mon, 10 Sep 2018 13:00:25 +0800</pubDate>
+      
+      <guid>https://ne7ermore.github.io/post/alpha-zero/</guid>
+      <description>&lt;p&gt;实现AlphaGo-Zero五子棋
+&lt;/p&gt;</description>
+    </item>
     
     <item>
       <title>爬取点评成都美食后排序</title>
