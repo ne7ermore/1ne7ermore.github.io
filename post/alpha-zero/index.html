@@ -236,18 +236,327 @@
 <li>输入net的特征分别为8张仅有黑子和8张仅有白子已经当前玩家落子的棋盘</li>
 <li>损失函数使用mean-squared和cross-entropy(公式如下图)</li>
 <li>训练时对输入特征使用旋转和反转方式上采样</li>
-</ul>
-
-<p><img src="/img/alpha-zero/formula1.png" style="height: 80px" alt=""></p>
-
-<h4 id="其他">其他</h4>
-
-<ul>
 <li>在mcts中，获取的每一步概率需要经过softmax处理</li>
 <li>在mcts中，每次更新父节点时注意value的正负值</li>
 <li>五子棋和围棋不同的是判断棋局正负时只需要关注最后落子方</li>
 <li>神经网络在Zero中并不起到决定性作用，就算换成概率平均分布经过多次模拟之后也可以实现对弈</li>
 </ul>
+
+<p><img src="/img/alpha-zero/formula1.png" style="height: 80px" alt=""></p>
+
+<h4 id="代码解释">代码解释</h4>
+
+<blockquote>
+<p>五子棋盘构建</p>
+</blockquote>
+
+<pre><code class="language-python">class Board(object):
+    def __init__(self,
+                 size=SIZE,
+                 hist_num=HISTORY,
+                 c_action=-1,
+                 player=BLACK):
+
+        self.size = size
+        self.c_action = c_action
+        self.hist_num = hist_num
+        self.valid_moves = list(range(size**2))
+        self.invalid_moves = []
+        self.board = np.zeros([size, size])
+        self.c_player = player
+        self.players = {&quot;black&quot;: BLACK, &quot;white&quot;: WHITE}
+
+        # BLACK -&gt; 0 | WHITE -&gt; 1
+        self.history = [np.zeros((hist_num, size, size)),
+                        np.zeros((hist_num, size, size))]
+</code></pre>
+
+<p>判断棋局有没有以一方胜利结束<br>
+原理：以最后落子为中心判断横竖斜方向有没有同样颜色的五颗棋子</p>
+
+<pre><code class="language-python">def is_game_over(self, player=None):
+    x, y = self.c_action // self.size, self.c_action % self.size
+    if player is None:
+        player = self.c_player
+
+    for i in range(x - 4, x + 5):
+        if self._get_piece(i, y) == self._get_piece(i + 1, y) == self._get_piece(i + 2, y) == self._get_piece(i + 3, y) == self._get_piece(i + 4, y) == player:
+            return True
+
+    for j in range(y - 4, y + 5):
+        if self._get_piece(x, j) == self._get_piece(x, j + 1) == self._get_piece(x, j + 2) == self._get_piece(x, j + 3) == self._get_piece(x, j + 4) == player:
+            return True
+
+    j = y - 4
+    for i in range(x - 4, x + 5):
+        if self._get_piece(i, j) == self._get_piece(i + 1, j + 1) == self._get_piece(i + 2, j + 2) == self._get_piece(i + 3, j + 3) == self._get_piece(i + 4, j + 4) == player:
+            return True
+        j += 1
+
+    i = x + 4
+    for j in range(y - 4, y + 5):
+        if self._get_piece(i, j) == self._get_piece(i - 1, j + 1) == self._get_piece(i - 2, j + 2) == self._get_piece(i - 3, j + 3) == self._get_piece(i - 4, j + 4) == player:
+            return True
+        i -= 1
+
+    return False
+</code></pre>
+
+<p>获取当前棋局特征<br>
+包括历史盘面，当前棋手和最后落子</p>
+
+<pre><code class="language-python">def gen_state(self):
+    to_action = np.zeros((1, self.size, self.size))
+    to_action[0][self.c_action // self.size,
+                 self.c_action % self.size] = 1.
+    to_play = np.full((1, self.size, self.size), self.c_player - BLACK)
+    state = np.concatenate(self.history + [to_play, to_action], axis=0)
+
+    return state
+</code></pre>
+
+<blockquote>
+<p>节点</p>
+</blockquote>
+
+<p>mcts中树节点，解释参考注释和代码</p>
+
+<pre><code class="language-python">class TreeNode(object):
+    def __init__(self,
+                 action=None,
+                 props=None,
+                 parent=None):
+
+        self.parent = parent
+        self.action = action
+        self.children = []
+
+        self.N = 0  # visit count
+        self.Q = .0  # mean action value
+        self.W = .0  # total action value
+        self.P = props  # prior probability
+
+    def is_leaf(self):
+        return len(self.children) == 0
+
+    def select_child(self):
+        index = np.argmax(np.asarray([c.uct() for c in self.children]))
+        return self.children[index]
+
+    def uct(self):
+        return self.Q + self.P * CPUCT * (np.sqrt(self.parent.N) / (1 + self.N))
+
+    def expand_node(self, props):
+        self.children = [TreeNode(action=action, props=p, parent=self)
+                         for action, p in enumerate(props) if p &gt; 0.]
+
+    def backup(self, v):
+        self.N += 1
+        self.W += v
+        self.Q = self.W / self.N
+</code></pre>
+
+<blockquote>
+<p>mcts</p>
+</blockquote>
+
+<p>搜索<br>
+1、从根节点开始往下搜索直到叶节点<br>
+2、将当前棋面使用神经网络给出落子概率和价值评估<br>
+3、然后从叶节点返回到根节点一路更新</p>
+
+<pre><code class="language-python">def search(self, borad, node, temperature=.001):
+    self.borad = borad
+    self.root = node
+
+    for _ in range(self.ms_num):
+        node = self.root
+        borad = self.borad.clone()
+
+        while not node.is_leaf():
+            node = node.select_child()
+            borad.move(node.action)
+            borad.trigger()
+
+        # be carefull - opponent state
+        value, props = self.net(
+            to_tensor(borad.gen_state(), unsqueeze=True))
+        value = to_numpy(value, USECUDA)[0]
+        props = np.exp(to_numpy(props, USECUDA))
+
+        # add dirichlet noise for root node
+        if node.parent is None:
+            props = self.dirichlet_noise(props)
+
+        # normalize
+        props[borad.invalid_moves] = 0.
+        total_p = np.sum(props)
+        if total_p &gt; 0:
+            props /= total_p
+
+        # winner, draw or continue
+        if borad.is_draw():
+            value = 0.
+        else:
+            done = borad.is_game_over(player=borad.last_player)
+            if done:
+                value = -1.
+            else:
+                node.expand_node(props)
+
+        while node is not None:
+            value = -value
+            node.backup(value)
+            node = node.parent
+</code></pre>
+
+<blockquote>
+<p>神经网络</p>
+</blockquote>
+
+<p>特征网络</p>
+
+<pre><code class="language-python">class Feature(nn.Module):
+  def __init__(self,
+               ind=IND,
+               outd=RES_BLOCK_FILLTERS):
+
+    super().__init__()
+
+    self.layer = nn.Sequential(
+        nn.Conv2d(ind, outd,
+                  stride=1,
+                  kernel_size=3,
+                  padding=1,
+                  bias=False),
+        nn.BatchNorm2d(outd),
+        nn.ReLU(),
+    )
+    self.encodes = nn.ModuleList([ResBlockNet() for _ in range(BLOCKS)])
+
+  def forward(self, x):
+    x = self.layer(x)
+    for enc in self.encodes:
+      x = enc(x)
+    return x
+</code></pre>
+
+<p>策略网络</p>
+
+<pre><code class="language-python">class Policy(nn.Module):
+  def __init__(self,
+               ind=RES_BLOCK_FILLTERS,
+               outd=OUTD,
+               kernels=2):
+
+    super().__init__()
+
+    self.out = outd * kernels
+
+    self.conv = nn.Sequential(
+        nn.Conv2d(ind, kernels, kernel_size=1),
+        nn.BatchNorm2d(kernels),
+        nn.ReLU(),
+    )
+
+    self.linear = nn.Linear(kernels * outd, outd)
+    self.linear.weight.data.uniform_(-.1, .1)
+
+  def forward(self, x):
+    x = self.conv(x)
+    x = x.view(-1, self.out)
+    x = self.linear(x)
+
+    return F.log_softmax(x, dim=-1)
+</code></pre>
+
+<p>价值网络</p>
+
+<pre><code class="language-python">class Value(nn.Module):
+  def __init__(self,
+               ind=RES_BLOCK_FILLTERS,
+               outd=OUTD,
+               hsz=256,
+               kernels=1):
+    super().__init__()
+
+    self.outd = outd
+
+    self.conv = nn.Sequential(
+        nn.Conv2d(ind, kernels, kernel_size=1),
+        nn.BatchNorm2d(kernels),
+        nn.ReLU(),
+    )
+
+    self.linear = nn.Sequential(
+        nn.Linear(outd, hsz),
+        nn.ReLU(),
+        nn.Linear(hsz, 1),
+        nn.Tanh(),
+    )
+
+    self._reset_parameters()
+
+  def forward(self, x):
+    x = self.conv(x)
+    x = x.view(-1, self.outd)
+
+    return self.linear(x)
+
+  def _reset_parameters(self):
+    for layer in self.modules():
+      if type(layer) == nn.Linear:
+        layer.weight.data.uniform_(-.1, .1)
+</code></pre>
+
+<p>整体网络</p>
+
+<pre><code class="language-python">class Net(nn.Module):
+  def __init__(self):
+    super().__init__()
+
+    self.feat = Feature()
+    self.value = Value()
+    self.policy = Policy()
+
+  def forward(self, x):
+    feats = self.feat(x)
+    winners = self.value(feats)
+    props = self.policy(feats)
+
+    return winners, props
+
+  def save_model(self, path=&quot;model.pt&quot;):
+    torch.save(self.state_dict(), path)
+
+  def load_model(self, path=&quot;model.pt&quot;, cuda=True):
+    self.load_state_dict(torch.load(path))
+
+    if cuda:
+      self.cuda()
+    else:
+      self.cpu()
+</code></pre>
+
+<blockquote>
+<p>采样</p>
+</blockquote>
+
+<pre><code class="language-python">def sample(self, datas):
+    for state, pi, reward in datas:
+        c_state = state.copy()
+        c_pi = pi.copy()
+        for i in range(4):
+            c_state = np.array([np.rot90(s, i) for s in c_state])
+            c_pi = np.rot90(c_pi.reshape(SIZE, SIZE), i)
+            self.sample_data.append([c_state, c_pi.flatten(), reward])
+
+            c_state = np.array([np.fliplr(s) for s in c_state])
+            c_pi = np.fliplr(c_pi)
+            self.sample_data.append([c_state, c_pi.flatten(), reward])
+
+    return len(datas)
+</code></pre>
 
 <h4 id="代码">代码</h4>
 
