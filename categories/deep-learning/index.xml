@@ -12,12 +12,12 @@
     
     
     <item>
-      <title>Alpha Zero介绍附Pytorch代码</title>
+      <title>Alpha Zero版五子棋实现</title>
       <link>https://ne7ermore.github.io/post/alpha-zero/</link>
       <pubDate>Mon, 10 Sep 2018 13:00:25 +0800</pubDate>
       
       <guid>https://ne7ermore.github.io/post/alpha-zero/</guid>
-      <description>&lt;p&gt;实现AlphaGo-Zero五子棋
+      <description>&lt;p&gt;实现AlphaGo-Zero五子棋笔记，代码在最下面，假如有帮助请star :)
 &lt;/p&gt;</description>
     </item>
     
