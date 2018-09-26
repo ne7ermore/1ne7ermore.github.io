@@ -240,6 +240,15 @@
 
 <p><img src="/img/alpha-zero/formula1.png" style="height: 80px" alt=""></p>
 
+<h4 id="其他">其他</h4>
+
+<ul>
+<li>在mcts中，获取的每一步概率需要经过softmax处理</li>
+<li>在mcts中，每次更新父节点时注意value的正负值</li>
+<li>五子棋和围棋不同的是判断棋局正负时只需要关注最后落子方</li>
+<li>神经网络在Zero中并不起到决定性作用，就算换成概率平均分布经过多次模拟之后也可以实现对弈</li>
+</ul>
+
 <h4 id="代码">代码</h4>
 
 <p><a href="https://github.com/ne7ermore/torch_light/tree/master/alpha-zero">alpha-zero</a></p>
