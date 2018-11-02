@@ -159,16 +159,25 @@ yolo是一种使用深度卷积神经网络学得的特征来检测对象的目�
     <item>
       <title>Intro</title>
       <link>https://ne7ermore.github.io/intro/</link>
-      <pubDate>Mon, 09 Apr 2018 13:00:25 +0800</pubDate>
+      <pubDate>Thu, 01 Nov 2018 13:00:25 +0800</pubDate>
       
       <guid>https://ne7ermore.github.io/intro/</guid>
-      <description>喜欢数学，浪迹过东西南北
-手测网站，压测接口，倒腾tornado，窥探react，我对理查德说过, “以后再也不让人知道我写过前端”
-“同学，算法了解下” 于是写了个简陋的全文搜索引擎
-目前就职于知乎(天府之都)
-技能树
-懂些算法: Torch Light, Deeping Flow
-会点Golang: 权限系统</description>
+      <description>Pytorch教程：https://github.com/ne7ermore/torch-light
+Tensorflow教程：https://github.com/ne7ermore/deeping-flow
+yolo-v3：https://github.com/ne7ermore/yolo-v3
+权限系统：https://github.com/ne7ermore/gRBAC
+随笔：https://github.com/ne7ermore/playground
+ 何神赋
+ 青衣红妆，粉黛香肩，似得神仙形意。
+顾盼生辉，月目巧笑，有得几多姝丽。
+步步生姿，空锁满庭花雨。
+胜将娇花比。
+沉鱼落雁，闭月羞花，惟卿浅笑而已。
+翩舞飞，词曲赋，器乐鸣，慕多才多艺。
+心猿意马，失神闲心绪。
+争如此风流多情，夜雨廊桥偎依。
+举齐案，描柳眉，画朱唇，怎舍光阴轻弃。
+一生随，永相依，表深意。</description>
     </item>
     
   </channel>
