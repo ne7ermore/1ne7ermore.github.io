@@ -199,6 +199,14 @@
 
 <p><img src="/img/bert/encoder.png" style="height: 400px" alt=""></p>
 
+<p>相比于RNN和CNN的模型，Encoder模型更简单，使用 Multi-Head、 Self-attention等Attention代替CNN，RNN，在并行训练上有显著提升，大大减少训练时间。</p>
+
+<p>Encoder将输入的word，segment，position特征整合后， 传入下一层由N个(代码中N=12)相同layer串行链接的结构中，每层包括multi-head attention和position-wise，值得注意的是每层都使用了residual来缓解由于模型层数过深造成参数难以训练的问题。</p>
+
+<p>Positional Encoding替代RNN/CNN实现 the order of the sequence，论文说明position weight在learn和fixed两种情况下结果相仿，所以使用fixed。论文公式如下：</p>
+
+<p><img src="/img/bert/position.jpg" style="height: 200px" alt=""></p>
+
 <p>按照论文base版本的参数设置 L=12, H=768, A=12 Feedforward=3072 一共有140,284,530参数, 使用四张Tesla P100 GPU可以保证正常训练</p>
 
 <p><br></p>
