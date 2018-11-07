@@ -2,7 +2,7 @@
 <html lang="en-us">
 <head><meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
- <title>Deep Semantic Role Labeling </title>
+ <title>BERT </title>
 
 
 
@@ -153,11 +153,11 @@
     
     <div class="post type-post status-publish format-standard has-post-thumbnail hentry category-design tag-design tag-standard-2 tag-tagalicious tag-travel entry full-without-featured odd excerpt-1">
 
-      <div class='featured-image lazy lazy-bg-image' data-background="https://ne7ermore.github.io/img/deep-srl/deep-srl.png">
+      <div class='featured-image lazy lazy-bg-image' data-background="https://ne7ermore.github.io/img/bert/bert.png">
       </div>
       
         <div class="entry-meta">
-          <span class="date">November 01</span>	<span> / </span>
+          <span class="date">November 06</span>	<span> / </span>
 
           <span class="author">
             
@@ -177,150 +177,117 @@
 
         </div>
         <div class='entry-header'>
-          <h1 class='entry-title'> Deep Semantic Role Labeling</h1>
+          <h1 class='entry-title'> BERT</h1>
         </div>
         <div class="entry-container">
           <div class="entry-content">
             <article>
-              <p>语义角色标记深度模型</p>
+              <p>Bidirectional Encoder Representations from Transformers</p>
 
 <p>
-论文：<a href="https://pdfs.semanticscholar.org/874e/f2e5488fcce82c48ed5b00fa1e5390a918e3.pdf">Deep Semantic Role Labeling: What Works and What’s Next</a></p>
+论文：<a href="https://arxiv.org/abs/1810.04805">BERT: Pre-training of Deep Bidirectional Transformers for Language Understanding</a></p>
 
-<p>训练数据：<a href="https://www.clips.uantwerpen.be/conll2003/ner/">CoNLL 2003</a></p>
+<p>训练数据：<a href="https://drive.google.com/uc?export=download&amp;confirm=MbFE&amp;id=0B2Mzhc7popBga2RkcWZNcjlRTGM">Corpus</a></p>
 
-<p>代码：<a href="https://github.com/ne7ermore/torch-light/tree/master/deep-srl">Deep SRL</a></p>
+<p>代码：<a href="https://github.com/ne7ermore/torch-light/tree/master/BERT">BERT</a></p>
 
-<hr />
+<p><br></p>
 
-<p><strong>模型结构</strong></p>
+<p>模型结果主要来借鉴于<a href="https://arxiv.org/abs/1706.03762">Attention is All You Need</a>中的encoder，所以论文中没有详细说明</p>
 
-<p><img src="/img/deep-srl/deep-srl.png" style="height: 400px" alt=""></p>
+<p><strong>结构如下</strong></p>
 
-<p>相比较于CNN-BiLSTM-CRF模型，deep-srl简单多了，但是效果并没有打折扣</p>
+<p><img src="/img/bert/encoder.png" style="height: 400px" alt=""></p>
 
-<p>模型主要改良LSTM，加入Recurrent Dropout和Highway</p>
+<p>按照论文base版本的参数设置 L=12, H=768, A=12 Feedforward=3072 一共有140,284,530参数, 使用四张Tesla P100 GPU可以保证正常训练</p>
 
-<p>LSTM公式：</p>
+<p><br></p>
 
-<p><img src="/img/deep-srl/lstm.png" style="height: 250px" alt=""></p>
+<h4 id="训练数据预处理">训练数据预处理</h4>
 
-<p>在LSTM基础上加入Highway：</p>
+<p>任务1 - Masked LM</p>
 
-<p><img src="/img/deep-srl/hw.png" style="height: 150px" alt=""></p>
+<p>遍历整句话，每个word有15%的概率被替换，其中，80%的概率替换成<strong>[mask]</strong>标签，10%的概率替换成任一word，10%概率word保持不变，而word label则保存正确正确word</p>
 
-<p>在lstm cell的输出后连接Recurrent Dropout</p>
+<p>任务2 - Next Sentence Prediction</p>
 
-<p><img src="/img/deep-srl/rd.png" style="height: 150px" alt=""></p>
+<p>对句子采样时，第二句有50%概率替换成非第一句的下一句话，50%概率第二句就是第一句的下一句话</p>
 
-<p>最后接上全连接层输出每个tag的概率</p>
+<p>拼接两个句子时，以<strong>[CLS]</strong>开头，一二句中间以<strong>[SPE]</strong>分割，最后以<strong>[SPE]</strong>结尾，第一句和第二句话的Segment label分别为a和b，我代码中使用1和2，<strong>[PAD]</strong>为0</p>
 
-<p><img src="/img/deep-srl/linear.png" style="height: 80px" alt=""></p>
+<p><img src="/img/bert/embedding.png" style="height: 215px" alt=""></p>
 
-<h5 id="结果">结果</h5>
+<p><br></p>
 
-<p>标签</p>
-
-<pre><code>{'&lt;pad&gt;': 0, 'B-MISC': 1, 'B-ORG': 2, 'I-MISC': 3, 'I-LOC': 4, 'I-PER': 5, 'B-LOC': 6, 'O': 7, 'I-ORG': 8}
-</code></pre>
-
-<p>结果1</p>
-
-<pre><code>样本: neuchatel @ st gallen @
-
-预测: I-ORG O I-ORG I-ORG O
-
-标注: I-ORG O I-ORG I-ORG O
-</code></pre>
-
-<p>结果2</p>
-
-<pre><code>样本: kankkunen has set an astonishing pace for a driver who has not rallied for three months .
-
-预测: I-PER O O O I-PER O O O O O O O O O O O O
-
-标注: I-PER O O O O O O O O O O O O O O O O
-</code></pre>
-
-<p>训练结果</p>
-
-<p><img src="/img/deep-srl/train-corr.png" style="height: 250px" alt=""></p>
-
-<p><img src="/img/deep-srl/eval-corr.png" style="height: 280px" alt=""></p>
-
-<p><img src="/img/deep-srl/train-loss.png" style="height: 250px" alt=""></p>
-
-<p><img src="/img/deep-srl/eval-loss.png" style="height: 253px" alt=""></p>
-
-<h5 id="代码">代码</h5>
-
-<p>lstm改进操作</p>
+<h4 id="细节">细节</h4>
 
 <ul>
-<li>多两个门，分别对应Highway和上一层输出的线性转换</li>
-<li>Recurrent dropout使用伯努利分布</li>
-<li>每一层lstm的输出reverse作为下一层的输入</li>
+<li>gelu和OpenAI GPT中有所不同</li>
 </ul>
 
-<pre><code class="language-python">class HwLSTMCell(nn.Module):
-    def __init__(self, isz, hsz, dropout_prob, is_cuda):
+<pre><code class="language-python">class GELU(nn.Module):
+    &quot;&quot;&quot;
+    different from 0.5 * x * (1 + torch.tanh(math.sqrt(2 / math.pi) * (x + 0.044715 * torch.pow(x, 3))))
+    &quot;&quot;&quot;
+    def forward(self, x):
+        return x * 0.5 * (1.0 + torch.erf(x / math.sqrt(2.0)))
+</code></pre>
+
+<ul>
+<li>参数</li>
+</ul>
+
+<pre><code class="language-python">--steps 1000000
+--batch_size 256
+--lr 1e-4
+--dropout 0.1
+--d_model 768
+--d_ff 3072
+--n_head 12
+--n_stack_layers 12
+--n_warmup_steps 10000
+--initializer_range 0.02
+--beta1 0.9
+--beta2 0.999
+--l2 0.01
+</code></pre>
+
+<ul>
+<li>在Next Sentence Prediction任务中增加了一层隐藏层</li>
+</ul>
+
+<pre><code class="language-python">class Pooler(nn.Module):
+    def __init__(self, d_model):
         super().__init__()
 
-        self.hsz = hsz
+        self.linear = nn.Linear(d_model, d_model)
+        self.linear.weight.data.normal_(INIT_RANGE)
+        self.linear.bias.data.zero_()
 
-        self.w_ih = nn.Parameter(torch.Tensor(6 * hsz, isz))
-        self.w_hh = nn.Parameter(torch.Tensor(5 * hsz, hsz))
-        self.b_ih = nn.Parameter(torch.Tensor(6 * hsz))
+    def forward(self, x):
+        x = self.linear(x[:, 0])
+        return F.tanh(x)
+</code></pre>
 
-        self.rdropout = RnnDropout(dropout_prob, hsz, is_cuda)
+<ul>
+<li>Masked LM任务中计算和评估word的loss和准确率时只关注<strong>[mask]</strong>的word</li>
+</ul>
 
-        self.reset_parameters()
-
-    def reset_parameters(self):
-        stdv = 1.0 / math.sqrt(self.hsz)
-        for weight in self.parameters():
-            nn.init.uniform_(weight, -stdv, stdv)
-
-    def forward(self, input, hidden=None):
-        if hidden is None:
-            hidden = input.new_zeros(input.size(0), self.hsz)
-            hidden = (hidden, hidden)
-
-        hx, cx = hidden
-
-        input = F.linear(input, self.w_ih, self.b_ih)
-        gates = F.linear(hx, self.w_hh) + input[..., :-self.hsz]
-
-        in_gate, forget_gate, cell_gate, out_gate, r_gate = gates.chunk(5, 1)
-        in_gate, forget_gate, out_gate, r_gate = map(
-            torch.sigmoid, [in_gate, forget_gate, out_gate, r_gate])
-        cell_gate = torch.tanh(cell_gate)
-        k = input[..., -self.hsz:]
-
-        cy = forget_gate * cx + in_gate * cell_gate
-        hy = r_gate * out_gate * F.tanh(cy) + (1. - r_gate) * k
-
-        if self.training:
-            hy = self.rdropout(hy)
-
-        return hy, cy
-
-class HwLSTMlayer(nn.Module):
-    def __init__(self, isz, hsz, dropout_prob, is_cuda):
+<pre><code class="language-python">class WordCrossEntropy(nn.Module):
+    def __init__(self):
         super().__init__()
 
-        self.cell = HwLSTMCell(isz, hsz, dropout_prob, is_cuda)
+    def forward(self, props, tgt):
+        tgt_props = props.gather(2, tgt.unsqueeze(2)).squeeze()
+        mask = (tgt &gt; 0).float()
+        tgt_sum = mask.sum()
+        loss = -(tgt_props * mask).sum() / tgt_sum
 
-    def forward(self, input, reverse=True):
-        output, hidden = [], None
-        for i in range(len(input)):
-            hidden = self.cell(input[i], hidden)
-            output.append(hidden[0])
+        props = F.softmax(props, dim=-1)
+        _, index = torch.max(props, -1)
+        corrects = ((index.data == tgt).float() * mask).sum()
 
-        if reverse:
-            output.reverse()
-
-        return torch.stack(output)
+        return loss, corrects, tgt_sum
 </code></pre>
             </article>
           </div>
