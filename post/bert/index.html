@@ -207,7 +207,7 @@
 
 <p><img src="/img/bert/position.jpg" style="height: 200px" alt=""></p>
 
-<p>按照论文base版本的参数设置 L=12, H=768, A=12 Feedforward=3072 一共有140,284,530参数, 使用四张Tesla P100 GPU可以保证正常训练</p>
+<p>按照论文base版本的参数设置 L=12, H=768, A=12 Feedforward=3072 一共有113,658,738参数, 使用四张Tesla P100 GPU可以保证正常训练</p>
 
 <p><br></p>
 
@@ -296,6 +296,14 @@
         corrects = ((index.data == tgt).float() * mask).sum()
 
         return loss, corrects, tgt_sum
+</code></pre>
+
+<ul>
+<li>在Masked LM任务中增加了一层隐藏层，激活函数使用GELU，带上layernormal</li>
+<li>最后word预测全连接层的weights权重和word embedding共享</li>
+</ul>
+
+<pre><code class="language-python">self.word_predict.weight = self.enc_ebd.weight  # share weights
 </code></pre>
             </article>
           </div>
