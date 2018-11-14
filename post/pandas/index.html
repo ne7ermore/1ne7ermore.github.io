@@ -123,7 +123,7 @@
   <div id="menu-primary-tracks" class="menu-primary-tracks"></div>
   <div id="menu-primary" class="menu-container menu-primary" role="navigation">
     
-    <p class="site-description">懂点数学的码农</p>
+    <p class="site-description">Why so serious</p>
     
 
     <div class="menu">
@@ -291,6 +291,10 @@ df[df.isnull().values == True]
 
     a   b            c     d
 2  上行 NaN  +K01180.000 -28.0
+
+
+# 过滤掉nan行
+ df[df[&quot;b&quot;].isnull().values == False]
 </code></pre>
 
 <blockquote>
@@ -302,6 +306,9 @@ df = pd.concat([df1, df2], axis=1)
 
 # 按行拼接
 df = pd.concat([df1, df2], axis=0)
+
+# 按行拼接，忽略索引
+df = pd.concat([df1, df2], axis=0, ignore_index=True)
 </code></pre>
 
 <blockquote>
@@ -505,7 +512,7 @@ title="github icon"></i>
 	</h1>
 
 			
-			<p class="site-description">懂点数学的码农</p>
+			<p class="site-description">Why so serious</p>
 			
 
 		<div id="menu-footer" class="menu-container menu-footer" role="navigation">
