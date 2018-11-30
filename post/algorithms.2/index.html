@@ -1,0 +1,597 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+ <title>Algorithms.2 </title>
+
+
+
+<meta name="description" content="伤口是光能照进来的地方">
+
+
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="all,follow">
+<meta name="googlebot" content="index,follow,snippet,archive">
+<link rel="stylesheet" id="ct-tracks-google-fonts-css" href="//fonts.googleapis.com/css?family=Raleway%3A400%2C700&amp;subset=latin%2Clatin-ext&amp;ver=4.7.2" type="text/css" media="all">
+<link rel="stylesheet" href="https://ne7ermore.github.io/css/font-awesome.min.css" type='text/css' media='all'>
+
+<link href="https://ne7ermore.github.io/css/style.css" rel="stylesheet" id="theme-stylesheet" type='text/css' media='all'>
+
+<link href="https://ne7ermore.github.io/css/custom.css" rel="stylesheet" type='text/css' media='all'>
+<link rel="shortcut icon" href="https://ne7ermore.github.io/img/favicon.jpeg" type="image/x-icon">
+<link rel="icon" href="https://ne7ermore.github.io/img/favicon.jpeg" type="image/x-icon">
+
+
+</head>
+
+
+<body class="post-template-default single single-post single-format-standard ct-body singular singular-post not-front standard">
+  
+  <div id="overflow-container" class="overflow-container">
+    <a class="skip-content" href="#main">Skip to content</a>
+    <header id="site-header" class="site-header" role="banner">
+      <div class='top-navigation'>
+        <div class='container'>
+
+  <div id="menu-secondary" class="menu-container menu-secondary" role="navigation">
+    <button id="toggle-secondary-navigation" class="toggle-secondary-navigation"><i class="fa fa-plus"></i></button>
+
+    <div class="menu">
+
+      <ul id="menu-secondary-items" class="menu-secondary-items">
+        
+        <li id="menu-item" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item">
+          <a href="/categories/tensorflow">TensorFlow</a>
+        </li>
+        
+        <li id="menu-item" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item">
+          <a href="/categories/code">code</a>
+        </li>
+        
+        <li id="menu-item" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item">
+          <a href="/categories/deep-learning">deep-learning</a>
+        </li>
+        
+        <li id="menu-item" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item">
+          <a href="/categories/reinforce-learning">reinforce-learning</a>
+        </li>
+        
+
+      </ul>
+
+    </div>
+
+  </div>
+
+
+  <ul class="social-media-icons">
+
+
+    
+
+    
+
+    
+
+    
+    <li>
+      <a href="https://www.zhihu.com/people/liao-yuan-huo-28/activities" data-animate-hover="pulse" class="twitter" target="_blank">
+        <i class="fa fa-instagram" title="instagram"></i>
+        <span class="screen-reader-text">instagram</span>
+      </a>
+    </li>
+    
+
+    
+    <li>
+      <a href="mailto:liaoyuanhuo1987@gmail.com" data-animate-hover="pulse" class="email">
+        <i class="fa fa-envelope" title="email"></i>
+        <span class="screen-reader-text">email</span>
+      </a>
+    </li>
+    
+
+    
+
+    
+
+
+    
+    <li>
+      <a href="https://github.com/ne7ermore" data-animate-hover="pulse" class="github" target="_blank">
+        <i class="fa fa-github" title="github"></i>
+        <span class="screen-reader-text">github</span>
+      </a>
+    </li>
+    
+
+  </ul></div>
+
+      </div>
+
+      <div class="container">
+        <div id="title-info" class="title-info">
+  <div id='site-title' class='site-title'>
+    
+    <a href="/"> Nevermore </a>
+    </div>
+  </div>
+  <button id="toggle-navigation" class="toggle-navigation">
+    <i class="fa fa-bars"></i>
+  </button>
+
+  <div id="menu-primary-tracks" class="menu-primary-tracks"></div>
+  <div id="menu-primary" class="menu-container menu-primary" role="navigation">
+    
+    <p class="site-description">Why so serious</p>
+    
+
+    <div class="menu">
+      <ul id="menu-primary-items" class="menu-primary-items">
+        
+        
+        <li id="menu-item" class='menu-item menu-item-type-custom menu-item-object-custom '>
+          <a href="https://ne7ermore.github.io/">Home</a>
+        </li>
+        
+        <li id="menu-item" class='menu-item menu-item-type-post_type menu-item-object-page '>
+          <a href="https://ne7ermore.github.io/intro/">Intro</a>
+        </li>
+        
+      </ul>
+    </div>
+
+  </div>
+
+      </div>
+    </header>
+
+    <div id="main" class="main" role="main">
+
+      
+  <div id="loop-container" class="loop-container">
+    
+
+      <div class="post type-post status-publish format-standard hentry category-standard category-travel entry full-without-featured odd excerpt-1">
+
+        
+        <div class="entry-meta">
+          <span class="date">November 30</span>	<span> / </span>
+
+          <span class="author">
+            
+            <a href="https://ne7ermore.github.io" title="Posts by Nevermore" rel="author">Nevermore</a>
+            
+          </span>
+
+
+          
+          <span class="category">
+            <span> / </span>
+
+            <a href="/categories/code">code</a>
+          </span>
+          
+
+
+        </div>
+        <div class='entry-header'>
+          <h1 class='entry-title'> Algorithms.2</h1>
+        </div>
+        <div class="entry-container">
+          <div class="entry-content">
+            <article>
+              <p>Algorithms Chapter Two</p>
+
+<p></p>
+
+<ul>
+<li>Word Ladder</li>
+</ul>
+
+<p>从原始词通过词典变成目标词，每次改变一个字母</p>
+
+<p>为了速度，可以看做双向查找，原始词和目标词路径互换</p>
+
+<pre><code class="language-python">def word_range(word):
+    for ind in range(len(word)):
+        temp = word[ind]
+        for c in [chr(x) for x in range(ord('a'), ord('z') + 1)]:
+            if c != temp:
+                yield word[:ind] + c + word[ind + 1:]
+
+
+def ladder_length(begin_word, end_word, word_list):
+    if len(begin_word) != len(end_word):
+        return -1
+
+    if begin_word == end_word:
+        return 0
+
+    if sum(c1 != c2 for c1, c2 in zip(begin_word, end_word)) == 1:
+        return 1
+
+    begin_set = set()
+    end_set = set()
+    begin_set.add(begin_word)
+    end_set.add(end_word)
+    result = 2
+    while begin_set and end_set:
+
+        if len(begin_set) &gt; len(end_set):
+            begin_set, end_set = end_set, begin_set
+
+        next_begin_set = set()
+        for word in begin_set:
+            for ladder_word in word_range(word):
+                if ladder_word in end_set:
+                    return result
+                if ladder_word in word_list:
+                    next_begin_set.add(ladder_word)
+                    word_list.remove(ladder_word)
+        begin_set = next_begin_set
+        result += 1
+
+    return -1
+
+assert ladder_length(
+    'hit', 'cog', [&quot;hot&quot;, &quot;dot&quot;, &quot;dog&quot;, &quot;lot&quot;, &quot;log&quot;]) == 5
+</code></pre>
+
+<ul>
+<li>质因子分解</li>
+</ul>
+
+<p>因子平方小于等于值之前递归，如果值除以因子没有余数则继续往深度搜索，循环中因子累加</p>
+
+<pre><code class="language-python">def get_factors(n):
+    def factor(n, i, combi, res):
+        while i * i &lt;= n:
+            if n % i == 0:
+                res += combi + [i, int(n / i)],
+                factor(n / i, i, combi + [i], res)
+            i += 1
+        return res
+    return factor(n, 2, [], [])
+
+
+assert get_factors(16) == [[2, 8], [2, 2, 4], [2, 2, 2, 2], [4, 4]]
+</code></pre>
+
+<ul>
+<li>岛计算</li>
+</ul>
+
+<p>1为陆地，0为海水，规则：如果陆地上下左右被海水包围算一个岛，例如：</p>
+
+<pre><code>[[1, 1, 1, 0, 0],
+ [1, 1, 0, 1, 0],
+ [1, 1, 0, 0, 0],
+ [0, 0, 0, 0, 0]]
+</code></pre>
+
+<p>岛个数：2</p>
+
+<p>遍历地图(可以看做二维数组)，如果值为1，即陆地，则将与之相邻的陆地变为0，然后视为一个岛，结果+1</p>
+
+<pre><code class="language-python">def num_islands(grid):
+    count = 0
+
+    for i in range(len(grid)):
+        for j in range(len(grid[0])):
+            if grid[i][j] == 1:
+                dfs(grid, i, j)
+                count += 1
+    return count
+
+
+def dfs(grid, i, j):
+    if (i &lt; 0 or i &gt;= len(grid)) or (j &lt; 0 or j &gt;= len(grid[0])):
+        return
+
+    if grid[i][j] != 1:
+        return
+
+    grid[i][j] = 0
+    dfs(grid, i + 1, j)
+    dfs(grid, i - 1, j)
+    dfs(grid, i, j + 1)
+    dfs(grid, i, j - 1)
+
+
+grid = [[1, 1, 1, 0, 0],
+        [1, 1, 0, 1, 0],
+        [1, 1, 0, 0, 0],
+        [0, 0, 0, 0, 0]]
+
+assert num_islands(grid) == 2
+</code></pre>
+
+<ul>
+<li>数独</li>
+</ul>
+
+<p>数独盘面是个九宫，每一宫又分为九个小格。在这八十一格中给出一定的已知数字，在其他的空格上填入1-9的数字。使1-9每个数字在每一行、每一列和每一宫中都只出现一次。</p>
+
+<p>首先通过已给出数字筛选出所有空格候选填充数字组，接着开始在空格中填充数字，如果考虑速度，可以优先选择候选数字少的空格，然后向深处搜索，如果空格选完证明完成任务，保存结果；如果在填充数字过程中出现空格无候选数字证明任务失败，终止当前分支</p>
+
+<pre><code class="language-python">import numpy as np
+import copy
+import queue
+
+
+class Sudoku(object):
+    def __init__(self, board):
+        board = np.asarray(board)
+        assert board.shape == (9, 9)
+
+        self.results = queue.Queue()
+        valids = self.gather_value(board)
+
+        copy_v = copy.deepcopy(valids)
+        copy_b = board.copy()
+
+        self.solve(copy_v, copy_b)
+
+    def gather_value(self, board):
+        nums = [i for i in range(1, 10)]
+        valids = {(i, j): nums.copy() for i in range(9)
+                  for j in range(9) if board[i, j] == 0}
+
+        for i, row in enumerate(board):
+            for j, v in enumerate(row):
+                if v != 0:
+                    for index in range(9):
+                        if (i, index) in valids and v in valids[(i, index)]:
+                            valids[(i, index)].remove(v)
+
+                        if (index, j) in valids and v in valids[(index, j)]:
+                            valids[(index, j)].remove(v)
+
+                    _row, _col = i // 3, j // 3
+                    for i_row in range(3):
+                        for i_col in range(3):
+                            _idx = (_row * 3 + i_row, _col * 3 + i_col)
+                            if _idx in valids and v in valids[_idx]:
+                                valids[_idx].remove(v)
+
+        return valids
+
+    def solve(self, valids, board):
+        if len(valids) == 0:
+            self.results.put([board])
+            return
+
+        slot = min(valids.keys(), key=lambda x: len(valids[x]))
+        nums = valids[slot]
+        for n in nums:
+            r, c = slot
+            copy_b = board.copy()
+            copy_b[r, c] = n
+
+            copy_v = copy.deepcopy(valids)
+            del copy_v[slot]
+
+            for index in range(9):
+                if (index, c) in copy_v and n in copy_v[(index, c)]:
+                    copy_v[(index, c)].remove(n)
+                    if len(copy_v[(index, c)]) == 0:
+                        return
+
+                if (r, index) in copy_v and n in copy_v[(r, index)]:
+                    copy_v[(r, index)].remove(n)
+                    if len(copy_v[(r, index)]) == 0:
+                        return
+
+            _row, _col = r // 3, c // 3
+            for i_row in range(3):
+                for i_col in range(3):
+                    _idx = (_row * 3 + i_row, _col * 3 + i_col)
+                    if _idx in copy_v and n in copy_v[_idx]:
+                        copy_v[_idx].remove(n)
+                        if len(copy_v[_idx]) == 0:
+                            return
+
+            self.solve(copy_v, copy_b)
+
+board = [[5, 3, 0, 0, 7, 0, 0, 0, 0],
+         [6, 0, 0, 1, 9, 5, 0, 0, 0],
+         [0, 9, 8, 0, 0, 0, 0, 6, 0],
+         [8, 0, 0, 0, 6, 0, 0, 0, 3],
+         [4, 0, 0, 8, 0, 3, 0, 0, 1],
+         [7, 0, 0, 0, 2, 0, 0, 0, 6],
+         [0, 6, 0, 0, 0, 0, 2, 8, 0],
+         [0, 0, 0, 4, 1, 9, 0, 0, 5],
+         [0, 0, 0, 0, 8, 0, 0, 7, 9]]
+
+s = Sudoku(board)
+
+for r in s.results.get():
+    print(r)
+
+'''
+[[5 3 4 6 7 8 9 1 2]
+ [6 7 2 1 9 5 3 4 8]
+ [1 9 8 3 4 2 5 6 7]
+ [8 5 9 7 6 1 4 2 3]
+ [4 2 6 8 5 3 7 9 1]
+ [7 1 3 9 2 4 8 5 6]
+ [9 6 1 5 3 7 2 8 4]
+ [2 8 7 4 1 9 6 3 5]
+ [3 4 5 2 8 6 1 7 9]]
+'''
+
+</code></pre>
+            </article>
+          </div>
+          
+      <div class='entry-meta-bottom'>
+        
+
+  <div class="entry-categories"><p><span>Categories</span>
+    
+    <a href="/categories/tensorflow" title="View all posts in TensorFlow">TensorFlow</a>
+    <a href="/categories/code" title="View all posts in code">code</a>
+    <a href="/categories/deep-learning" title="View all posts in deep-learning">deep-learning</a>
+    <a href="/categories/reinforce-learning" title="View all posts in reinforce-learning">reinforce-learning</a>
+  </p>
+</div>
+
+
+
+<div class="entry-tags"><p><span>Tags</span>
+  
+  <a href="/tags/golang" title="View all posts tagged golang">golang</a>
+  
+  <a href="/tags/python" title="View all posts tagged python">python</a>
+  
+  <a href="/tags/%E7%AE%97%E6%B3%95" title="View all posts tagged 算法">算法</a>
+  
+
+</p></div>	</div>
+
+<div class="author-meta">
+
+  <div class="author">
+    <img alt='Nevermore' src="https://www.gravatar.com/avatar/441d6f3623599f66569ae8478cf21f68?s=100&d=identicon" class='avatar avatar-72 photo' height='72' width='72'>
+
+    <span>
+      Written by:<a href="https://ne7ermore.github.io" title="Posts by Nevermore" rel="author">Nevermore</a>        </span>
+    </div>
+    <div class="bio">
+      
+      <p>步步生姿，空锁满庭花雨。胜将娇花比。</p>
+      
+
+
+      
+
+    
+
+
+  
+
+
+
+<a class="email" target="_blank"
+href="mailto:liaoyuanhuo1987@gmail.com">
+<i class="fa fa-envelope"
+title="email icon"></i>
+</a>
+
+
+
+<a class="instagram" target="_blank"
+href="https://www.zhihu.com/people/liao-yuan-huo-28/activities">
+<i class="fa fa-instagram"
+title="instagram icon"></i>
+</a>
+
+
+
+
+
+<a class="github" target="_blank"
+href="https://github.com/ne7ermore">
+<i class="fa fa-github"
+title="github icon"></i>
+</a>
+
+
+</div>
+</div>
+
+</div>
+</div>
+
+<section id="comments" class="comments">
+  
+
+  
+
+
+
+
+</section>
+</div>
+
+ 
+
+
+
+    </div>
+
+    <footer id="site-footer" class="site-footer" role="contentinfo">
+	<h1>
+    
+    <a href=""> Nevermore </a>
+    
+	</h1>
+
+			
+			<p class="site-description">Why so serious</p>
+			
+
+		<div id="menu-footer" class="menu-container menu-footer" role="navigation">
+		<div class="menu">
+
+      <ul id="menu-footer-items" class="menu-footer-items">
+        
+</ul>
+
+</div>	</div>
+
+<ul class="social-media-icons">
+
+        
+
+        
+
+
+        
+
+        
+        <li>
+        <a href="https://www.zhihu.com/people/liao-yuan-huo-28/activities"  class="twitter" target="_blank">
+            <i class="fa fa-instagram" title="instagram"></i>
+            <span class="screen-reader-text">instagram</span>
+        </a>
+        </li>
+        
+
+        
+        <li>
+        <a href="mailto:liaoyuanhuo1987@gmail.com"  class="email">
+            <i class="fa fa-envelope" title="email"></i>
+            <span class="screen-reader-text">email</span>
+        </a>
+        </li>
+        
+
+        
+
+        
+
+
+        
+        <li>
+        <a href="https://github.com/ne7ermore"  class="github" target="_blank">
+            <i class="fa fa-github" title="github"></i>
+            <span class="screen-reader-text">github</span>
+        </a>
+        </li>
+        
+				</ul>	<div class="design-credit">
+		
+		<p>&copy; Nevermore | 2018</p>
+		
+	</div>
+</footer>
+
+  </div>
+  <script src="https://ne7ermore.github.io/js/jquery.min.js"></script>
+<script src="https://ne7ermore.github.io/js/jquerymigrate.js"></script>
+<script src="https://ne7ermore.github.io/js/production.min.js"></script>
+
+</body>
+</html>
