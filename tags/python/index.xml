@@ -6,10 +6,21 @@
     <description>Recent content in Python on Nevermore</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Mon, 03 Dec 2018 10:00:25 +0800</lastBuildDate>
+    <lastBuildDate>Mon, 24 Dec 2018 10:00:25 +0800</lastBuildDate>
     
 	<atom:link href="https://ne7ermore.github.io/tags/python/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Algorithms.4</title>
+      <link>https://ne7ermore.github.io/post/algorithms.4/</link>
+      <pubDate>Mon, 24 Dec 2018 10:00:25 +0800</pubDate>
+      
+      <guid>https://ne7ermore.github.io/post/algorithms.4/</guid>
+      <description>&lt;p&gt;Algorithms Chapter Four&lt;/p&gt;
+
+&lt;p&gt;&lt;/p&gt;</description>
+    </item>
     
     <item>
       <title>Algorithms.3</title>
