@@ -2,7 +2,7 @@
 <html lang="en-us">
 <head><meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
- <title>Algorithms.1 </title>
+ <title>Algorithms.11 </title>
 
 
 
@@ -149,7 +149,7 @@
 
         
         <div class="entry-meta">
-          <span class="date">November 29</span>	<span> / </span>
+          <span class="date">January 04</span>	<span> / </span>
 
           <span class="author">
             
@@ -169,133 +169,84 @@
 
         </div>
         <div class='entry-header'>
-          <h1 class='entry-title'> Algorithms.1</h1>
+          <h1 class='entry-title'> Algorithms.11</h1>
         </div>
         <div class="entry-container">
           <div class="entry-content">
             <article>
-              <p>數組</p>
+              <p>平衡树</p>
 
 <p></p>
 
-<p><a href="https://github.com/ne7ermore/playground/tree/master/python/arrays">代码</a></p>
+<p><a href="https://github.com/ne7ermore/playground/blob/master/python/tree/avl.py">代码</a></p>
 
-<ul>
-<li>寻找字符串中最长不重复字符串</li>
-</ul>
+<p>二叉树的变种，区别在动态添加和删除叶节点，能够通过一些指标，对二叉树的形状变化进行监督，当发现树的形状开始变得不平衡的时候，立即修正二叉树的形状。</p>
 
-<p>使用一个dict，key存出现的字符，value存key最后出现的index，遍历字符串时更新dict</p>
+<p>先看一张图</p>
 
-<pre><code class="language-python">def longest_non_repeat(string):
-    start = 0
-    used_char, temp = {}, &quot;&quot;
+<p><img src="/img/algorithm.11/avl.gif" style="height: 200px" alt=""></p>
 
-    for index, char in enumerate(string):
-        if char in used_char and start &lt;= used_char[char]:
-            if len(temp) &lt; index - start + 1:
-                temp = string[start:index]
-            start = used_char[char] + 1
+<p>监督的重要指标 - 平衡因子，左子树的高度减去右子树的高度</p>
 
-        used_char[char] = index
-    return temp
+<p>平衡二叉树（AVL）： 所有结点的平衡因子的绝对值都不超过1。即对平衡二叉树每个结点来说，其左子树的高度 - 右子树高度得到的差值只能为 1， 0 ， -1 这三个值。 取得小于 -1或者大于1的值，都被视为打破了二叉树的平衡</p>
 
-s = &quot;abcabcdddabcdftghooooabcdftghoo&quot;
-subs = longest_non_repeat(s)
-assert subs == &quot;abcdftgho&quot;
+<p>当插入新节点打破平衡时，就需要一定的操作来维持平衡，即：左右旋</p>
+
+<p>左旋</p>
+
+<p><img src="/img/algorithm.11/rotate_left.png" style="height: 200px" alt=""></p>
+
+<p>可以看见，节点‘2’的平衡因子目前为-2，所以需要选择右子树来维持平衡，首先断开右子树中最小成员‘3’，然后将2的右儿子作为新根节点，最后将‘3’查到‘2’的右节点上</p>
+
+<pre><code class="language-python">def rotate_left(self):
+    new_root = self.node.right.node
+    new_sub_right = new_root.left.node
+    old_root = self.node
+    new_root.left.node = old_root
+    old_root.right.node = new_sub_right
+    self.node = new_root
 </code></pre>
 
-<ul>
-<li>找出截断区间</li>
-</ul>
+<p>右旋</p>
 
-<p>遍历截断数组成员，如果截断成员等于开始区间，开始index加一，如果成员大于开始值就将前面区间，最后带上尾部</p>
+<p><img src="/img/algorithm.11/rotate_right.png" style="height: 200px" alt=""></p>
 
-<pre><code class="language-python">def missing_ranges(arr, lo, hi):
-    res, start = [], lo
-
-    for n in arr:
-        if n == start:
-            start += 1
-        elif n &gt; start:
-            res.append((start, n - 1))
-            start = n + 1
-
-    if start &lt;= hi:
-        res.append((start, hi))
-
-    return res
-
-arr = [4, 9]
-lo = 1
-hi = 15
-
-res = missing_ranges(arr, lo, hi)
-
-assert len(res) == 3
-assert res[0] == (1, 3)
-assert res[1] == (5, 8)
-assert res[2] == (10, 15)
+<pre><code class="language-python">def rotate_right(self):
+    new_root = self.node.left.node
+    new_sub_left = new_root.right.node
+    old_root = self.node
+    new_root.right.node = old_root
+    old_root.left.node = new_sub_left
+    self.node = new_root
 </code></pre>
 
-<ul>
-<li>移动zeros</li>
-</ul>
+<p>根据平衡因子的情况，将失衡后的树分为四种情况</p>
 
-<p>跳过成员为0的，并计算为0的次数</p>
+<p><img src="/img/algorithm.11/bf.png" style="height: 400px" alt=""></p>
 
-<pre><code class="language-python">def move_zeros(array):
-    res, num = [], 0
+<p>删除节点，按节点值大小找到对应节点后，找出右子树中最小节点，删除它后作为新根节点的右子树，将这个节点作为新的根节点，原根节点的左子树作为新节点的左子树</p>
 
-    for i in range(len(array)):
-        if array[i] is 0:
-            num += 1
+<pre><code class="language-python">    def delete_node(self, value):
+        if not self.node:
+            return
+
+        if value &gt; self.node.value:
+            self.node.right.delete_node(value)
+        elif value &lt; self.node.value:
+            self.node.left.delete_node(value)
         else:
-            res.append(array[i])
+            if not self.node.left.node:
+                self.node = self.node.right.node
+            elif not self.node.right.node:
+                self.node = self.node.left.node
+            else:
+                new_node = min_node(self.node.right.node)
+                new_node.right.node = delete_min(self.node.right.node)
+                new_node.left = self.node.left
+                self.node = new_node
 
-    return res + [0] * num
-
-assert move_zeros([False, 1, 0, 1, 2, 0, 1, 3, &quot;a&quot;]) == [
-    False, 1, 1, 2, 1, 3, &quot;a&quot;, 0, 0]
-</code></pre>
-
-<ul>
-<li>旋转</li>
-</ul>
-
-<pre><code class="language-python">def rotate(arr, k):
-    len_arr = len(arr)
-    k %= len_arr
-    return arr[len_arr - k:] + arr[:-k]
-
-
-assert rotate([1, 2, 3, 4, 5, 6, 7, 8], 4) == [5, 6, 7, 8, 1, 2, 3, 4]
-</code></pre>
-
-<ul>
-<li>找出连续区间</li>
-</ul>
-
-<p>数组成员前一个和后一个相减，过滤掉绝对值为1的，最后通过index找出连续区间</p>
-
-<pre><code class="language-python">def summarize_ranges(arr):
-    rec = [arr[i] - arr[i - 1] for i in range(1, len(arr))]
-    idx = [index for index, x in enumerate(rec) if x != 1]
-
-    res, start = [], 0
-    for x in idx:
-        res.append((arr[start], arr[x]))
-        start = x + 1
-    res.append((arr[start], arr[-1]))
-
-    return res
-
-
-arr = [0, 1, 2, 4, 5, 7, 8, 9, 10, 11, 20, 21]
-res = summarize_ranges(arr)
-assert res[0] == (0, 2)
-assert res[1] == (4, 5)
-assert res[2] == (7, 11)
-assert res[3] == (20, 21)
+        self.update_heights()
+        self.update_balances()
 </code></pre>
             </article>
           </div>
