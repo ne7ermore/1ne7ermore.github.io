@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Golang on Nevermore</title>
+    <title>golang on Nevermore</title>
     <link>https://ne7ermore.github.io/tags/golang/</link>
-    <description>Recent content in Golang on Nevermore</description>
+    <description>Recent content in golang on Nevermore</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <lastBuildDate>Wed, 30 May 2018 13:00:25 +0800</lastBuildDate>
@@ -18,8 +18,7 @@
       
       <guid>https://ne7ermore.github.io/post/go-rbac/</guid>
       <description>&lt;p&gt;Role-Based Access Control(下简称rbac)
-以角色为基础的访问控制模型，通过角色连接用户和权限，达到两者解耦的目的
-&lt;/p&gt;</description>
+以角色为基础的访问控制模型，通过角色连接用户和权限，达到两者解耦的目的&lt;/p&gt;</description>
     </item>
     
     <item>
@@ -28,8 +27,7 @@
       <pubDate>Fri, 13 Apr 2018 13:00:25 +0800</pubDate>
       
       <guid>https://ne7ermore.github.io/post/golang-unsafe/</guid>
-      <description>&lt;p&gt;Unsafe包很有意思，源码中短短几行代码，剩下更多的是注释，初略一看感觉并不重要，其实恰恰相反，很多package中都有它的影子，比如reflect
-&lt;/p&gt;</description>
+      <description>&lt;p&gt;Unsafe包很有意思，源码中短短几行代码，剩下更多的是注释，初略一看感觉并不重要，其实恰恰相反，很多package中都有它的影子，比如reflect&lt;/p&gt;</description>
     </item>
     
     <item>
@@ -38,8 +36,7 @@
       <pubDate>Tue, 10 Apr 2018 13:00:25 +0800</pubDate>
       
       <guid>https://ne7ermore.github.io/post/bitsort/</guid>
-      <description>&lt;p&gt;介绍一个时间和空间复杂度都比较合理的排序方式 - 位排序
-&lt;/p&gt;</description>
+      <description>&lt;p&gt;介绍一个时间和空间复杂度都比较合理的排序方式 - 位排序&lt;/p&gt;</description>
     </item>
     
     <item>
@@ -48,8 +45,7 @@
       <pubDate>Tue, 10 Apr 2018 13:00:25 +0800</pubDate>
       
       <guid>https://ne7ermore.github.io/post/golang-sort/</guid>
-      <description>&lt;p&gt;Golang sort包相对独立，并且能帮助理解和使用golang中的interface
-&lt;/p&gt;</description>
+      <description>&lt;p&gt;Golang sort包相对独立，并且能帮助理解和使用golang中的interface&lt;/p&gt;</description>
     </item>
     
   </channel>

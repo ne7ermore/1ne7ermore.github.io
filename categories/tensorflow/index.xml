@@ -19,8 +19,7 @@
       <guid>https://ne7ermore.github.io/post/actor-critic/</guid>
       <description>&lt;p&gt;强化学习 - Actor Critic&lt;/p&gt;
 
-&lt;p&gt;基于Actor Critic算法使用TensorFlow实现Cart-Pole
-&lt;/p&gt;</description>
+&lt;p&gt;基于Actor Critic算法使用TensorFlow实现Cart-Pole&lt;/p&gt;</description>
     </item>
     
   </channel>

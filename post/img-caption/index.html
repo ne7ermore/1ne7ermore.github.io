@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+ <title>Image Captioning </title>
+
+
+
+<meta name="description" content="伤口是光能照进来的地方">
+
+
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="all,follow">
+<meta name="googlebot" content="index,follow,snippet,archive">
+<link rel="stylesheet" id="ct-tracks-google-fonts-css" href="//fonts.googleapis.com/css?family=Raleway%3A400%2C700&amp;subset=latin%2Clatin-ext&amp;ver=4.7.2" type="text/css" media="all">
+<link rel="stylesheet" href="https://ne7ermore.github.io/css/font-awesome.min.css" type='text/css' media='all'>
+
+<link href="https://ne7ermore.github.io/css/style.css" rel="stylesheet" id="theme-stylesheet" type='text/css' media='all'>
+
+<link href="https://ne7ermore.github.io/css/custom.css" rel="stylesheet" type='text/css' media='all'>
+<link rel="shortcut icon" href="https://ne7ermore.github.io/img/favicon.jpeg" type="image/x-icon">
+<link rel="icon" href="https://ne7ermore.github.io/img/favicon.jpeg" type="image/x-icon">
+
+
+</head>
+
+
+<body class="post-template-default single single-post single-format-standard ct-body singular singular-post not-front standard">
+  
+  <div id="overflow-container" class="overflow-container">
+    <a class="skip-content" href="#main">Skip to content</a>
+    <header id="site-header" class="site-header" role="banner">
+      <div class='top-navigation'>
+        <div class='container'>
+
+  <div id="menu-secondary" class="menu-container menu-secondary" role="navigation">
+    <button id="toggle-secondary-navigation" class="toggle-secondary-navigation"><i class="fa fa-plus"></i></button>
+
+    <div class="menu">
+
+      <ul id="menu-secondary-items" class="menu-secondary-items">
+        
+        <li id="menu-item" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item">
+          <a href="/categories/tensorflow">TensorFlow</a>
+        </li>
+        
+        <li id="menu-item" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item">
+          <a href="/categories/code">code</a>
+        </li>
+        
+        <li id="menu-item" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item">
+          <a href="/categories/deep-learning">deep-learning</a>
+        </li>
+        
+        <li id="menu-item" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item">
+          <a href="/categories/reinforce-learning">reinforce-learning</a>
+        </li>
+        
+
+      </ul>
+
+    </div>
+
+  </div>
+
+
+  <ul class="social-media-icons">
+
+
+    
+
+    
+
+    
+
+    
+
+    
+    <li>
+      <a href="mailto:liaoyuanhuo1987@gmail.com" data-animate-hover="pulse" class="email">
+        <i class="fa fa-envelope" title="email"></i>
+        <span class="screen-reader-text">email</span>
+      </a>
+    </li>
+    
+
+    
+
+    
+
+
+    
+    <li>
+      <a href="https://github.com/ne7ermore" data-animate-hover="pulse" class="github" target="_blank">
+        <i class="fa fa-github" title="github"></i>
+        <span class="screen-reader-text">github</span>
+      </a>
+    </li>
+    
+
+  </ul></div>
+
+      </div>
+
+      <div class="container">
+        <div id="title-info" class="title-info">
+  <div id='site-title' class='site-title'>
+    
+    <a href="/"> Nevermore </a>
+    </div>
+  </div>
+  <button id="toggle-navigation" class="toggle-navigation">
+    <i class="fa fa-bars"></i>
+  </button>
+
+  <div id="menu-primary-tracks" class="menu-primary-tracks"></div>
+  <div id="menu-primary" class="menu-container menu-primary" role="navigation">
+    
+    <p class="site-description">Why so serious</p>
+    
+
+    <div class="menu">
+      <ul id="menu-primary-items" class="menu-primary-items">
+        
+        
+        <li id="menu-item" class='menu-item menu-item-type-custom menu-item-object-custom '>
+          <a href="https://ne7ermore.github.io/">Home</a>
+        </li>
+        
+        <li id="menu-item" class='menu-item menu-item-type-post_type menu-item-object-page '>
+          <a href="https://ne7ermore.github.io/intro/">Intro</a>
+        </li>
+        
+      </ul>
+    </div>
+
+  </div>
+
+      </div>
+    </header>
+
+    <div id="main" class="main" role="main">
+
+      
+  <div id="loop-container" class="loop-container">
+    
+    <div class="post type-post status-publish format-standard has-post-thumbnail hentry category-design tag-design tag-standard-2 tag-tagalicious tag-travel entry full-without-featured odd excerpt-1">
+
+      <div class='featured-image lazy lazy-bg-image' data-background="https://ne7ermore.github.io/img/imgcaption/imgcap.jpg">
+      </div>
+      
+        <div class="entry-meta">
+          <span class="date">March 22</span>	<span> / </span>
+
+          <span class="author">
+            
+            <a href="https://ne7ermore.github.io" title="Posts by Nevermore" rel="author">Nevermore</a>
+            
+          </span>
+
+
+          
+          <span class="category">
+            <span> / </span>
+
+            <a href="/categories/deep-learning">deep-learning</a>
+          </span>
+          
+
+
+        </div>
+        <div class='entry-header'>
+          <h1 class='entry-title'> Image Captioning</h1>
+        </div>
+        <div class="entry-container">
+          <div class="entry-content">
+            <article>
+              <p>强化学习实现看图说话</p>
+
+<p><a href="https://github.com/ne7ermore/torch-light/tree/master/Image-Cap">代码</a></p>
+
+<p>模型 <a href="https://arxiv.org/abs/1706.09601">Actor-Critic Sequence Training for Image Captioning</a></p>
+
+<p>训练数据：微软Common Objects in COntext（coco）</p>
+
+<p>模型如文章封面图，在传统的seq2seq基础上加入了价值模型（Critic）作为强化学习中的baseline。</p>
+
+<p>首先简单介绍下传统seq2seq实现的图片到文字，使用CNN模型作为提取图片高维特征的输入端，将特征向量初始化RNN的Hidden State，以序列的形式生成文字。</p>
+
+<p>本期的强化学习使用的Actor-Critic算法（下面简称AC），许多state-of-the-art模型使用该算法作为基础，比如AlphaGo。</p>
+
+<p>区别于另一种巧妙的强化学习算法Self-Critic，AC需要多实现一个Critic模型。</p>
+
+<p>CNN模型 - Inception V3</p>
+
+<p>RNN模型 - LSTM</p>
+
+<p>Reward（奖励）- Rouge-L</p>
+
+<p>为了在采样中降低出现重复样本的概率，笔者加入了self attention，而没有使用Beam Search。</p>
+
+<p>模型使用蒙特卡洛采样，折扣因子固定为1</p>
+
+<p>模型训练流程</p>
+
+<p>先单独训练Actor模型。
+固定住Actor模型参数，用其生成样本作为Critc模型的输入，使Critc和Actor生成样本无限趋近于相等。
+最后，每一个迭代分别训练Criric和Actor</p>
+
+<p><img src="/img/imgcaption/algor.1.jpg" style="height: 350px" alt=""></p>
+
+<h4 id="代码">代码</h4>
+
+<p>Actor模型实现</p>
+
+<p>64~94行：teacher forcing和采样生成word</p>
+
+<p><img src="/img/imgcaption/code1.jpg" style="height: 750px" alt=""></p>
+
+<p>Self Attention实现</p>
+
+<p><img src="/img/imgcaption/code2.jpg" style="height: 450px" alt=""></p>
+
+<p>Critic模型实现</p>
+
+<p>输出actor生成文本的评估分值</p>
+
+<p><img src="/img/imgcaption/code3.jpg" style="height: 600px" alt=""></p>
+
+<p>Rouge-L实现</p>
+
+<p><img src="/img/imgcaption/code4.jpg" style="height: 600px" alt=""></p>
+
+<h4 id="结果">结果</h4>
+
+<p>由于coco数据量太大，训练非常耗时，笔者在耐心耗尽后模型才训练了几个迭代，不过结果差强人意 : )</p>
+
+<p>Captioning - <strong>Desk with a computer and a laptop on it.</strong></p>
+
+<p><img src="/img/imgcaption/img1.jpg" style="height: 500px" alt=""></p>
+
+<p>Captioning - <strong>City street filled with lots of tall buildings.</strong></p>
+
+<p><img src="/img/imgcaption/img2.jpg" style="height: 450px" alt=""></p>
+
+<p>Captioning - <strong>Vase with a flower in it sitting on a table.</strong></p>
+
+<p><img src="/img/imgcaption/img3.jpg" style="height: 500px" alt=""></p>
+
+<p>Captioning - <strong>Man wearing a black jacket and a white shirt.</strong></p>
+
+<p><img src="/img/imgcaption/img4.jpg" style="height: 400px" alt=""></p>
+
+<p>Captioning - <strong>Cat is laying on a couch with a stuffed animal.</strong></p>
+
+<p><img src="/img/imgcaption/img5.jpg" style="height: 400px" alt=""></p>
+            </article>
+          </div>
+          
+      <div class='entry-meta-bottom'>
+        
+
+  <div class="entry-categories"><p><span>Categories</span>
+    
+    <a href="/categories/tensorflow" title="View all posts in TensorFlow">TensorFlow</a>
+    <a href="/categories/code" title="View all posts in code">code</a>
+    <a href="/categories/deep-learning" title="View all posts in deep-learning">deep-learning</a>
+    <a href="/categories/reinforce-learning" title="View all posts in reinforce-learning">reinforce-learning</a>
+  </p>
+</div>
+
+
+
+<div class="entry-tags"><p><span>Tags</span>
+  
+  <a href="/tags/golang" title="View all posts tagged golang">golang</a>
+  
+  <a href="/tags/python" title="View all posts tagged python">python</a>
+  
+  <a href="/tags/%E7%AE%97%E6%B3%95" title="View all posts tagged 算法">算法</a>
+  
+
+</p></div>	</div>
+
+<div class="author-meta">
+
+  <div class="author">
+    <img alt='Nevermore' src="https://www.gravatar.com/avatar/441d6f3623599f66569ae8478cf21f68?s=100&d=identicon" class='avatar avatar-72 photo' height='72' width='72'>
+
+    <span>
+      Written by:<a href="https://ne7ermore.github.io" title="Posts by Nevermore" rel="author">Nevermore</a>        </span>
+    </div>
+    <div class="bio">
+      
+      <p>步步生姿，空锁满庭花雨。胜将娇花比。</p>
+      
+
+
+      
+
+    
+
+
+  
+
+
+
+<a class="email" target="_blank"
+href="mailto:liaoyuanhuo1987@gmail.com">
+<i class="fa fa-envelope"
+title="email icon"></i>
+</a>
+
+
+
+
+
+
+
+<a class="github" target="_blank"
+href="https://github.com/ne7ermore">
+<i class="fa fa-github"
+title="github icon"></i>
+</a>
+
+
+</div>
+</div>
+
+</div>
+</div>
+
+<section id="comments" class="comments">
+  
+
+  
+
+
+
+
+</section>
+</div>
+
+ 
+
+
+
+    </div>
+
+    <footer id="site-footer" class="site-footer" role="contentinfo">
+	<h1>
+    
+    <a href=""> Nevermore </a>
+    
+	</h1>
+
+			
+			<p class="site-description">Why so serious</p>
+			
+
+		<div id="menu-footer" class="menu-container menu-footer" role="navigation">
+		<div class="menu">
+
+      <ul id="menu-footer-items" class="menu-footer-items">
+        
+</ul>
+
+</div>	</div>
+
+<ul class="social-media-icons">
+
+        
+
+        
+
+
+        
+
+        
+
+        
+        <li>
+        <a href="mailto:liaoyuanhuo1987@gmail.com"  class="email">
+            <i class="fa fa-envelope" title="email"></i>
+            <span class="screen-reader-text">email</span>
+        </a>
+        </li>
+        
+
+        
+
+        
+
+
+        
+        <li>
+        <a href="https://github.com/ne7ermore"  class="github" target="_blank">
+            <i class="fa fa-github" title="github"></i>
+            <span class="screen-reader-text">github</span>
+        </a>
+        </li>
+        
+				</ul>	<div class="design-credit">
+		
+		<p>&copy; Nevermore | 2019</p>
+		
+    </div>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/x-mathjax-config">
+        MathJax.Hub.Config({
+            tex2jax: {
+            inlineMath: [['$','$'], ['\\(','\\)']],
+            displayMath: [['$$','$$'], ['\[','\]']],
+            processEscapes: true,
+            processEnvironments: true,
+            skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+            TeX: { equationNumbers: { autoNumber: "AMS" },
+                extensions: ["AMSmath.js", "AMSsymbols.js"] }
+            }
+        });
+    </script>
+</footer>
+
+  </div>
+  <script src="https://ne7ermore.github.io/js/jquery.min.js"></script>
+<script src="https://ne7ermore.github.io/js/jquerymigrate.js"></script>
+<script src="https://ne7ermore.github.io/js/production.min.js"></script>
+
+</body>
+</html>

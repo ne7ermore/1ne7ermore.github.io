@@ -11,7 +11,16 @@
     
     
     <item>
-      <title>Code</title>
+      <title>TensorFlow</title>
+      <link>https://ne7ermore.github.io/categories/tensorflow/</link>
+      <pubDate>Mon, 16 Apr 2018 13:00:25 +0800</pubDate>
+      
+      <guid>https://ne7ermore.github.io/categories/tensorflow/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>code</title>
       <link>https://ne7ermore.github.io/categories/code/</link>
       <pubDate>Thu, 04 Jan 2018 15:00:25 +0800</pubDate>
       
@@ -20,7 +29,7 @@
     </item>
     
     <item>
-      <title>Deep-learning</title>
+      <title>deep-learning</title>
       <link>https://ne7ermore.github.io/categories/deep-learning/</link>
       <pubDate>Tue, 06 Nov 2018 13:00:25 +0800</pubDate>
       
@@ -29,20 +38,11 @@
     </item>
     
     <item>
-      <title>Reinforce-learning</title>
+      <title>reinforce-learning</title>
       <link>https://ne7ermore.github.io/categories/reinforce-learning/</link>
       <pubDate>Mon, 10 Sep 2018 13:00:25 +0800</pubDate>
       
       <guid>https://ne7ermore.github.io/categories/reinforce-learning/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>TensorFlow</title>
-      <link>https://ne7ermore.github.io/categories/tensorflow/</link>
-      <pubDate>Mon, 16 Apr 2018 13:00:25 +0800</pubDate>
-      
-      <guid>https://ne7ermore.github.io/categories/tensorflow/</guid>
       <description></description>
     </item>
     

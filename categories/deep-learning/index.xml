@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Deep-learning on Nevermore</title>
+    <title>deep-learning on Nevermore</title>
     <link>https://ne7ermore.github.io/categories/deep-learning/</link>
-    <description>Recent content in Deep-learning on Nevermore</description>
+    <description>Recent content in deep-learning on Nevermore</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <lastBuildDate>Tue, 06 Nov 2018 13:00:25 +0800</lastBuildDate>
@@ -44,8 +44,7 @@
       <pubDate>Thu, 14 Jun 2018 13:00:25 +0800</pubDate>
       
       <guid>https://ne7ermore.github.io/post/hierarchical-sc/</guid>
-      <description>&lt;p&gt;介绍一篇阅读理解和情感分类耦合的论文
-&lt;/p&gt;</description>
+      <description>&lt;p&gt;介绍一篇阅读理解和情感分类耦合的论文&lt;/p&gt;</description>
     </item>
     
     <item>
@@ -54,8 +53,7 @@
       <pubDate>Thu, 07 Jun 2018 13:00:25 +0800</pubDate>
       
       <guid>https://ne7ermore.github.io/post/retrieval-based-chatbots/</guid>
-      <description>&lt;p&gt;介绍一篇多轮对话任务的论文
-&lt;/p&gt;</description>
+      <description>&lt;p&gt;介绍一篇多轮对话任务的论文&lt;/p&gt;</description>
     </item>
     
     <item>
@@ -64,9 +62,7 @@
       <pubDate>Sun, 13 May 2018 13:00:25 +0800</pubDate>
       
       <guid>https://ne7ermore.github.io/post/facial-bp/</guid>
-      <description>&lt;p&gt;Facial Beauty Prediction&lt;/p&gt;
-
-&lt;p&gt;&lt;/p&gt;</description>
+      <description>&lt;p&gt;Facial Beauty Prediction&lt;/p&gt;</description>
     </item>
     
     <item>
@@ -76,8 +72,7 @@
       
       <guid>https://ne7ermore.github.io/post/yolo-v3/</guid>
       <description>&lt;p&gt;Pytorch实现You Only Look Once - V3（下简称yolo）
-yolo是一种使用深度卷积神经网络学得的特征来检测对象的目标检测器
-&lt;/p&gt;</description>
+yolo是一种使用深度卷积神经网络学得的特征来检测对象的目标检测器&lt;/p&gt;</description>
     </item>
     
     <item>
@@ -86,8 +81,7 @@ yolo是一种使用深度卷积神经网络学得的特征来检测对象的目�
       <pubDate>Wed, 11 Apr 2018 13:00:25 +0800</pubDate>
       
       <guid>https://ne7ermore.github.io/post/vae/</guid>
-      <description>&lt;p&gt;介绍一个Variational Auto-Encoder生成中国五言绝句的算法
-&lt;/p&gt;</description>
+      <description>&lt;p&gt;介绍一个Variational Auto-Encoder生成中国五言绝句的算法&lt;/p&gt;</description>
     </item>
     
     <item>
@@ -98,8 +92,52 @@ yolo是一种使用深度卷积神经网络学得的特征来检测对象的目�
       <guid>https://ne7ermore.github.io/post/actor-critic/</guid>
       <description>&lt;p&gt;强化学习 - Actor Critic&lt;/p&gt;
 
-&lt;p&gt;基于Actor Critic算法使用TensorFlow实现Cart-Pole
-&lt;/p&gt;</description>
+&lt;p&gt;基于Actor Critic算法使用TensorFlow实现Cart-Pole&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>Image Captioning</title>
+      <link>https://ne7ermore.github.io/post/img-caption/</link>
+      <pubDate>Thu, 22 Mar 2018 22:00:25 +0800</pubDate>
+      
+      <guid>https://ne7ermore.github.io/post/img-caption/</guid>
+      <description>&lt;p&gt;强化学习实现看图说话&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>Tensorflow newer</title>
+      <link>https://ne7ermore.github.io/post/tfnew/</link>
+      <pubDate>Fri, 05 Jan 2018 10:00:25 +0800</pubDate>
+      
+      <guid>https://ne7ermore.github.io/post/tfnew/</guid>
+      <description>&lt;p&gt;TensorFlow入门&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>Neural Artistic Style</title>
+      <link>https://ne7ermore.github.io/post/nas/</link>
+      <pubDate>Sun, 24 Dec 2017 10:00:25 +0800</pubDate>
+      
+      <guid>https://ne7ermore.github.io/post/nas/</guid>
+      <description>&lt;p&gt;风格迁移&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>dc gan</title>
+      <link>https://ne7ermore.github.io/post/dcgan/</link>
+      <pubDate>Sun, 24 Dec 2017 10:00:25 +0800</pubDate>
+      
+      <guid>https://ne7ermore.github.io/post/dcgan/</guid>
+      <description>&lt;p&gt;DC-GAN&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>DenseNet</title>
+      <link>https://ne7ermore.github.io/post/densenet/</link>
+      <pubDate>Mon, 11 Dec 2017 10:00:25 +0800</pubDate>
+      
+      <guid>https://ne7ermore.github.io/post/densenet/</guid>
+      <description>&lt;p&gt;DenseNet for CIFAR-100&lt;/p&gt;</description>
     </item>
     
   </channel>

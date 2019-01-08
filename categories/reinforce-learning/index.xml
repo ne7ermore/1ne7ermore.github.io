@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Reinforce-learning on Nevermore</title>
+    <title>reinforce-learning on Nevermore</title>
     <link>https://ne7ermore.github.io/categories/reinforce-learning/</link>
-    <description>Recent content in Reinforce-learning on Nevermore</description>
+    <description>Recent content in reinforce-learning on Nevermore</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <lastBuildDate>Mon, 10 Sep 2018 13:00:25 +0800</lastBuildDate>
@@ -28,8 +28,7 @@
       <guid>https://ne7ermore.github.io/post/actor-critic/</guid>
       <description>&lt;p&gt;强化学习 - Actor Critic&lt;/p&gt;
 
-&lt;p&gt;基于Actor Critic算法使用TensorFlow实现Cart-Pole
-&lt;/p&gt;</description>
+&lt;p&gt;基于Actor Critic算法使用TensorFlow实现Cart-Pole&lt;/p&gt;</description>
     </item>
     
   </channel>

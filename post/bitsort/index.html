@@ -175,8 +175,7 @@
         <div class="entry-container">
           <div class="entry-content">
             <article>
-              <p>介绍一个时间和空间复杂度都比较合理的排序方式 - 位排序
-</p>
+              <p>介绍一个时间和空间复杂度都比较合理的排序方式 - 位排序</p>
 
 <p>不同于堆排、快排、融合排序，位排序的思想简单粗暴。假设对一组不重复且属于[0, 10000000)区间的数A进行排序，初始化一个长度为10000000的数组，所有成员值默认为0，然后遍历A，假如存在，就在数组对应的index上修改为1；最后遍历数组，去掉为0的成员，并将值为1的成员值替换成对应index，排序就完成了。不过这样操作有个缺点，空间复杂度过高，所以就有了位排序。</p>
 
@@ -372,9 +371,23 @@ title="github icon"></i>
         
 				</ul>	<div class="design-credit">
 		
-		<p>&copy; Nevermore | 2018</p>
+		<p>&copy; Nevermore | 2019</p>
 		
-	</div>
+    </div>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/x-mathjax-config">
+        MathJax.Hub.Config({
+            tex2jax: {
+            inlineMath: [['$','$'], ['\\(','\\)']],
+            displayMath: [['$$','$$'], ['\[','\]']],
+            processEscapes: true,
+            processEnvironments: true,
+            skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+            TeX: { equationNumbers: { autoNumber: "AMS" },
+                extensions: ["AMSmath.js", "AMSsymbols.js"] }
+            }
+        });
+    </script>
 </footer>
 
   </div>
