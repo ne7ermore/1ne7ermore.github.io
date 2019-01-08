@@ -140,5 +140,23 @@ yolo是一种使用深度卷积神经网络学得的特征来检测对象的目�
       <description>&lt;p&gt;DenseNet for CIFAR-100&lt;/p&gt;</description>
     </item>
     
+    <item>
+      <title>Bi-directional LSTM-CNNs-CRF</title>
+      <link>https://ne7ermore.github.io/post/crf/</link>
+      <pubDate>Tue, 07 Nov 2017 10:00:25 +0800</pubDate>
+      
+      <guid>https://ne7ermore.github.io/post/crf/</guid>
+      <description>&lt;p&gt;Bi-directional LSTM-CNNs-CRF&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>CNN文本分类</title>
+      <link>https://ne7ermore.github.io/post/cnn/</link>
+      <pubDate>Tue, 07 Nov 2017 10:00:25 +0800</pubDate>
+      
+      <guid>https://ne7ermore.github.io/post/cnn/</guid>
+      <description>&lt;p&gt;Bi-directional LSTM-CNNs-CRF&lt;/p&gt;</description>
+    </item>
+    
   </channel>
 </rss>

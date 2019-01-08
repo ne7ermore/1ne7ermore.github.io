@@ -2,7 +2,7 @@
 <html lang="en-us">
 <head><meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
- <title>DenseNet </title>
+ <title>Bi-directional LSTM-CNNs-CRF </title>
 
 
 
@@ -146,11 +146,11 @@
     
     <div class="post type-post status-publish format-standard has-post-thumbnail hentry category-design tag-design tag-standard-2 tag-tagalicious tag-travel entry full-without-featured odd excerpt-1">
 
-      <div class='featured-image lazy lazy-bg-image' data-background="https://ne7ermore.github.io/img/dn/img1.jpg">
+      <div class='featured-image lazy lazy-bg-image' data-background="https://ne7ermore.github.io/img/crf/img1.jpg">
       </div>
       
         <div class="entry-meta">
-          <span class="date">December 11</span>	<span> / </span>
+          <span class="date">November 07</span>	<span> / </span>
 
           <span class="author">
             
@@ -170,76 +170,82 @@
 
         </div>
         <div class='entry-header'>
-          <h1 class='entry-title'> DenseNet</h1>
+          <h1 class='entry-title'> Bi-directional LSTM-CNNs-CRF</h1>
         </div>
         <div class="entry-container">
           <div class="entry-content">
             <article>
-              <p>DenseNet for CIFAR-100</p>
+              <p>Bi-directional LSTM-CNNs-CRF</p>
 
-<p><a href="https://github.com/ne7ermore/torch_light/tree/master/DenseNet">代码</a></p>
+<p><a href="https://github.com/ne7ermore/torch_light/tree/master/LSTM-CNNs-CRF">代码</a></p>
 
 <p>下期开始会逐步实现一些有意思的Computer Vision相关内容。本期实现一个DenseNet在CIFAR-100上分类。</p>
 
-<p>首先介绍一下Pytorch自带专注处理图像相关任务的库torchvision，主要有3个包。</p>
+<blockquote>
+<p>CRF-条件随机场</p>
+</blockquote>
 
-<ul>
-<li>datasats：数据相关，包括CIFAR，SVHN， MNIST等等，所有对象都继承于一个抽象类data.Dataset</li>
-<li>models：计算机视图模型，包括DenseNet，ResNet，AlexNet等等，代码中还有所有模型对应的已经训练好的模型参数下载地址，方便用于迁移训练。</li>
-<li>transforms：用于图片预处理。
-这里举个图片提取和预处理的样例，<a href="https://github.com/ne7ermore/torch_light/blob/master/DenseNet/train.py#L47">代码出处</a>：</li>
-</ul>
+<p>Conditional Random Fields，简称CRF</p>
 
-<p><img src="/img/dn/img2.jpg" style="height: 400px" alt=""></p>
+<p>给定一组输入序列的条件下输出另一组序列的条件概率分布，判别式模型。</p>
 
-<p>DenseNet论文浅析</p>
+<p>CRF优点：着眼于局部最优解，在已给出 z 的条件下计算可能的序列 y 的概率分布</p>
 
-<p>CNN作为图像识别主要手段，从最早的LeNet5到VGG，GoogleNet，ResNet，DenseNet，可见模型层数越来越深，就有一个无法绕过的问题：特征随着模型的深入而丢失。GoogleNet解决方法是每一个block使用不同size的kernel、ResNet则是使用 $y = f( x,{ \omega }) + x$ ，DenseNet的思想可以使用图1诠释：</p>
+<p><img src="/img/crf/img2.jpg" style="height: 200px" alt=""></p>
 
-<p><img src="/img/dn/img3.jpg" style="height: 100px" alt=""></p>
+<p>LSTM优点：获取长时间序列上样本与样本之间的关系。而BiLSTM可以更有效的获取上下文的特征。</p>
 
-<p>模型使用一层BN-ReLU-Conv(3×3)接入，中间为N个Dense Block和N-1个Transition，最后一层BN-ReLU-avgPool-FC作为输出。</p>
+<p>BiLSTM+CRF已在NLP多数场景中表现出让人意想不到的效果。比如分词，相比于传统的分词器，BiLSTM能发挥双向获取句子特征这一优势，分词效果更接近人的感觉。</p>
 
-<p>DenseNet-B中Dense Block使用k个BN-ReLU-Conv(1×1)-BN-ReLU-Conv(3×3)，k个层与层之间的输入来自于1 ~ k-1层的输出按channel维度拼接在一起(如图1所示)，更多细节会在代码实现中解释。</p>
+<p><a href="https://github.com/ne7ermore/torch_light/tree/master/biLSTM-CRF-cut">分词实现</a>的一个简单例子：</p>
 
-<h4 id="代码实现">代码实现</h4>
+<pre><code>&gt;&gt;&gt; print(sg.sentence_cut(&quot;ngram是自然语言处理中一个非常重要的概念，通常在NLP中，
+        人们基于一定的语料库，可以利用ngram来预计或者评估一个句子是否合理。
+        另外一方面，ngram的另外一个作用是用来评估两个字符串之间的差异程度。
+        这是模糊匹配中常用的一种手段。本文将从此开始，
+        进而向读者展示ngram在自然语言处理中的各种powerful的应用&quot;))
 
-<p>DenseBlock中单层layer实现</p>
-
-<p>41行 - 本层的总输出是本层输入通过本层网络输出后按channel维度拼接输入后输出</p>
-
-<p><img src="/img/dn/img4.jpg" style="height: 400px" alt=""></p>
-
-<p>DenseBlock实现</p>
-
-<p>51行 - 按num_layers生成denselayer组，growth_rate是增长率，具体可查看图2中35行</p>
-
-<p><img src="/img/dn/img5.jpg" style="height: 150px" alt=""></p>
-
-<p>Transition实现，使用AvgPool</p>
-
-<p><img src="/img/dn/img6.jpg" style="height: 350px" alt=""></p>
-
-<p>DenseNet</p>
-
-<p>60 ~ 64行 - 第一层接入 BN-ReLU-Conv(3×3)</p>
-
-<p>70行 - DenseBlock与DenseBlock中间的输出/输入处理</p>
-
-<p>74 ~ 83行 - 最后一层BN-ReLU-avgPool-FC作为输出</p>
-
-<p><img src="/img/dn/img7.jpg" style="height: 500px" alt=""></p>
-
-<p>超参数</p>
-
-<p>学习率初始0.1，每1/3总迭代数变为lr/10</p>
-
-<pre><code>args.layer_nums = [(args.depth-4)//6 for _ in range(3)]
+['ngram', '是', '自然语言', '处理', '中', '一个', '非常', '重要', '的', '概念',
+ '，', '通常', '在', 'NLP', '中', '，', '人们', '基于', '一定', '的', '语料库',
+ '，', '可以', '利用', 'ngram', '来', '预计', '或者', '评估', '一个', '句子',
+ '是否', '合理', '。', '另外', '一方面', '，', 'ngram', '的', '另外', '一个',
+ '作用', '是', '用来', '评估', '两个', '字符串', '之间', '的', '差异', '程度',
+ '。', '这是', '模糊匹配', '中', '常用', '的', '一种', '手段', '。', '本文', '将',
+  '从此', '开始', '，', '进而', '向', '读者', '展示', 'ngram', '在', '自然语言',
+  '处理', '中', '的', '各种', 'powerful', '的', '应用']
 </code></pre>
 
-<p><img src="/img/dn/img8.jpg" style="height: 350px" alt=""></p>
+<p>CNN在Sequence Labeling中多数使用在英文里，它能更好的提取出单词中的形态信息，例如单词的前后缀；中文里，CNN也可以使用在句子里分词后的字层面，获取更多特征，有兴趣的朋友可以试试。</p>
 
-<p><img src="/img/dn/img9.jpg" style="height: 450px" alt=""></p>
+<p>本期模型的实现来自于论文End-to-end Sequence Labeling via Bi-directional LSTM-CNNs-CRF</p>
+
+<p>训练中使用的数据来自于CoNLL 2003</p>
+
+<h3 id="代码">代码</h3>
+
+<p>全部代码链接在文章最后面</p>
+
+<p>Char级的CNN实现</p>
+
+<p>这里初始化embedding权重时使用的Glorot初始化</p>
+
+<p><img src="/img/crf/img3.jpg" style="height: 500px" alt=""></p>
+
+<p>Word级BiLSTM实现</p>
+
+<p><img src="/img/crf/img4.jpg" style="height: 400px" alt=""></p>
+
+<p>CRF的实现学习自tutorial-pytorch，不过教程中是逐条数据训练，而本期代码改进为按mini-batch训练</p>
+
+<p><img src="/img/crf/img5.jpg" style="height: 700px" alt=""></p>
+
+<p>viterbi解码</p>
+
+<p><img src="/img/crf/img6.jpg" style="height: 500px" alt=""></p>
+
+<p>结果 准确率：91.5%</p>
+
+<p><img src="/img/crf/img7.jpg" style="height: 400px" alt=""></p>
             </article>
           </div>
           
