@@ -3,6 +3,11 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   
   <url>
+    <loc>https://ne7ermore.github.io/post/relation-net/</loc>
+    <lastmod>2017-11-07T10:00:25+08:00</lastmod>
+  </url>
+  
+  <url>
     <loc>https://ne7ermore.github.io/post/algorithms.11/</loc>
     <lastmod>2018-01-04T15:00:25+08:00</lastmod>
   </url>
@@ -179,13 +184,13 @@
   
   <url>
     <loc>https://ne7ermore.github.io/</loc>
-    <lastmod>2018-01-04T15:00:25+08:00</lastmod>
+    <lastmod>2017-11-07T10:00:25+08:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
     <loc>https://ne7ermore.github.io/post/</loc>
-    <lastmod>2018-01-04T15:00:25+08:00</lastmod>
+    <lastmod>2017-11-07T10:00:25+08:00</lastmod>
     <priority>0</priority>
   </url>
   
@@ -208,7 +213,7 @@
   
   <url>
     <loc>https://ne7ermore.github.io/categories/deep-learning/</loc>
-    <lastmod>2018-11-06T13:00:25+08:00</lastmod>
+    <lastmod>2017-11-07T10:00:25+08:00</lastmod>
     <priority>0</priority>
   </url>
   
@@ -220,7 +225,7 @@
   
   <url>
     <loc>https://ne7ermore.github.io/tags/python/</loc>
-    <lastmod>2018-01-04T15:00:25+08:00</lastmod>
+    <lastmod>2017-11-07T10:00:25+08:00</lastmod>
     <priority>0</priority>
   </url>
   
@@ -232,7 +237,7 @@
   
   <url>
     <loc>https://ne7ermore.github.io/tags/%E7%AE%97%E6%B3%95/</loc>
-    <lastmod>2018-01-04T15:00:25+08:00</lastmod>
+    <lastmod>2017-11-07T10:00:25+08:00</lastmod>
     <priority>0</priority>
   </url>
   

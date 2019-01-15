@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+ <title>神经网络-推理 </title>
+
+
+
+<meta name="description" content="伤口是光能照进来的地方">
+
+
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="all,follow">
+<meta name="googlebot" content="index,follow,snippet,archive">
+<link rel="stylesheet" id="ct-tracks-google-fonts-css" href="//fonts.googleapis.com/css?family=Raleway%3A400%2C700&amp;subset=latin%2Clatin-ext&amp;ver=4.7.2" type="text/css" media="all">
+<link rel="stylesheet" href="https://ne7ermore.github.io/css/font-awesome.min.css" type='text/css' media='all'>
+
+<link href="https://ne7ermore.github.io/css/style.css" rel="stylesheet" id="theme-stylesheet" type='text/css' media='all'>
+
+<link href="https://ne7ermore.github.io/css/custom.css" rel="stylesheet" type='text/css' media='all'>
+<link rel="shortcut icon" href="https://ne7ermore.github.io/img/favicon.jpeg" type="image/x-icon">
+<link rel="icon" href="https://ne7ermore.github.io/img/favicon.jpeg" type="image/x-icon">
+
+
+</head>
+
+
+<body class="post-template-default single single-post single-format-standard ct-body singular singular-post not-front standard">
+  
+  <div id="overflow-container" class="overflow-container">
+    <a class="skip-content" href="#main">Skip to content</a>
+    <header id="site-header" class="site-header" role="banner">
+      <div class='top-navigation'>
+        <div class='container'>
+
+  <div id="menu-secondary" class="menu-container menu-secondary" role="navigation">
+    <button id="toggle-secondary-navigation" class="toggle-secondary-navigation"><i class="fa fa-plus"></i></button>
+
+    <div class="menu">
+
+      <ul id="menu-secondary-items" class="menu-secondary-items">
+        
+        <li id="menu-item" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item">
+          <a href="/categories/tensorflow">TensorFlow</a>
+        </li>
+        
+        <li id="menu-item" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item">
+          <a href="/categories/code">code</a>
+        </li>
+        
+        <li id="menu-item" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item">
+          <a href="/categories/deep-learning">deep-learning</a>
+        </li>
+        
+        <li id="menu-item" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item">
+          <a href="/categories/reinforce-learning">reinforce-learning</a>
+        </li>
+        
+
+      </ul>
+
+    </div>
+
+  </div>
+
+
+  <ul class="social-media-icons">
+
+
+    
+
+    
+
+    
+
+    
+
+    
+    <li>
+      <a href="mailto:liaoyuanhuo1987@gmail.com" data-animate-hover="pulse" class="email">
+        <i class="fa fa-envelope" title="email"></i>
+        <span class="screen-reader-text">email</span>
+      </a>
+    </li>
+    
+
+    
+
+    
+
+
+    
+    <li>
+      <a href="https://github.com/ne7ermore" data-animate-hover="pulse" class="github" target="_blank">
+        <i class="fa fa-github" title="github"></i>
+        <span class="screen-reader-text">github</span>
+      </a>
+    </li>
+    
+
+  </ul></div>
+
+      </div>
+
+      <div class="container">
+        <div id="title-info" class="title-info">
+  <div id='site-title' class='site-title'>
+    
+    <a href="/"> Nevermore </a>
+    </div>
+  </div>
+  <button id="toggle-navigation" class="toggle-navigation">
+    <i class="fa fa-bars"></i>
+  </button>
+
+  <div id="menu-primary-tracks" class="menu-primary-tracks"></div>
+  <div id="menu-primary" class="menu-container menu-primary" role="navigation">
+    
+    <p class="site-description">Why so serious</p>
+    
+
+    <div class="menu">
+      <ul id="menu-primary-items" class="menu-primary-items">
+        
+        
+        <li id="menu-item" class='menu-item menu-item-type-custom menu-item-object-custom '>
+          <a href="https://ne7ermore.github.io/">Home</a>
+        </li>
+        
+        <li id="menu-item" class='menu-item menu-item-type-post_type menu-item-object-page '>
+          <a href="https://ne7ermore.github.io/intro/">Intro</a>
+        </li>
+        
+      </ul>
+    </div>
+
+  </div>
+
+      </div>
+    </header>
+
+    <div id="main" class="main" role="main">
+
+      
+  <div id="loop-container" class="loop-container">
+    
+    <div class="post type-post status-publish format-standard has-post-thumbnail hentry category-design tag-design tag-standard-2 tag-tagalicious tag-travel entry full-without-featured odd excerpt-1">
+
+      <div class='featured-image lazy lazy-bg-image' data-background="https://ne7ermore.github.io/img/rn/img1.png">
+      </div>
+      
+        <div class="entry-meta">
+          <span class="date">November 07</span>	<span> / </span>
+
+          <span class="author">
+            
+            <a href="https://ne7ermore.github.io" title="Posts by Nevermore" rel="author">Nevermore</a>
+            
+          </span>
+
+
+          
+          <span class="category">
+            <span> / </span>
+
+            <a href="/categories/deep-learning">deep-learning</a>
+          </span>
+          
+
+
+        </div>
+        <div class='entry-header'>
+          <h1 class='entry-title'> 神经网络-推理</h1>
+        </div>
+        <div class="entry-container">
+          <div class="entry-content">
+            <article>
+              <p>A simple neural network module for relational reasoning</p>
+
+<p><a href="https://github.com/ne7ermore/torch-light/tree/master/relation-network">代码</a></p>
+
+<p><a href="https://arxiv.org/abs/1706.01427">论文</a></p>
+
+<p>关系推理是智人的核心行为，目前在深度神经网络中还远远没有达到人类的标准。本期论文介绍一种结构简单且可插拔推理模型，使用纯文本QA数据 - bAbI</p>
+
+<p>模型的核心理念是约束神经网络的某些能力，以便捕获到关系推理中的公共的关键属性，换句话说，关系的推理已经整合到深度神经网络中，不需要额外的学习</p>
+
+<p>一个公式可以表达：</p>
+
+<p><img src="/img/rn/img2.png" style="height: 100px" alt=""></p>
+
+<p>解释：输入 $ O \in \lbrace o_1,o_2,&hellip;.,o_n \rbrace$，$o_i$ 为样本，$f\phi$ 和 $g\theta$ 都是MLP，其中$g\theta$可以视为衡量$o_i$之间关系的网络</p>
+
+<p>模型特点有三：</p>
+
+<ul>
+<li>更多的关注样本内部之间的关系</li>
+<li>对数据的训练效率更高</li>
+<li>操作一个集合</li>
+</ul>
+
+<p>数据集 - bAbI</p>
+
+<p>bAbI为纯文本数据集(数据在代码中&rsquo;data&rsquo;文件中)，分别有20个任务</p>
+
+<p>代码</p>
+
+<pre><code class="language-python">class RelationNet(nn.Module):
+    def __init__(self, word_size, answer_size,
+                 max_s_len, max_q_len, use_cuda,
+                 story_len=20,
+                 emb_dim=32,
+                 story_hsz=32,
+                 story_layers=1,
+                 question_hsz=32,
+                 question_layers=1):
+
+        super().__init__()
+
+        self.use_cuda = use_cuda
+
+        self.max_s_len = max_s_len
+        self.max_q_len = max_q_len
+
+        self.story_len = story_len
+
+        self.emb_dim = emb_dim
+        self.story_hsz = story_hsz
+
+        self.emb = nn.Embedding(word_size, emb_dim)
+
+        # 故事和问题都使用lstm提取上层特征
+        self.story_rnn = torch.nn.LSTM(input_size=emb_dim,
+                                       hidden_size=story_hsz,
+                                       num_layers=story_layers,
+                                       batch_first=True)
+        self.question_rnn = torch.nn.LSTM(input_size=emb_dim,
+                                          hidden_size=question_hsz,
+                                          num_layers=question_layers,
+                                          batch_first=True)
+
+        # 样本关系mlp
+        self.g1 = nn.Linear((2*story_len)+(2*story_hsz)+question_hsz, 256)
+        self.g2 = nn.Linear(256, 256)
+        self.g3 = nn.Linear(256, 256)
+        self.g4 = nn.Linear(256, 256)
+
+        self.f1 = nn.Linear(256, 256)
+        self.f2 = nn.Linear(256, 512)
+        self.f3 = nn.Linear(512, answer_size)
+
+        self._reset_parameters()
+
+    def _reset_parameters(self, stddev=0.1):
+        # 参数初始化
+
+        self.emb.weight.data.normal_(std=stddev)
+
+        self.g1.weight.data.normal_(std=stddev)
+        self.g1.bias.data.fill_(0)
+
+        self.g2.weight.data.normal_(std=stddev)
+        self.g2.bias.data.fill_(0)
+
+        self.g3.weight.data.normal_(std=stddev)
+        self.g3.bias.data.fill_(0)
+
+        self.g4.weight.data.normal_(std=stddev)
+        self.g4.bias.data.fill_(0)
+
+        self.f1.weight.data.normal_(std=stddev)
+        self.f1.bias.data.fill_(0)
+
+        self.f2.weight.data.normal_(std=stddev)
+        self.f2.bias.data.fill_(0)
+
+        self.f3.weight.data.normal_(std=stddev)
+        self.f3.bias.data.fill_(0)
+
+    def g_theta(self, x):
+        # 关系mlp中石油relu作为激活函数
+
+        x = F.relu_(self.g1(x))
+        x = F.relu_(self.g2(x))
+        x = F.relu_(self.g3(x))
+        x = F.relu_(self.g4(x))
+        return x
+
+    def init_tags(self):
+        # 加入样本位置特征
+        
+        tags = torch.zeros((self.story_len, self.story_len))
+        if self.use_cuda:
+            tags = tags.cuda()
+        for i in range(self.story_len):
+            tags[i, i].fill_(1)
+        return tags
+
+    def forward(self, story, question):
+        tags = self.init_tags()
+        bsz = story.shape[0]
+
+        s_emb = self.emb(story)
+        s_emb = s_emb.view(-1, self.max_s_len, self.emb_dim)
+
+        _, (s_state, _) = self.story_rnn(s_emb)
+        s_state = s_state[-1, :, :]
+        s_state = s_state.view(-1, self.story_len, self.story_hsz)
+
+        s_tags = tags.unsqueeze(0)
+        s_tags = s_tags.repeat((bsz, 1, 1))
+
+        story_objects = torch.cat((s_state, s_tags), dim=2)
+
+        q_emb = self.emb(question)
+        _, (q_state, _) = self.question_rnn(q_emb)
+        q_state = q_state[-1, :, :]
+
+        sum_g_theta = 0
+        for i in range(self.story_len):
+            this_tensor = story_objects[:, i, :]
+            for j in range(self.story_len):
+                u = torch.cat(
+                    (this_tensor, story_objects[:, j, :], q_state), dim=1)
+                g = self.g_theta(u)
+                sum_g_theta = torch.add(sum_g_theta, g)
+
+        out = F.relu(self.f1(sum_g_theta))
+        out = F.relu(self.f2(out))
+        out = self.f3(out)
+
+        return out
+</code></pre>
+            </article>
+          </div>
+          
+      <div class='entry-meta-bottom'>
+        
+
+  <div class="entry-categories"><p><span>Categories</span>
+    
+    <a href="/categories/tensorflow" title="View all posts in TensorFlow">TensorFlow</a>
+    <a href="/categories/code" title="View all posts in code">code</a>
+    <a href="/categories/deep-learning" title="View all posts in deep-learning">deep-learning</a>
+    <a href="/categories/reinforce-learning" title="View all posts in reinforce-learning">reinforce-learning</a>
+  </p>
+</div>
+
+
+
+<div class="entry-tags"><p><span>Tags</span>
+  
+  <a href="/tags/golang" title="View all posts tagged golang">golang</a>
+  
+  <a href="/tags/python" title="View all posts tagged python">python</a>
+  
+  <a href="/tags/%E7%AE%97%E6%B3%95" title="View all posts tagged 算法">算法</a>
+  
+
+</p></div>	</div>
+
+<div class="author-meta">
+
+  <div class="author">
+    <img alt='Nevermore' src="https://www.gravatar.com/avatar/441d6f3623599f66569ae8478cf21f68?s=100&d=identicon" class='avatar avatar-72 photo' height='72' width='72'>
+
+    <span>
+      Written by:<a href="https://ne7ermore.github.io" title="Posts by Nevermore" rel="author">Nevermore</a>        </span>
+    </div>
+    <div class="bio">
+      
+      <p>步步生姿，空锁满庭花雨。胜将娇花比。</p>
+      
+
+
+      
+
+    
+
+
+  
+
+
+
+<a class="email" target="_blank"
+href="mailto:liaoyuanhuo1987@gmail.com">
+<i class="fa fa-envelope"
+title="email icon"></i>
+</a>
+
+
+
+
+
+
+
+<a class="github" target="_blank"
+href="https://github.com/ne7ermore">
+<i class="fa fa-github"
+title="github icon"></i>
+</a>
+
+
+</div>
+</div>
+
+</div>
+</div>
+
+<section id="comments" class="comments">
+  
+
+  
+
+
+
+
+</section>
+</div>
+
+ 
+
+
+
+    </div>
+
+    <footer id="site-footer" class="site-footer" role="contentinfo">
+	<h1>
+    
+    <a href=""> Nevermore </a>
+    
+	</h1>
+
+			
+			<p class="site-description">Why so serious</p>
+			
+
+		<div id="menu-footer" class="menu-container menu-footer" role="navigation">
+		<div class="menu">
+
+      <ul id="menu-footer-items" class="menu-footer-items">
+        
+</ul>
+
+</div>	</div>
+
+<ul class="social-media-icons">
+
+        
+
+        
+
+
+        
+
+        
+
+        
+        <li>
+        <a href="mailto:liaoyuanhuo1987@gmail.com"  class="email">
+            <i class="fa fa-envelope" title="email"></i>
+            <span class="screen-reader-text">email</span>
+        </a>
+        </li>
+        
+
+        
+
+        
+
+
+        
+        <li>
+        <a href="https://github.com/ne7ermore"  class="github" target="_blank">
+            <i class="fa fa-github" title="github"></i>
+            <span class="screen-reader-text">github</span>
+        </a>
+        </li>
+        
+				</ul>	<div class="design-credit">
+		
+		<p>&copy; Nevermore | 2019</p>
+		
+    </div>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/x-mathjax-config">
+        MathJax.Hub.Config({
+            tex2jax: {
+            inlineMath: [['$','$'], ['\\(','\\)']],
+            displayMath: [['$$','$$'], ['\[','\]']],
+            processEscapes: true,
+            processEnvironments: true,
+            skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+            TeX: { equationNumbers: { autoNumber: "AMS" },
+                extensions: ["AMSmath.js", "AMSsymbols.js"] }
+            }
+        });
+    </script>
+</footer>
+
+  </div>
+  <script src="https://ne7ermore.github.io/js/jquery.min.js"></script>
+<script src="https://ne7ermore.github.io/js/jquerymigrate.js"></script>
+<script src="https://ne7ermore.github.io/js/production.min.js"></script>
+
+</body>
+</html>
