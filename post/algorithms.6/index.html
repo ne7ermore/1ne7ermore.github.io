@@ -401,9 +401,10 @@ class SeparateChainingHashTable(object):
 <li>最大子成员</li>
 </ul>
 
-<p>和子序列的区别，eg，s1 = &ldquo;13456778&rdquo;，s2 = &ldquo;357486782&rdquo;，最大子成员为[&lsquo;3&rsquo;, &lsquo;5&rsquo;, &lsquo;7&rsquo;, &lsquo;7&rsquo;, &lsquo;8&rsquo;]</p>
+<pre><code>和子序列的区别，eg，s1 = &quot;13456778&quot;，s2 = &quot;357486782&quot;，最大子成员为['3', '5', '7', '7', '8']
 
-<p>思路：需要运用到动态规划的方式，首先初始化一个二维向量，行为s2的长度，列为s1的长度，遍历s1和s2的字符，如果相等，res[i][j] = res[i-1][j-1] + 1，如果不相等，max(res[i-1][j], res[i][j-1])；然后反向查找共有的字符</p>
+思路：需要运用到动态规划的方式，首先初始化一个二维向量，行为s2的长度，列为s1的长度，遍历s1和s2的字符，如果相等，res[i][j] = res[i-1][j-1] + 1，如果不相等，max(res[i-1][j], res[i][j-1])；然后反向查找共有的字符
+</code></pre>
 
 <pre><code class="language-python">def longest_common_seq(s1, s2):
     len1, len2 = len(s1), len(s2)
