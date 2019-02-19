@@ -2,7 +2,6 @@
 <html lang="en-us">
 <head><meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
- <title>Algorithms.5 </title>
 
 
 
@@ -149,7 +148,7 @@
 
         
         <div class="entry-meta">
-          <span class="date">December 26</span>	<span> / </span>
+          <span class="date">January 01</span>	<span> / </span>
 
           <span class="author">
             
@@ -159,114 +158,16 @@
 
 
           
-          <span class="category">
-            <span> / </span>
-
-            <a href="/categories/code">code</a>
-          </span>
-          
 
 
         </div>
         <div class='entry-header'>
-          <h1 class='entry-title'> Algorithms.5</h1>
+          <h1 class='entry-title'> </h1>
         </div>
         <div class="entry-container">
           <div class="entry-content">
             <article>
-              <p>鏈錶</p>
-
-<p><a href="https://github.com/ne7ermore/playground/tree/master/python/linkedlist">代码</a></p>
-
-<ul>
-<li>回文</li>
-</ul>
-
-<p>判斷是否為回文，eg：[1, 1, 2, 3, 2, 1, 1]</p>
-
-<p>思路：將每個字符的index按字典的k和v存儲起來，然後遍歷所有字符的index,最多只有一個字符index是單數，然後字符index以中間位置，左右兩邊一一對應，相加和為長度-1</p>
-
-<pre><code class="language-python">def is_palindrome_dict(list):
-    if len(list) &lt; 2:
-        return True
-
-    d = {}
-    for index, num in enumerate(list):
-        if num in d:
-            d[num].append(index)
-        else:
-            d[num] = [index]
-
-    checksum = index
-    middle = 0
-    for v in d.values():
-        if len(v) % 2 != 0:
-            middle += 1
-
-        else:
-            for index in range(len(v) // 2):
-                if v[index] + v[len(v) - 1 - index] != checksum:
-                    return False
-
-        if middle &gt; 1:
-            return False
-
-    return True
-
-
-if __name__ == &quot;__main__&quot;:
-    list = [1, 1, 2, 3, 2, 1, 1]
-    assert is_palindrome_dict(list)
-</code></pre>
-
-<ul>
-<li>鏈錶反向</li>
-</ul>
-
-<p>思路：常駐鏈錶上一個成員，將下一個成員的next屬性指向上一個成員</p>
-
-<pre><code class="language-python">class Node():
-    def __init__(self, val=None):
-        self.val = val
-        self.next = None
-
-
-def arr2linked(arr):
-    res = cur = Node(arr[0])
-    for a in arr[1:]:
-        cur.next = Node(a)
-        cur = cur.next
-
-    return res
-
-
-def link2arr(link):
-    list = []
-    while link:
-        list.append(link.val)
-        link = link.next
-
-    return list
-
-
-def reverse(head):
-    prev = None
-    while head:
-        cur = head
-        head = head.next
-        cur.next = prev
-        prev = cur
-
-    return prev
-
-
-if __name__ == &quot;__main__&quot;:
-    list = [1, 2, 3, 4, 5, 6]
-    head = arr2linked(list)
-    head = reverse(head)
-
-    assert link2arr(head) == [6, 5, 4, 3, 2, 1]
-</code></pre>
+              
             </article>
           </div>
           

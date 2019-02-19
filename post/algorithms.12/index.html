@@ -2,7 +2,7 @@
 <html lang="en-us">
 <head><meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
- <title>Algorithms.5 </title>
+ <title>Algorithms.12 </title>
 
 
 
@@ -149,7 +149,7 @@
 
         
         <div class="entry-meta">
-          <span class="date">December 26</span>	<span> / </span>
+          <span class="date">February 18</span>	<span> / </span>
 
           <span class="author">
             
@@ -169,103 +169,142 @@
 
         </div>
         <div class='entry-header'>
-          <h1 class='entry-title'> Algorithms.5</h1>
+          <h1 class='entry-title'> Algorithms.12</h1>
         </div>
         <div class="entry-container">
           <div class="entry-content">
             <article>
-              <p>鏈錶</p>
+              <p>N-Queens</p>
 
-<p><a href="https://github.com/ne7ermore/playground/tree/master/python/linkedlist">代码</a></p>
+<pre><code>The n-queens puzzle is the problem of placing n queens on an n×n chessboard such that no two queens attack each other.
 
-<ul>
-<li>回文</li>
-</ul>
+Given an integer n, return the number of distinct solutions to the n-queens puzzle.
 
-<p>判斷是否為回文，eg：[1, 1, 2, 3, 2, 1, 1]</p>
+Example:
 
-<p>思路：將每個字符的index按字典的k和v存儲起來，然後遍歷所有字符的index,最多只有一個字符index是單數，然後字符index以中間位置，左右兩邊一一對應，相加和為長度-1</p>
+Input: 4
+Output: 2
+Explanation: There are two distinct solutions to the 4-queens puzzle as shown below.
+[
+ [&quot;.Q..&quot;,  // Solution 1
+  &quot;...Q&quot;,
+  &quot;Q...&quot;,
+  &quot;..Q.&quot;],
 
-<pre><code class="language-python">def is_palindrome_dict(list):
-    if len(list) &lt; 2:
-        return True
-
-    d = {}
-    for index, num in enumerate(list):
-        if num in d:
-            d[num].append(index)
-        else:
-            d[num] = [index]
-
-    checksum = index
-    middle = 0
-    for v in d.values():
-        if len(v) % 2 != 0:
-            middle += 1
-
-        else:
-            for index in range(len(v) // 2):
-                if v[index] + v[len(v) - 1 - index] != checksum:
-                    return False
-
-        if middle &gt; 1:
-            return False
-
-    return True
-
-
-if __name__ == &quot;__main__&quot;:
-    list = [1, 1, 2, 3, 2, 1, 1]
-    assert is_palindrome_dict(list)
+ [&quot;..Q.&quot;,  // Solution 2
+  &quot;Q...&quot;,
+  &quot;...Q&quot;,
+  &quot;.Q..&quot;]
+]
 </code></pre>
 
+<p>题目解释：国际象棋的棋子皇后，可以横向纵向和斜向吃掉对方棋子，题目的目标是一个NxN的棋盘上放置n个皇后并且不会相互攻击到彼此</p>
+
+<p>典型backtrack场景，多选择问题</p>
+
+<p>backtrack三要素：</p>
+
 <ul>
-<li>鏈錶反向</li>
+<li>目的</li>
+<li>约束</li>
+<li>选择</li>
 </ul>
 
-<p>思路：常駐鏈錶上一個成員，將下一個成員的next屬性指向上一個成員</p>
+<p>回归到这道题上来看：</p>
 
-<pre><code class="language-python">class Node():
-    def __init__(self, val=None):
-        self.val = val
-        self.next = None
+<ul>
+<li>目的：放置n个皇后</li>
+<li>约束：皇后之间两两不能攻击</li>
+<li>选择：按行逐个逐个尝试</li>
+</ul>
 
+<p>本期使用c++</p>
 
-def arr2linked(arr):
-    res = cur = Node(arr[0])
-    for a in arr[1:]:
-        cur.next = Node(a)
-        cur = cur.next
+<p>目的：</p>
 
-    return res
+<pre><code class="language-c++">if (row == n)
+    count++;
+</code></pre>
 
+<p>约束：
+显然每一行只能有一个皇后，然后就剩下比较纵向和斜向是否可行
+等于0是纵向，等于rowid - i是斜向</p>
 
-def link2arr(link):
-    list = []
-    while link:
-        list.append(link.val)
-        link = link.next
+<pre><code class="language-c++">bool isvalid(std::vector&lt;int&gt; place)
+{
+    int rowid = place.size() - 1;
+    for (int i = 0; i &lt; rowid; i++)
+    {
+        int diff = abs(place[i] - place[rowid]);
+        // 等于0是纵向，等于rowid - i是斜向
+        if (diff == 0 || diff == rowid - i)
+            return false;
+    }
+    return true;
+}
+</code></pre>
 
-    return list
+<p>选择：
+每一行逐一尝试</p>
 
+<pre><code class="language-c++">for (int i = 0; i &lt; row; i++)
+{
+    place.push_back(i);
+    if (isvalid(place))
+    {
+        backtrack(row, n, count, place);
+    }
+    place.pop_back();
+}
+</code></pre>
 
-def reverse(head):
-    prev = None
-    while head:
-        cur = head
-        head = head.next
-        cur.next = prev
-        prev = cur
+<p>完整代码</p>
 
-    return prev
+<pre><code class="language-c++">#include &lt;vector&gt;
 
+class Solution
+{
+  public:
+    int totalNQueens(int n)
+    {
+        int count = 0;
+        std::vector&lt;int&gt; place;
+        backtrack(n, 0, count, place);
+        return count;
+    }
 
-if __name__ == &quot;__main__&quot;:
-    list = [1, 2, 3, 4, 5, 6]
-    head = arr2linked(list)
-    head = reverse(head)
+  private:
+    bool isvalid(std::vector&lt;int&gt; place)
+    {
+        int rowid = place.size() - 1;
+        for (int i = 0; i &lt; rowid; i++)
+        {
+            int diff = abs(place[i] - place[rowid]);
+            if (diff == 0 || diff == rowid - i)
+                return false;
+        }
+        return true;
+    }
 
-    assert link2arr(head) == [6, 5, 4, 3, 2, 1]
+    void backtrack(int row, int n, int &amp;count, std::vector&lt;int&gt; &amp;place)
+    {
+        if (row == n)
+            count++;
+        else
+        {
+            n++;
+            for (int i = 0; i &lt; row; i++)
+            {
+                place.push_back(i);
+                if (isvalid(place))
+                {
+                    backtrack(row, n, count, place);
+                }
+                place.pop_back();
+            }
+        }
+    }
+};
 </code></pre>
             </article>
           </div>
