@@ -2,7 +2,7 @@
 <html lang="en-us">
 <head><meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
- <title>神经网络-推理 </title>
+ <title>Transformer for Co-Reference </title>
 
 
 
@@ -146,11 +146,11 @@
     
     <div class="post type-post status-publish format-standard has-post-thumbnail hentry category-design tag-design tag-standard-2 tag-tagalicious tag-travel entry full-without-featured odd excerpt-1">
 
-      <div class='featured-image lazy lazy-bg-image' data-background="https://ne7ermore.github.io/img/rn/img1.png">
+      <div class='featured-image lazy lazy-bg-image' data-background="https://ne7ermore.github.io/img/coreference/title.jpg">
       </div>
       
         <div class="entry-meta">
-          <span class="date">January 07</span>	<span> / </span>
+          <span class="date">January 24</span>	<span> / </span>
 
           <span class="author">
             
@@ -170,177 +170,156 @@
 
         </div>
         <div class='entry-header'>
-          <h1 class='entry-title'> 神经网络-推理</h1>
+          <h1 class='entry-title'> Transformer for Co-Reference</h1>
         </div>
         <div class="entry-container">
           <div class="entry-content">
             <article>
-              <p>A simple neural network module for relational reasoning</p>
+              <p>Transformer for Co-Reference</p>
 
-<p><a href="https://github.com/ne7ermore/torch-light/tree/master/relation-network">代码</a></p>
-
-<p><a href="https://arxiv.org/abs/1706.01427">论文</a></p>
-
-<p>关系推理是智人的核心行为，目前在深度神经网络中还远远没有达到人类的标准。本期论文介绍一种结构简单且可插拔推理模型，使用纯文本QA数据 - bAbI</p>
-
-<p>模型的核心理念是约束神经网络的某些能力，以便捕获到关系推理中的公共的关键属性，换句话说，关系的推理已经整合到深度神经网络中，不需要额外的学习</p>
-
-<p>一个公式可以表达：</p>
-
-<p><img src="/img/rn/img2.png" style="height: 100px" alt=""></p>
-
-<p>解释：输入 $ O \in \lbrace o_1,o_2,&hellip;.,o_n \rbrace$，$o_i$ 为样本，$f\phi$ 和 $g\theta$ 都是MLP，其中$g\theta$可以视为衡量$o_i$之间关系的网络</p>
-
-<p>模型特点有三：</p>
+<p>近期研究图谱问答并完成商业落地，接触到三个常用于图谱问答中的任务</p>
 
 <ul>
-<li>更多的关注样本内部之间的关系</li>
-<li>对数据的训练效率更高</li>
-<li>操作一个集合</li>
+<li>指代消解：常用于多轮问答，本期文章讨论</li>
+<li>信息抽取：<a href="https://github.com/ne7ermore/torch-light/tree/master/information-extraction">从文本中抽取三元关系</a></li>
+<li>实体消歧</li>
 </ul>
 
-<p>数据集 - bAbI</p>
+<p>由于在多轮对话中频繁出现代词，零指代词，会极大影响主任务模型的效果，使模型很难理解真正的意图</p>
 
-<p>bAbI为纯文本数据集(数据在代码中&rsquo;data&rsquo;文件中)，分别有20个任务</p>
+<p>多轮对话样本中统计</p>
 
-<p>代码</p>
+<p><img src="/img/coreference/rate.png" style="height: 200px" alt=""></p>
 
-<pre><code class="language-python">class RelationNet(nn.Module):
-    def __init__(self, word_size, answer_size,
-                 max_s_len, max_q_len, use_cuda,
-                 story_len=20,
-                 emb_dim=32,
-                 story_hsz=32,
-                 story_layers=1,
-                 question_hsz=32,
-                 question_layers=1):
+<p>对话中出现代词比例33.5%，零指代词比例52.4%</p>
 
-        super().__init__()
+<p>多轮对话举例</p>
 
-        self.use_cuda = use_cuda
+<blockquote>
+<p>天气</p>
+</blockquote>
 
-        self.max_s_len = max_s_len
-        self.max_q_len = max_q_len
+<pre><code>对话1：北京今天天气怎么样
+对话2：晴天
+对话3：那明天呢
 
-        self.story_len = story_len
-
-        self.emb_dim = emb_dim
-        self.story_hsz = story_hsz
-
-        self.emb = nn.Embedding(word_size, emb_dim)
-
-        # 故事和问题都使用lstm提取上层特征
-        self.story_rnn = torch.nn.LSTM(input_size=emb_dim,
-                                       hidden_size=story_hsz,
-                                       num_layers=story_layers,
-                                       batch_first=True)
-        self.question_rnn = torch.nn.LSTM(input_size=emb_dim,
-                                          hidden_size=question_hsz,
-                                          num_layers=question_layers,
-                                          batch_first=True)
-
-        # 样本关系mlp
-        self.g1 = nn.Linear((2*story_len)+(2*story_hsz)+question_hsz, 256)
-        self.g2 = nn.Linear(256, 256)
-        self.g3 = nn.Linear(256, 256)
-        self.g4 = nn.Linear(256, 256)
-
-        self.f1 = nn.Linear(256, 256)
-        self.f2 = nn.Linear(256, 512)
-        self.f3 = nn.Linear(512, answer_size)
-
-        self._reset_parameters()
-
-    def _reset_parameters(self, stddev=0.1):
-        # 参数初始化
-
-        self.emb.weight.data.normal_(std=stddev)
-
-        self.g1.weight.data.normal_(std=stddev)
-        self.g1.bias.data.fill_(0)
-
-        self.g2.weight.data.normal_(std=stddev)
-        self.g2.bias.data.fill_(0)
-
-        self.g3.weight.data.normal_(std=stddev)
-        self.g3.bias.data.fill_(0)
-
-        self.g4.weight.data.normal_(std=stddev)
-        self.g4.bias.data.fill_(0)
-
-        self.f1.weight.data.normal_(std=stddev)
-        self.f1.bias.data.fill_(0)
-
-        self.f2.weight.data.normal_(std=stddev)
-        self.f2.bias.data.fill_(0)
-
-        self.f3.weight.data.normal_(std=stddev)
-        self.f3.bias.data.fill_(0)
-
-    def g_theta(self, x):
-        # 关系mlp中石油relu作为激活函数
-
-        x = F.relu_(self.g1(x))
-        x = F.relu_(self.g2(x))
-        x = F.relu_(self.g3(x))
-        x = F.relu_(self.g4(x))
-        return x
-
-    def init_tags(self):
-        # 加入样本位置特征
-        
-        tags = torch.zeros((self.story_len, self.story_len))
-        if self.use_cuda:
-            tags = tags.cuda()
-        for i in range(self.story_len):
-            tags[i, i].fill_(1)
-        return tags
-
-    def forward(self, story, question):
-        tags = self.init_tags()
-        bsz = story.shape[0]
-
-        s_emb = self.emb(story)
-        s_emb = s_emb.view(-1, self.max_s_len, self.emb_dim)
-
-        _, (s_state, _) = self.story_rnn(s_emb)
-        s_state = s_state[-1, :, :]
-        s_state = s_state.view(-1, self.story_len, self.story_hsz)
-
-        s_tags = tags.unsqueeze(0)
-        s_tags = s_tags.repeat((bsz, 1, 1))
-
-        story_objects = torch.cat((s_state, s_tags), dim=2)
-
-        q_emb = self.emb(question)
-        _, (q_state, _) = self.question_rnn(q_emb)
-        q_state = q_state[-1, :, :]
-
-        sum_g_theta = 0
-        for i in range(self.story_len):
-            this_tensor = story_objects[:, i, :]
-            for j in range(self.story_len):
-                u = torch.cat(
-                    (this_tensor, story_objects[:, j, :], q_state), dim=1)
-                g = self.g_theta(u)
-                sum_g_theta = torch.add(sum_g_theta, g)
-
-        out = F.relu(self.f1(sum_g_theta))
-        out = F.relu(self.f2(out))
-        out = self.f3(out)
-
-        return out
+真实意图：那明天天气怎么样呢
 </code></pre>
 
-<p>结果</p>
+<blockquote>
+<p>电影</p>
+</blockquote>
 
-<p><img src="/img/rn/eval-corrects.png" style="height: 250px" alt=""></p>
+<pre><code>对话1：你有么有看过约会之夜啊
+对话2：没有约会之夜谁演的
+对话3：盖尔加朵
+对话4：盖尔加朵1984年出生和我姐一样大
+对话5：电影评分84看吗
 
-<p><img src="/img/rn/eval-loss.png" style="height: 250px" alt=""></p>
+真实意图：电影约会之夜评分84看吗
+</code></pre>
 
-<p><img src="/img/rn/train-corrects.png" style="height: 250px" alt=""></p>
+<p><a href="https://github.com/ne7ermore/deeping-flow/tree/master/coreference">实现</a></p>
 
-<p><img src="/img/rn/train-loss.png" style="height: 250px" alt=""></p>
+<p>模型结构</p>
+
+<p><img src="/img/coreference/co-model.png" style="height: 200px" alt=""></p>
+
+<blockquote>
+<p>Embedding</p>
+</blockquote>
+
+<p>在原始Transformer结构上增加对话轮次特征</p>
+
+<ul>
+<li>w_i ：n轮对话中的字（中文）</li>
+<li>WE：word embedding</li>
+<li>PE：position embedding</li>
+<li>TE：turn embedding</li>
+</ul>
+
+<p>I(w_i) = WE(w_i) + PE(w_i) + TE(w_i)</p>
+
+<blockquote>
+<p>Encode</p>
+</blockquote>
+
+<p>使用<strong>Pre-Norm Transformer</strong></p>
+
+<p>因为接入蒸馏，所以在Transformer encode最后一层输出向量后接入fc，放大缩小特征长度</p>
+
+<blockquote>
+<p>Decode</p>
+</blockquote>
+
+<p>使用<strong>Pre-Norm Transformer</strong></p>
+
+<blockquote>
+<p>Pointer Network</p>
+</blockquote>
+
+<p>Pointer Network论文，使用矩阵变换代替循环</p>
+
+<pre><code>with tf.compat.v1.variable_scope(&quot;pointer&quot;, reuse=tf.compat.v1.AUTO_REUSE):
+    last_enc_output = tf.layers.dense(
+        enc_output, args.d_model, use_bias=False, kernel_initializer=self.initializer)  # bsz slen dim
+    last_enc_output = tf.expand_dims(
+        last_enc_output, 0)  # 1 bsz slen dim
+
+    dec_output_trans = tf.transpose(
+        dec_output, [1, 0, 2])  # tlen bsz dim
+    dec_output_trans = tf.layers.dense(dec_output_trans, args.d_model, kernel_initializer=self.initializer,
+                                        use_bias=False, name=&quot;pointer_decode&quot;, reuse=tf.compat.v1.AUTO_REUSE)  # tlen bsz dim
+    dec_output_trans = tf.expand_dims(
+        dec_output_trans, 2)  # tlen bsz 1 dim
+
+    attn_encode = tf.nn.tanh(
+        dec_output_trans + last_enc_output)  # tlen bsz slen dim
+    attn_encode = tf.layers.dense(attn_encode, 1, kernel_initializer=self.initializer,
+                                    use_bias=False, name=&quot;pointer_v&quot;, reuse=tf.compat.v1.AUTO_REUSE)  # tlen bsz slen 1
+    attn_encode = tf.transpose(tf.squeeze(attn_encode, 3), [
+        1, 0, 2])  # bsz tlen slen
+    distributes = tf.nn.log_softmax(attn_encode, axis=-1)+1e-9
+</code></pre>
+
+<blockquote>
+<p>Distillation</p>
+</blockquote>
+
+<p>蒸馏可以很好的利用预训练模型在大数量级样本中训练后的权重，更好的使学生模型理解语义，提升最终效果</p>
+
+<p>Loss = MSE(f_bert(I(w_i) ),f_linear(f_encode(I(w_i)))</p>
+
+<pre><code>def distillation(self, enc_output, dist_encode):
+    args = self.args
+
+    with tf.compat.v1.variable_scope(&quot;distillation&quot;, reuse=tf.compat.v1.AUTO_REUSE):
+        enc_output = tf.layers.dense(
+            enc_output, args.dist_model, kernel_initializer=self.initializer)
+        distill_loss = tf.losses.mean_squared_error(
+            dist_encode, enc_output)
+        enc_output = tf.layers.dense(
+            enc_output, args.d_model, kernel_initializer=self.initializer)
+
+    return enc_output, distill_loss
+</code></pre>
+
+<blockquote>
+<p>训练流程</p>
+</blockquote>
+
+<ul>
+<li>启用预训练，使encode输出分布尽量拟合BERT输出</li>
+</ul>
+
+<blockquote>
+<p>效果</p>
+</blockquote>
+
+<ul>
+<li>验证数据集中准确率96%，rouge-l分数93.3%</li>
+<li>使用Beam Search预测，效果见【多轮对话举例】</li>
+</ul>
             </article>
           </div>
           

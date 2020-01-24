@@ -3,6 +3,11 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   
   <url>
+    <loc>https://ne7ermore.github.io/post/coreference/</loc>
+    <lastmod>2020-01-24T10:00:25+08:00</lastmod>
+  </url>
+  
+  <url>
     <loc>https://ne7ermore.github.io/post/algorithms.12/</loc>
     <lastmod>2019-02-18T15:00:25+08:00</lastmod>
   </url>
@@ -178,39 +183,44 @@
   </url>
   
   <url>
-    <loc>https://ne7ermore.github.io/intro/</loc>
-    <lastmod>2018-11-01T13:00:25+08:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>https://ne7ermore.github.io/post/softmax/</loc>
-  </url>
-  
-  <url>
     <loc>https://ne7ermore.github.io/categories/</loc>
+    <lastmod>2020-01-24T10:00:25+08:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
     <loc>https://ne7ermore.github.io/</loc>
-    <lastmod>2019-02-18T15:00:25+08:00</lastmod>
+    <lastmod>2020-01-24T10:00:25+08:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
     <loc>https://ne7ermore.github.io/post/</loc>
-    <lastmod>2019-02-18T15:00:25+08:00</lastmod>
+    <lastmod>2020-01-24T10:00:25+08:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
     <loc>https://ne7ermore.github.io/tags/</loc>
+    <lastmod>2020-01-24T10:00:25+08:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
-    <loc>https://ne7ermore.github.io/categories/tensorflow/</loc>
-    <lastmod>2018-04-16T13:00:25+08:00</lastmod>
+    <loc>https://ne7ermore.github.io/categories/deep-learning/</loc>
+    <lastmod>2020-01-24T10:00:25+08:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://ne7ermore.github.io/tags/python/</loc>
+    <lastmod>2020-01-24T10:00:25+08:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://ne7ermore.github.io/tags/%E7%AE%97%E6%B3%95/</loc>
+    <lastmod>2020-01-24T10:00:25+08:00</lastmod>
     <priority>0</priority>
   </url>
   
@@ -227,8 +237,13 @@
   </url>
   
   <url>
-    <loc>https://ne7ermore.github.io/categories/deep-learning/</loc>
-    <lastmod>2019-01-07T10:00:25+08:00</lastmod>
+    <loc>https://ne7ermore.github.io/intro/</loc>
+    <lastmod>2018-11-01T13:00:25+08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://ne7ermore.github.io/categories/reinforce-learning/</loc>
+    <lastmod>2018-09-10T13:00:25+08:00</lastmod>
     <priority>0</priority>
   </url>
   
@@ -239,20 +254,13 @@
   </url>
   
   <url>
-    <loc>https://ne7ermore.github.io/tags/python/</loc>
-    <lastmod>2019-01-07T10:00:25+08:00</lastmod>
+    <loc>https://ne7ermore.github.io/categories/tensorflow/</loc>
+    <lastmod>2018-04-16T13:00:25+08:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
-    <loc>https://ne7ermore.github.io/categories/reinforce-learning/</loc>
-    <lastmod>2018-09-10T13:00:25+08:00</lastmod>
-    <priority>0</priority>
-  </url>
-  
-  <url>
-    <loc>https://ne7ermore.github.io/tags/%E7%AE%97%E6%B3%95/</loc>
-    <lastmod>2019-02-18T15:00:25+08:00</lastmod>
+    <loc>https://ne7ermore.github.io/post/softmax/</loc>
     <priority>0</priority>
   </url>
   

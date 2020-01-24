@@ -6,10 +6,19 @@
     <description>Recent content in python on Nevermore</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Mon, 07 Jan 2019 10:00:25 +0800</lastBuildDate>
+    <lastBuildDate>Fri, 24 Jan 2020 10:00:25 +0800</lastBuildDate>
     
 	<atom:link href="https://ne7ermore.github.io/tags/python/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Transformer for Co-Reference</title>
+      <link>https://ne7ermore.github.io/post/coreference/</link>
+      <pubDate>Fri, 24 Jan 2020 10:00:25 +0800</pubDate>
+      
+      <guid>https://ne7ermore.github.io/post/coreference/</guid>
+      <description>&lt;p&gt;Transformer for Co-Reference&lt;/p&gt;</description>
+    </item>
     
     <item>
       <title>神经网络-推理</title>
@@ -174,6 +183,15 @@
     </item>
     
     <item>
+      <title>我有一个魔(mo)镜(xing)，能告诉你是不是世界上最美|帅的人</title>
+      <link>https://ne7ermore.github.io/post/facial-bp/</link>
+      <pubDate>Sun, 13 May 2018 13:00:25 +0800</pubDate>
+      
+      <guid>https://ne7ermore.github.io/post/facial-bp/</guid>
+      <description>&lt;p&gt;Facial Beauty Prediction&lt;/p&gt;</description>
+    </item>
+    
+    <item>
       <title>Pandas使用笔记</title>
       <link>https://ne7ermore.github.io/post/pandas/</link>
       <pubDate>Sun, 13 May 2018 13:00:25 +0800</pubDate>
@@ -182,15 +200,6 @@
       <description>&lt;p&gt;Pandas是python的一款第三方包，强大，快速，多使用于数据挖掘和整合&lt;/p&gt;
 
 &lt;p&gt;我会不定期记录使用pandas的心得&lt;/p&gt;</description>
-    </item>
-    
-    <item>
-      <title>我有一个魔(mo)镜(xing)，能告诉你是不是世界上最美|帅的人</title>
-      <link>https://ne7ermore.github.io/post/facial-bp/</link>
-      <pubDate>Sun, 13 May 2018 13:00:25 +0800</pubDate>
-      
-      <guid>https://ne7ermore.github.io/post/facial-bp/</guid>
-      <description>&lt;p&gt;Facial Beauty Prediction&lt;/p&gt;</description>
     </item>
     
     <item>
@@ -242,21 +251,21 @@ yolo是一种使用深度卷积神经网络学得的特征来检测对象的目�
     </item>
     
     <item>
-      <title>Neural Artistic Style</title>
-      <link>https://ne7ermore.github.io/post/nas/</link>
-      <pubDate>Sun, 24 Dec 2017 10:00:25 +0800</pubDate>
-      
-      <guid>https://ne7ermore.github.io/post/nas/</guid>
-      <description>&lt;p&gt;风格迁移&lt;/p&gt;</description>
-    </item>
-    
-    <item>
       <title>dc gan</title>
       <link>https://ne7ermore.github.io/post/dcgan/</link>
       <pubDate>Sun, 24 Dec 2017 10:00:25 +0800</pubDate>
       
       <guid>https://ne7ermore.github.io/post/dcgan/</guid>
       <description>&lt;p&gt;DC-GAN&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>Neural Artistic Style</title>
+      <link>https://ne7ermore.github.io/post/nas/</link>
+      <pubDate>Sun, 24 Dec 2017 10:00:25 +0800</pubDate>
+      
+      <guid>https://ne7ermore.github.io/post/nas/</guid>
+      <description>&lt;p&gt;风格迁移&lt;/p&gt;</description>
     </item>
     
     <item>

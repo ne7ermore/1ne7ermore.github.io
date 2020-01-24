@@ -6,16 +6,17 @@
     <description>Recent content in Categories on Nevermore</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
+    <lastBuildDate>Fri, 24 Jan 2020 10:00:25 +0800</lastBuildDate>
     
 	<atom:link href="https://ne7ermore.github.io/categories/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
-      <title>TensorFlow</title>
-      <link>https://ne7ermore.github.io/categories/tensorflow/</link>
-      <pubDate>Mon, 16 Apr 2018 13:00:25 +0800</pubDate>
+      <title>deep-learning</title>
+      <link>https://ne7ermore.github.io/categories/deep-learning/</link>
+      <pubDate>Fri, 24 Jan 2020 10:00:25 +0800</pubDate>
       
-      <guid>https://ne7ermore.github.io/categories/tensorflow/</guid>
+      <guid>https://ne7ermore.github.io/categories/deep-learning/</guid>
       <description></description>
     </item>
     
@@ -29,20 +30,20 @@
     </item>
     
     <item>
-      <title>deep-learning</title>
-      <link>https://ne7ermore.github.io/categories/deep-learning/</link>
-      <pubDate>Mon, 07 Jan 2019 10:00:25 +0800</pubDate>
-      
-      <guid>https://ne7ermore.github.io/categories/deep-learning/</guid>
-      <description></description>
-    </item>
-    
-    <item>
       <title>reinforce-learning</title>
       <link>https://ne7ermore.github.io/categories/reinforce-learning/</link>
       <pubDate>Mon, 10 Sep 2018 13:00:25 +0800</pubDate>
       
       <guid>https://ne7ermore.github.io/categories/reinforce-learning/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>TensorFlow</title>
+      <link>https://ne7ermore.github.io/categories/tensorflow/</link>
+      <pubDate>Mon, 16 Apr 2018 13:00:25 +0800</pubDate>
+      
+      <guid>https://ne7ermore.github.io/categories/tensorflow/</guid>
       <description></description>
     </item>
     

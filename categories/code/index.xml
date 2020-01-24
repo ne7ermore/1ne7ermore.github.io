@@ -159,21 +159,21 @@
     </item>
     
     <item>
-      <title>Bit Sort</title>
-      <link>https://ne7ermore.github.io/post/bitsort/</link>
-      <pubDate>Tue, 10 Apr 2018 13:00:25 +0800</pubDate>
-      
-      <guid>https://ne7ermore.github.io/post/bitsort/</guid>
-      <description>&lt;p&gt;介绍一个时间和空间复杂度都比较合理的排序方式 - 位排序&lt;/p&gt;</description>
-    </item>
-    
-    <item>
       <title>Golang源码-sort</title>
       <link>https://ne7ermore.github.io/post/golang-sort/</link>
       <pubDate>Tue, 10 Apr 2018 13:00:25 +0800</pubDate>
       
       <guid>https://ne7ermore.github.io/post/golang-sort/</guid>
       <description>&lt;p&gt;Golang sort包相对独立，并且能帮助理解和使用golang中的interface&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>Bit Sort</title>
+      <link>https://ne7ermore.github.io/post/bitsort/</link>
+      <pubDate>Tue, 10 Apr 2018 13:00:25 +0800</pubDate>
+      
+      <guid>https://ne7ermore.github.io/post/bitsort/</guid>
+      <description>&lt;p&gt;介绍一个时间和空间复杂度都比较合理的排序方式 - 位排序&lt;/p&gt;</description>
     </item>
     
   </channel>
