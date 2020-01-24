@@ -199,7 +199,8 @@
 <p>天气</p>
 </blockquote>
 
-<pre><code>对话1：北京今天天气怎么样
+<pre><code>
+对话1：北京今天天气怎么样
 对话2：晴天
 对话3：那明天呢
 
@@ -210,7 +211,8 @@
 <p>电影</p>
 </blockquote>
 
-<pre><code>对话1：你有么有看过约会之夜啊
+<pre><code>
+对话1：你有么有看过约会之夜啊
 对话2：没有约会之夜谁演的
 对话3：盖尔加朵
 对话4：盖尔加朵1984年出生和我姐一样大
@@ -223,7 +225,7 @@
 
 <p>模型结构</p>
 
-<p><img src="/img/coreference/co-model.png" style="height: 200px" alt=""></p>
+<p><img src="/img/coreference/co-model.png" style="height: 600px" alt=""></p>
 
 <blockquote>
 <p>Embedding</p>
@@ -260,7 +262,8 @@
 
 <p>Pointer Network论文，使用矩阵变换代替循环</p>
 
-<pre><code>with tf.compat.v1.variable_scope(&quot;pointer&quot;, reuse=tf.compat.v1.AUTO_REUSE):
+<pre><code>
+with tf.compat.v1.variable_scope(&quot;pointer&quot;, reuse=tf.compat.v1.AUTO_REUSE):
     last_enc_output = tf.layers.dense(
         enc_output, args.d_model, use_bias=False, kernel_initializer=self.initializer)  # bsz slen dim
     last_enc_output = tf.expand_dims(
@@ -290,7 +293,8 @@
 
 <p>Loss = MSE(f_bert(I(w_i) ),f_linear(f_encode(I(w_i)))</p>
 
-<pre><code>def distillation(self, enc_output, dist_encode):
+<pre><code>
+def distillation(self, enc_output, dist_encode):
     args = self.args
 
     with tf.compat.v1.variable_scope(&quot;distillation&quot;, reuse=tf.compat.v1.AUTO_REUSE):
