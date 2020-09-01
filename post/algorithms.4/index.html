@@ -175,13 +175,10 @@
           <div class="entry-content">
             <article>
               <p>堆</p>
-
 <p><a href="https://github.com/ne7ermore/playground/tree/master/python/heap">代码</a></p>
-
 <ul>
 <li>天际线</li>
 </ul>
-
 <pre><code>A city's skyline is the outer contour of the silhouette formed by all the buildings
 in that city when viewed from a distance.
 Now suppose you are given the locations and height of all the buildings
@@ -208,50 +205,43 @@ The output list must be sorted by the x position.
 There must be no consecutive horizontal lines of equal height in the output skyline. For instance,
 [...[2 3], [4 5], [7 5], [11 5], [12 7]...] is not acceptable; the three lines of height 5 should be merged
 into one in the final output as such: [...[2 3], [4 5], [12 7], ...]
-</code></pre>
-
-<p>时间复杂度O(2n), 空间复杂度O(2n)</p>
-
+</code></pre><p>时间复杂度O(2n), 空间复杂度O(2n)</p>
 <p>思路：使用正负号区分楼坐标的左和右，例如：[2, 9, 10]分解为 [2,-10], [9,10]，然后压入堆中，以x坐标为标准，然后依次取出最小成员，如果当前成员为左坐标，并且当前高度不是已知最高高度的话，将当前成员记录到最终结果中，然后将当前高度压入已知高度中；如果当前成员为右坐标，并且高度为已知最高高度，推出当前高度，将当前成员记录到最终结果中，如果非已知最高高度，不记录到最终结果，排除掉当前高度。</p>
-
-<pre><code class="language-python">import heapq
-
-
-def get_skyline(lrh):
-    que, live = [0], []
-    skyline = []
-    for l, r, h in lrh:
-        heapq.heappush(live, (l, -h))
-        heapq.heappush(live, (r, h))
-
-    while live:
-        res = heapq.heappop(live)
-        if res[1] &lt; 0:
-            if res[1] &lt; que[0]:
-                skyline.append([res[0], -res[1]])
-
-            heapq.heappush(que, res[1])
-
-        else:
-            if -res[1] == que[0]:
-                heapq.heappop(que)
-                skyline.append([res[0], -que[0]])
-            else:
-                que.remove(-res[1])
-
-    return skyline
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#f92672">import</span> heapq
 
 
-if __name__ == &quot;__main__&quot;:
-    lrh = [[2, 9, 10], [3, 7, 15], [5, 12, 12], [15, 20, 10], [19, 24, 8]]
-    assert get_skyline(lrh) == [[2, 10], [3, 15], [7, 12], [
-        12, 0], [15, 10], [20, 8], [24, 0]]
-</code></pre>
+<span style="color:#66d9ef">def</span> <span style="color:#a6e22e">get_skyline</span>(lrh):
+    que, live <span style="color:#f92672">=</span> [<span style="color:#ae81ff">0</span>], []
+    skyline <span style="color:#f92672">=</span> []
+    <span style="color:#66d9ef">for</span> l, r, h <span style="color:#f92672">in</span> lrh:
+        heapq<span style="color:#f92672">.</span>heappush(live, (l, <span style="color:#f92672">-</span>h))
+        heapq<span style="color:#f92672">.</span>heappush(live, (r, h))
 
-<ul>
+    <span style="color:#66d9ef">while</span> live:
+        res <span style="color:#f92672">=</span> heapq<span style="color:#f92672">.</span>heappop(live)
+        <span style="color:#66d9ef">if</span> res[<span style="color:#ae81ff">1</span>] <span style="color:#f92672">&lt;</span> <span style="color:#ae81ff">0</span>:
+            <span style="color:#66d9ef">if</span> res[<span style="color:#ae81ff">1</span>] <span style="color:#f92672">&lt;</span> que[<span style="color:#ae81ff">0</span>]:
+                skyline<span style="color:#f92672">.</span>append([res[<span style="color:#ae81ff">0</span>], <span style="color:#f92672">-</span>res[<span style="color:#ae81ff">1</span>]])
+
+            heapq<span style="color:#f92672">.</span>heappush(que, res[<span style="color:#ae81ff">1</span>])
+
+        <span style="color:#66d9ef">else</span>:
+            <span style="color:#66d9ef">if</span> <span style="color:#f92672">-</span>res[<span style="color:#ae81ff">1</span>] <span style="color:#f92672">==</span> que[<span style="color:#ae81ff">0</span>]:
+                heapq<span style="color:#f92672">.</span>heappop(que)
+                skyline<span style="color:#f92672">.</span>append([res[<span style="color:#ae81ff">0</span>], <span style="color:#f92672">-</span>que[<span style="color:#ae81ff">0</span>]])
+            <span style="color:#66d9ef">else</span>:
+                que<span style="color:#f92672">.</span>remove(<span style="color:#f92672">-</span>res[<span style="color:#ae81ff">1</span>])
+
+    <span style="color:#66d9ef">return</span> skyline
+
+
+<span style="color:#66d9ef">if</span> __name__ <span style="color:#f92672">==</span> <span style="color:#e6db74">&#34;__main__&#34;</span>:
+    lrh <span style="color:#f92672">=</span> [[<span style="color:#ae81ff">2</span>, <span style="color:#ae81ff">9</span>, <span style="color:#ae81ff">10</span>], [<span style="color:#ae81ff">3</span>, <span style="color:#ae81ff">7</span>, <span style="color:#ae81ff">15</span>], [<span style="color:#ae81ff">5</span>, <span style="color:#ae81ff">12</span>, <span style="color:#ae81ff">12</span>], [<span style="color:#ae81ff">15</span>, <span style="color:#ae81ff">20</span>, <span style="color:#ae81ff">10</span>], [<span style="color:#ae81ff">19</span>, <span style="color:#ae81ff">24</span>, <span style="color:#ae81ff">8</span>]]
+    <span style="color:#66d9ef">assert</span> get_skyline(lrh) <span style="color:#f92672">==</span> [[<span style="color:#ae81ff">2</span>, <span style="color:#ae81ff">10</span>], [<span style="color:#ae81ff">3</span>, <span style="color:#ae81ff">15</span>], [<span style="color:#ae81ff">7</span>, <span style="color:#ae81ff">12</span>], [
+        <span style="color:#ae81ff">12</span>, <span style="color:#ae81ff">0</span>], [<span style="color:#ae81ff">15</span>, <span style="color:#ae81ff">10</span>], [<span style="color:#ae81ff">20</span>, <span style="color:#ae81ff">8</span>], [<span style="color:#ae81ff">24</span>, <span style="color:#ae81ff">0</span>]]
+</code></pre></div><ul>
 <li>滑动窗口最大值</li>
 </ul>
-
 <pre><code>Given an array nums, there is a sliding window of size k
 which is moving from the very left of the array to the very right.
 You can only see the k numbers in the window.
@@ -267,18 +257,16 @@ Window position                Max
  1  3  -1  -3 [5  3  6] 7       6
  1  3  -1  -3  5 [3  6  7]      7
 Therefore, return the max sliding window as [3,3,5,5,6,7].
-</code></pre>
-
-<pre><code class="language-python">def max_sliding_window(nums, k):
-    return [max(nums[index - k:index]) for index in range(k, len(nums) + 1)]
+</code></pre><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">max_sliding_window</span>(nums, k):
+    <span style="color:#66d9ef">return</span> [max(nums[index <span style="color:#f92672">-</span> k:index]) <span style="color:#66d9ef">for</span> index <span style="color:#f92672">in</span> range(k, len(nums) <span style="color:#f92672">+</span> <span style="color:#ae81ff">1</span>)]
 
 
-if __name__ == &quot;__main__&quot;:
-    nums = [1, 3, -1, -3, 5, 3, 6, 7]
-    k = 3
+<span style="color:#66d9ef">if</span> __name__ <span style="color:#f92672">==</span> <span style="color:#e6db74">&#34;__main__&#34;</span>:
+    nums <span style="color:#f92672">=</span> [<span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">3</span>, <span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>, <span style="color:#f92672">-</span><span style="color:#ae81ff">3</span>, <span style="color:#ae81ff">5</span>, <span style="color:#ae81ff">3</span>, <span style="color:#ae81ff">6</span>, <span style="color:#ae81ff">7</span>]
+    k <span style="color:#f92672">=</span> <span style="color:#ae81ff">3</span>
 
-    assert max_sliding_window(nums, k) == [3, 3, 5, 5, 6, 7]
-</code></pre>
+    <span style="color:#66d9ef">assert</span> max_sliding_window(nums, k) <span style="color:#f92672">==</span> [<span style="color:#ae81ff">3</span>, <span style="color:#ae81ff">3</span>, <span style="color:#ae81ff">5</span>, <span style="color:#ae81ff">5</span>, <span style="color:#ae81ff">6</span>, <span style="color:#ae81ff">7</span>]
+</code></pre></div>
             </article>
           </div>
           
@@ -429,7 +417,7 @@ title="github icon"></i>
         
 				</ul>	<div class="design-credit">
 		
-		<p>&copy; Nevermore | 2019</p>
+		<p>© Nevermore | 2019</p>
 		
     </div>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>

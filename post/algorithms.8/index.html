@@ -175,95 +175,82 @@
           <div class="entry-content">
             <article>
               <p>搜索</p>
-
 <p><a href="https://github.com/ne7ermore/playground/tree/master/python/search">代码</a></p>
-
 <ul>
 <li>二分查找</li>
 </ul>
-
 <p>思路：每次循环更新最高和最低点，用中间点和目标比较大小</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">binary_search</span>(list, num):
+    high <span style="color:#f92672">=</span> len(list)
+    low <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>
+    mid <span style="color:#f92672">=</span> (high<span style="color:#f92672">+</span>low) <span style="color:#f92672">//</span> <span style="color:#ae81ff">2</span>
 
-<pre><code class="language-python">def binary_search(list, num):
-    high = len(list)
-    low = 0
-    mid = (high+low) // 2
-
-    while True:
-        mid = (high+low) // 2
-        if num &gt; list[mid]:
-            low = mid + 1
-        elif num &lt; list[mid]:
-            high = mid
-        else:
-            return mid
+    <span style="color:#66d9ef">while</span> True:
+        mid <span style="color:#f92672">=</span> (high<span style="color:#f92672">+</span>low) <span style="color:#f92672">//</span> <span style="color:#ae81ff">2</span>
+        <span style="color:#66d9ef">if</span> num <span style="color:#f92672">&gt;</span> list[mid]:
+            low <span style="color:#f92672">=</span> mid <span style="color:#f92672">+</span> <span style="color:#ae81ff">1</span>
+        <span style="color:#66d9ef">elif</span> num <span style="color:#f92672">&lt;</span> list[mid]:
+            high <span style="color:#f92672">=</span> mid
+        <span style="color:#66d9ef">else</span>:
+            <span style="color:#66d9ef">return</span> mid
 
 
-if __name__ == &quot;__main__&quot;:
-    l = [2, 4, 6, 7, 8, 9, 11, 15, 18, 21, 31, 64]
-    assert binary_search(l, 18) == 8
-</code></pre>
-
-<ul>
+<span style="color:#66d9ef">if</span> __name__ <span style="color:#f92672">==</span> <span style="color:#e6db74">&#34;__main__&#34;</span>:
+    l <span style="color:#f92672">=</span> [<span style="color:#ae81ff">2</span>, <span style="color:#ae81ff">4</span>, <span style="color:#ae81ff">6</span>, <span style="color:#ae81ff">7</span>, <span style="color:#ae81ff">8</span>, <span style="color:#ae81ff">9</span>, <span style="color:#ae81ff">11</span>, <span style="color:#ae81ff">15</span>, <span style="color:#ae81ff">18</span>, <span style="color:#ae81ff">21</span>, <span style="color:#ae81ff">31</span>, <span style="color:#ae81ff">64</span>]
+    <span style="color:#66d9ef">assert</span> binary_search(l, <span style="color:#ae81ff">18</span>) <span style="color:#f92672">==</span> <span style="color:#ae81ff">8</span>
+</code></pre></div><ul>
 <li>找出旋转排序数组最小值</li>
 </ul>
-
 <pre><code>Suppose an array sorted in ascending order is rotated at some pivot unknown
 to you beforehand. (i.e., 0 1 2 4 5 6 7 might become 4 5 6 7 0 1 2).
 Find the minimum element. The complexity must be O(logN)
 You may assume no duplicate exists in the array.
-</code></pre>
+</code></pre><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">find_min_rotate</span>(array):
+    high <span style="color:#f92672">=</span> len(array) <span style="color:#f92672">-</span> <span style="color:#ae81ff">1</span>
+    low <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>
 
-<pre><code class="language-python">def find_min_rotate(array):
-    high = len(array) - 1
-    low = 0
+    <span style="color:#66d9ef">while</span> low <span style="color:#f92672">&lt;</span> high:
+        mid <span style="color:#f92672">=</span> (high<span style="color:#f92672">+</span>low) <span style="color:#f92672">//</span> <span style="color:#ae81ff">2</span>
+        <span style="color:#66d9ef">if</span> array[mid] <span style="color:#f92672">&gt;</span> array[high]:
+            low <span style="color:#f92672">=</span> mid<span style="color:#f92672">+</span><span style="color:#ae81ff">1</span>
+        <span style="color:#66d9ef">else</span>:
+            high <span style="color:#f92672">=</span> mid
 
-    while low &lt; high:
-        mid = (high+low) // 2
-        if array[mid] &gt; array[high]:
-            low = mid+1
-        else:
-            high = mid
-
-    return array[low]
+    <span style="color:#66d9ef">return</span> array[low]
 
 
-if __name__ == &quot;__main__&quot;:
-    array = [4, 5, 6, 7, 0, 1, 2]
-    assert find_min_rotate(array) == 0
-</code></pre>
-
-<ul>
+<span style="color:#66d9ef">if</span> __name__ <span style="color:#f92672">==</span> <span style="color:#e6db74">&#34;__main__&#34;</span>:
+    array <span style="color:#f92672">=</span> [<span style="color:#ae81ff">4</span>, <span style="color:#ae81ff">5</span>, <span style="color:#ae81ff">6</span>, <span style="color:#ae81ff">7</span>, <span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">2</span>]
+    <span style="color:#66d9ef">assert</span> find_min_rotate(array) <span style="color:#f92672">==</span> <span style="color:#ae81ff">0</span>
+</code></pre></div><ul>
 <li>跳跃搜索</li>
 </ul>
-
 <p>思路：将有序数组分片，逐一搜索</p>
-
-<pre><code class="language-python">import math
-
-
-def jump_search(arr, target):
-    len_a = len(arr)
-    jump = int(math.sqrt(len_a))
-    step = 0
-
-    while step*jump &lt; len_a and target &gt; arr[step*jump]:
-        step += 1
-
-    distance = min(len_a-1-(step-1)*jump, jump)
-    for i in range(distance):
-        if target == arr[(step-1)*jump+1+i]:
-            return (step-1)*jump+1+i
-
-    return -1
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#f92672">import</span> math
 
 
-if __name__ == &quot;__main__&quot;:
-    arr = [0, 1, 1, 2, 3, 5, 8, 13, 21, 34, 55, 89, 144, 233, 377, 610]
-    target = 144
+<span style="color:#66d9ef">def</span> <span style="color:#a6e22e">jump_search</span>(arr, target):
+    len_a <span style="color:#f92672">=</span> len(arr)
+    jump <span style="color:#f92672">=</span> int(math<span style="color:#f92672">.</span>sqrt(len_a))
+    step <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>
 
-    assert jump_search(arr, target) == 12
-</code></pre>
+    <span style="color:#66d9ef">while</span> step<span style="color:#f92672">*</span>jump <span style="color:#f92672">&lt;</span> len_a <span style="color:#f92672">and</span> target <span style="color:#f92672">&gt;</span> arr[step<span style="color:#f92672">*</span>jump]:
+        step <span style="color:#f92672">+=</span> <span style="color:#ae81ff">1</span>
+
+    distance <span style="color:#f92672">=</span> min(len_a<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span><span style="color:#f92672">-</span>(step<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>)<span style="color:#f92672">*</span>jump, jump)
+    <span style="color:#66d9ef">for</span> i <span style="color:#f92672">in</span> range(distance):
+        <span style="color:#66d9ef">if</span> target <span style="color:#f92672">==</span> arr[(step<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>)<span style="color:#f92672">*</span>jump<span style="color:#f92672">+</span><span style="color:#ae81ff">1</span><span style="color:#f92672">+</span>i]:
+            <span style="color:#66d9ef">return</span> (step<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>)<span style="color:#f92672">*</span>jump<span style="color:#f92672">+</span><span style="color:#ae81ff">1</span><span style="color:#f92672">+</span>i
+
+    <span style="color:#66d9ef">return</span> <span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>
+
+
+<span style="color:#66d9ef">if</span> __name__ <span style="color:#f92672">==</span> <span style="color:#e6db74">&#34;__main__&#34;</span>:
+    arr <span style="color:#f92672">=</span> [<span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">2</span>, <span style="color:#ae81ff">3</span>, <span style="color:#ae81ff">5</span>, <span style="color:#ae81ff">8</span>, <span style="color:#ae81ff">13</span>, <span style="color:#ae81ff">21</span>, <span style="color:#ae81ff">34</span>, <span style="color:#ae81ff">55</span>, <span style="color:#ae81ff">89</span>, <span style="color:#ae81ff">144</span>, <span style="color:#ae81ff">233</span>, <span style="color:#ae81ff">377</span>, <span style="color:#ae81ff">610</span>]
+    target <span style="color:#f92672">=</span> <span style="color:#ae81ff">144</span>
+
+    <span style="color:#66d9ef">assert</span> jump_search(arr, target) <span style="color:#f92672">==</span> <span style="color:#ae81ff">12</span>
+</code></pre></div>
             </article>
           </div>
           
@@ -414,7 +401,7 @@ title="github icon"></i>
         
 				</ul>	<div class="design-credit">
 		
-		<p>&copy; Nevermore | 2019</p>
+		<p>© Nevermore | 2019</p>
 		
     </div>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>

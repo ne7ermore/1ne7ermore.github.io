@@ -176,29 +176,18 @@
           <div class="entry-content">
             <article>
               <p>Bi-directional LSTM-CNNs-CRF</p>
-
 <p><a href="https://github.com/ne7ermore/torch_light/tree/master/LSTM-CNNs-CRF">代码</a></p>
-
 <p>下期开始会逐步实现一些有意思的Computer Vision相关内容。本期实现一个DenseNet在CIFAR-100上分类。</p>
-
 <blockquote>
 <p>CRF-条件随机场</p>
 </blockquote>
-
 <p>Conditional Random Fields，简称CRF</p>
-
 <p>给定一组输入序列的条件下输出另一组序列的条件概率分布，判别式模型。</p>
-
 <p>CRF优点：着眼于局部最优解，在已给出 z 的条件下计算可能的序列 y 的概率分布</p>
-
-<p><img src="/img/crf/img2.jpg" style="height: 200px" alt=""></p>
-
+<!-- raw HTML omitted -->
 <p>LSTM优点：获取长时间序列上样本与样本之间的关系。而BiLSTM可以更有效的获取上下文的特征。</p>
-
 <p>BiLSTM+CRF已在NLP多数场景中表现出让人意想不到的效果。比如分词，相比于传统的分词器，BiLSTM能发挥双向获取句子特征这一优势，分词效果更接近人的感觉。</p>
-
 <p><a href="https://github.com/ne7ermore/torch_light/tree/master/biLSTM-CRF-cut">分词实现</a>的一个简单例子：</p>
-
 <pre><code>&gt;&gt;&gt; print(sg.sentence_cut(&quot;ngram是自然语言处理中一个非常重要的概念，通常在NLP中，
         人们基于一定的语料库，可以利用ngram来预计或者评估一个句子是否合理。
         另外一方面，ngram的另外一个作用是用来评估两个字符串之间的差异程度。
@@ -213,39 +202,22 @@
  '。', '这是', '模糊匹配', '中', '常用', '的', '一种', '手段', '。', '本文', '将',
   '从此', '开始', '，', '进而', '向', '读者', '展示', 'ngram', '在', '自然语言',
   '处理', '中', '的', '各种', 'powerful', '的', '应用']
-</code></pre>
-
-<p>CNN在Sequence Labeling中多数使用在英文里，它能更好的提取出单词中的形态信息，例如单词的前后缀；中文里，CNN也可以使用在句子里分词后的字层面，获取更多特征，有兴趣的朋友可以试试。</p>
-
+</code></pre><p>CNN在Sequence Labeling中多数使用在英文里，它能更好的提取出单词中的形态信息，例如单词的前后缀；中文里，CNN也可以使用在句子里分词后的字层面，获取更多特征，有兴趣的朋友可以试试。</p>
 <p>本期模型的实现来自于论文End-to-end Sequence Labeling via Bi-directional LSTM-CNNs-CRF</p>
-
 <p>训练中使用的数据来自于CoNLL 2003</p>
-
 <h3 id="代码">代码</h3>
-
 <p>全部代码链接在文章最后面</p>
-
 <p>Char级的CNN实现</p>
-
 <p>这里初始化embedding权重时使用的Glorot初始化</p>
-
-<p><img src="/img/crf/img3.jpg" style="height: 500px" alt=""></p>
-
+<!-- raw HTML omitted -->
 <p>Word级BiLSTM实现</p>
-
-<p><img src="/img/crf/img4.jpg" style="height: 400px" alt=""></p>
-
+<!-- raw HTML omitted -->
 <p>CRF的实现学习自tutorial-pytorch，不过教程中是逐条数据训练，而本期代码改进为按mini-batch训练</p>
-
-<p><img src="/img/crf/img5.jpg" style="height: 700px" alt=""></p>
-
+<!-- raw HTML omitted -->
 <p>viterbi解码</p>
-
-<p><img src="/img/crf/img6.jpg" style="height: 500px" alt=""></p>
-
+<!-- raw HTML omitted -->
 <p>结果 准确率：91.5%</p>
-
-<p><img src="/img/crf/img7.jpg" style="height: 400px" alt=""></p>
+<!-- raw HTML omitted -->
             </article>
           </div>
           
@@ -396,7 +368,7 @@ title="github icon"></i>
         
 				</ul>	<div class="design-credit">
 		
-		<p>&copy; Nevermore | 2019</p>
+		<p>© Nevermore | 2019</p>
 		
     </div>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>

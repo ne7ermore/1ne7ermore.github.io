@@ -176,41 +176,29 @@
           <div class="entry-content">
             <article>
               <p>Transformer for Co-Reference</p>
-
 <p>近期研究图谱问答并完成商业落地，接触到三个常用于图谱问答中的任务</p>
-
 <ul>
 <li>指代消解：常用于多轮问答，本期文章讨论</li>
 <li>信息抽取：<a href="https://github.com/ne7ermore/torch-light/tree/master/information-extraction">从文本中抽取三元关系</a></li>
 <li>实体消歧</li>
 </ul>
-
 <p>由于在多轮对话中频繁出现代词，零指代词，会极大影响主任务模型的效果，使模型很难理解真正的意图</p>
-
 <p>多轮对话样本中统计</p>
-
-<p><img src="/img/coreference/rate.png" style="height: 200px" alt=""></p>
-
+<!-- raw HTML omitted -->
 <p>对话中出现代词比例33.5%，零指代词比例52.4%</p>
-
 <p>多轮对话举例</p>
-
 <blockquote>
 <p>天气</p>
 </blockquote>
-
 <pre><code>
 对话1：北京今天天气怎么样
 对话2：晴天
 对话3：那明天呢
 
 真实意图：那明天天气怎么样呢
-</code></pre>
-
-<blockquote>
+</code></pre><blockquote>
 <p>电影</p>
 </blockquote>
-
 <pre><code>
 对话1：你有么有看过约会之夜啊
 对话2：没有约会之夜谁演的
@@ -219,49 +207,33 @@
 对话5：电影评分84看吗
 
 真实意图：电影约会之夜评分84看吗
-</code></pre>
-
-<p><a href="https://github.com/ne7ermore/deeping-flow/tree/master/coreference">实现</a></p>
-
+</code></pre><p><a href="https://github.com/ne7ermore/deeping-flow/tree/master/coreference">实现</a></p>
 <p>模型结构</p>
-
-<p><img src="/img/coreference/co-model.png" style="height: 600px" alt=""></p>
-
+<!-- raw HTML omitted -->
 <blockquote>
 <p>Embedding</p>
 </blockquote>
-
 <p>在原始Transformer结构上增加对话轮次特征</p>
-
 <ul>
 <li>w_i ：n轮对话中的字（中文）</li>
 <li>WE：word embedding</li>
 <li>PE：position embedding</li>
 <li>TE：turn embedding</li>
 </ul>
-
 <p>I(w_i) = WE(w_i) + PE(w_i) + TE(w_i)</p>
-
 <blockquote>
 <p>Encode</p>
 </blockquote>
-
 <p>使用<strong>Pre-Norm Transformer</strong></p>
-
 <p>因为接入蒸馏，所以在Transformer encode最后一层输出向量后接入fc，放大缩小特征长度</p>
-
 <blockquote>
 <p>Decode</p>
 </blockquote>
-
 <p>使用<strong>Pre-Norm Transformer</strong></p>
-
 <blockquote>
 <p>Pointer Network</p>
 </blockquote>
-
 <p>Pointer Network论文，使用矩阵变换代替循环</p>
-
 <pre><code>
 with tf.compat.v1.variable_scope(&quot;pointer&quot;, reuse=tf.compat.v1.AUTO_REUSE):
     last_enc_output = tf.layers.dense(
@@ -283,16 +255,11 @@ with tf.compat.v1.variable_scope(&quot;pointer&quot;, reuse=tf.compat.v1.AUTO_RE
     attn_encode = tf.transpose(tf.squeeze(attn_encode, 3), [
         1, 0, 2])  # bsz tlen slen
     distributes = tf.nn.log_softmax(attn_encode, axis=-1)+1e-9
-</code></pre>
-
-<blockquote>
+</code></pre><blockquote>
 <p>Distillation</p>
 </blockquote>
-
 <p>蒸馏可以很好的利用预训练模型在大数量级样本中训练后的权重，更好的使学生模型理解语义，提升最终效果</p>
-
 <p>Loss = MSE(f_bert(I(w_i) ),f_linear(f_encode(I(w_i)))</p>
-
 <pre><code>
 def distillation(self, enc_output, dist_encode):
     args = self.args
@@ -306,20 +273,15 @@ def distillation(self, enc_output, dist_encode):
             enc_output, args.d_model, kernel_initializer=self.initializer)
 
     return enc_output, distill_loss
-</code></pre>
-
-<blockquote>
+</code></pre><blockquote>
 <p>训练流程</p>
 </blockquote>
-
 <ul>
 <li>启用预训练，使encode输出分布尽量拟合BERT输出</li>
 </ul>
-
 <blockquote>
 <p>效果</p>
 </blockquote>
-
 <ul>
 <li>验证数据集中准确率96%，rouge-l分数93.3%</li>
 <li>使用Beam Search预测，效果见【多轮对话举例】</li>
@@ -474,7 +436,7 @@ title="github icon"></i>
         
 				</ul>	<div class="design-credit">
 		
-		<p>&copy; Nevermore | 2019</p>
+		<p>© Nevermore | 2019</p>
 		
     </div>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>

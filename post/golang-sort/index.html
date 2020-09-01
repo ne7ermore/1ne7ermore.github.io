@@ -176,137 +176,119 @@
           <div class="entry-content">
             <article>
               <p>Golang sort包相对独立，并且能帮助理解和使用golang中的interface</p>
-
 <h5 id="interface">interface</h5>
-
 <p>Golang的interface可以说是开放的，不同于<strong>java</strong>，集成了interface，就要实现其所有的方法。
 就用Golang官网的<a href="https://golang.org/pkg/sort/">例子</a>来说明吧，为了方便阅读，我简化了下原本例子</p>
-
 <p>在看例子之前，我们先看下源码对Interface的定义，其实只有3个方法，长度，大小，交换</p>
-
-<pre><code class="language-golang">type Interface interface {
-    Len() int
-    Less(i, j int) bool
-    Swap(i, j int)
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-golang" data-lang="golang"><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">Interface</span> <span style="color:#66d9ef">interface</span> {
+    <span style="color:#a6e22e">Len</span>() <span style="color:#66d9ef">int</span>
+    <span style="color:#a6e22e">Less</span>(<span style="color:#a6e22e">i</span>, <span style="color:#a6e22e">j</span> <span style="color:#66d9ef">int</span>) <span style="color:#66d9ef">bool</span>
+    <span style="color:#a6e22e">Swap</span>(<span style="color:#a6e22e">i</span>, <span style="color:#a6e22e">j</span> <span style="color:#66d9ef">int</span>)
 }
-</code></pre>
+</code></pre></div><p>例子，实现sort.Interface定义的3个方法</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-golang" data-lang="golang"><span style="color:#f92672">package</span> <span style="color:#a6e22e">main</span>
 
-<p>例子，实现sort.Interface定义的3个方法</p>
-
-<pre><code class="language-golang">package main
-
-import (
-    &quot;sort&quot;
+<span style="color:#f92672">import</span> (
+    <span style="color:#e6db74">&#34;sort&#34;</span>
 )
 
-// 定义类
-type Person struct {
-    Name string
-    Age  int
+<span style="color:#75715e">// 定义类
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">Person</span> <span style="color:#66d9ef">struct</span> {
+    <span style="color:#a6e22e">Name</span> <span style="color:#66d9ef">string</span>
+    <span style="color:#a6e22e">Age</span>  <span style="color:#66d9ef">int</span>
 }
 
-func (p Person) String() string {
-    return fmt.Sprintf(&quot;%s: %d&quot;, p.Name, p.Age)
+<span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">p</span> <span style="color:#a6e22e">Person</span>) <span style="color:#a6e22e">String</span>() <span style="color:#66d9ef">string</span> {
+    <span style="color:#66d9ef">return</span> <span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Sprintf</span>(<span style="color:#e6db74">&#34;%s: %d&#34;</span>, <span style="color:#a6e22e">p</span>.<span style="color:#a6e22e">Name</span>, <span style="color:#a6e22e">p</span>.<span style="color:#a6e22e">Age</span>)
 }
 
-type ByAge []Person
+<span style="color:#66d9ef">type</span> <span style="color:#a6e22e">ByAge</span> []<span style="color:#a6e22e">Person</span>
 
-// 实现源码中的3个方法
-func (a ByAge) Len() int           { return len(a) }
-func (a ByAge) Swap(i, j int)      { a[i], a[j] = a[j], a[i] }
-func (a ByAge) Less(i, j int) bool { return a[i].Age &lt; a[j].Age }
+<span style="color:#75715e">// 实现源码中的3个方法
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">a</span> <span style="color:#a6e22e">ByAge</span>) <span style="color:#a6e22e">Len</span>() <span style="color:#66d9ef">int</span>           { <span style="color:#66d9ef">return</span> len(<span style="color:#a6e22e">a</span>) }
+<span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">a</span> <span style="color:#a6e22e">ByAge</span>) <span style="color:#a6e22e">Swap</span>(<span style="color:#a6e22e">i</span>, <span style="color:#a6e22e">j</span> <span style="color:#66d9ef">int</span>)      { <span style="color:#a6e22e">a</span>[<span style="color:#a6e22e">i</span>], <span style="color:#a6e22e">a</span>[<span style="color:#a6e22e">j</span>] = <span style="color:#a6e22e">a</span>[<span style="color:#a6e22e">j</span>], <span style="color:#a6e22e">a</span>[<span style="color:#a6e22e">i</span>] }
+<span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">a</span> <span style="color:#a6e22e">ByAge</span>) <span style="color:#a6e22e">Less</span>(<span style="color:#a6e22e">i</span>, <span style="color:#a6e22e">j</span> <span style="color:#66d9ef">int</span>) <span style="color:#66d9ef">bool</span> { <span style="color:#66d9ef">return</span> <span style="color:#a6e22e">a</span>[<span style="color:#a6e22e">i</span>].<span style="color:#a6e22e">Age</span> &lt; <span style="color:#a6e22e">a</span>[<span style="color:#a6e22e">j</span>].<span style="color:#a6e22e">Age</span> }
 
-func main() {
-    people := []Person{
-        {&quot;Bob&quot;, 31},
-        {&quot;John&quot;, 42},
-        {&quot;Michael&quot;, 17},
-        {&quot;Jenny&quot;, 26},
+<span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>() {
+    <span style="color:#a6e22e">people</span> <span style="color:#f92672">:=</span> []<span style="color:#a6e22e">Person</span>{
+        {<span style="color:#e6db74">&#34;Bob&#34;</span>, <span style="color:#ae81ff">31</span>},
+        {<span style="color:#e6db74">&#34;John&#34;</span>, <span style="color:#ae81ff">42</span>},
+        {<span style="color:#e6db74">&#34;Michael&#34;</span>, <span style="color:#ae81ff">17</span>},
+        {<span style="color:#e6db74">&#34;Jenny&#34;</span>, <span style="color:#ae81ff">26</span>},
     }
 
-    println(people)
+    println(<span style="color:#a6e22e">people</span>)
 
-    // ByAge集成了sort.Interface
-    // 所以可以使用sort.的Sort方法
-    sort.Sort(ByAge(people))
-    println(people)
+    <span style="color:#75715e">// ByAge集成了sort.Interface
+</span><span style="color:#75715e"></span>    <span style="color:#75715e">// 所以可以使用sort.的Sort方法
+</span><span style="color:#75715e"></span>    <span style="color:#a6e22e">sort</span>.<span style="color:#a6e22e">Sort</span>(<span style="color:#a6e22e">ByAge</span>(<span style="color:#a6e22e">people</span>))
+    println(<span style="color:#a6e22e">people</span>)
 }
-</code></pre>
-
-<hr />
-
-<h4 id="以下是通过学习源码-个人复现和说明">以下是通过学习源码，个人复现和说明</h4>
-
+</code></pre></div><hr>
+<h4 id="以下是通过学习源码个人复现和说明">以下是通过学习源码，个人复现和说明</h4>
 <h5 id="二分查找">二分查找</h5>
-
 <p>思路： 先定位中间位置 index，如果 fn(index) == true,  就移动j 到index，如果fn(index) == false，就移动I到index+1位置</p>
-
-<pre><code class="language-golang">func Search(n int, f func(int) bool) int {
-    // Define f(-1) == false and f(n) == true.
-    // Invariant: f(i-1) == false, f(j) == true.
-    i, j := 0, n
-    for i &lt; j {
-        h := i + (j-i)/2 // avoid overflow when computing h
-        // i ≤ h &lt; j
-        if !f(h) {
-            i = h + 1 // preserves f(i-1) == false
-        } else {
-            j = h // preserves f(j) == true
-        }
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-golang" data-lang="golang"><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">Search</span>(<span style="color:#a6e22e">n</span> <span style="color:#66d9ef">int</span>, <span style="color:#a6e22e">f</span> <span style="color:#66d9ef">func</span>(<span style="color:#66d9ef">int</span>) <span style="color:#66d9ef">bool</span>) <span style="color:#66d9ef">int</span> {
+    <span style="color:#75715e">// Define f(-1) == false and f(n) == true.
+</span><span style="color:#75715e"></span>    <span style="color:#75715e">// Invariant: f(i-1) == false, f(j) == true.
+</span><span style="color:#75715e"></span>    <span style="color:#a6e22e">i</span>, <span style="color:#a6e22e">j</span> <span style="color:#f92672">:=</span> <span style="color:#ae81ff">0</span>, <span style="color:#a6e22e">n</span>
+    <span style="color:#66d9ef">for</span> <span style="color:#a6e22e">i</span> &lt; <span style="color:#a6e22e">j</span> {
+        <span style="color:#a6e22e">h</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">i</span> <span style="color:#f92672">+</span> (<span style="color:#a6e22e">j</span><span style="color:#f92672">-</span><span style="color:#a6e22e">i</span>)<span style="color:#f92672">/</span><span style="color:#ae81ff">2</span> <span style="color:#75715e">// avoid overflow when computing h
+</span><span style="color:#75715e"></span>        <span style="color:#75715e">// i ≤ h &lt; j
+</span><span style="color:#75715e"></span>        <span style="color:#66d9ef">if</span> !<span style="color:#a6e22e">f</span>(<span style="color:#a6e22e">h</span>) {
+            <span style="color:#a6e22e">i</span> = <span style="color:#a6e22e">h</span> <span style="color:#f92672">+</span> <span style="color:#ae81ff">1</span> <span style="color:#75715e">// preserves f(i-1) == false
+</span><span style="color:#75715e"></span>        } <span style="color:#66d9ef">else</span> {
+            <span style="color:#a6e22e">j</span> = <span style="color:#a6e22e">h</span> <span style="color:#75715e">// preserves f(j) == true
+</span><span style="color:#75715e"></span>        }
     }
-    // i == j, f(i-1) == false, and f(j) (= f(i)) == true  =&gt;  answer is i.
-    return i
+    <span style="color:#75715e">// i == j, f(i-1) == false, and f(j) (= f(i)) == true  =&gt;  answer is i.
+</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">return</span> <span style="color:#a6e22e">i</span>
 }
-</code></pre>
-
-<h5 id="堆排序">堆排序</h5>
-
+</code></pre></div><h5 id="堆排序">堆排序</h5>
 <p>思路:</p>
-
 <ul>
 <li>step1 - 先对数组建大顶堆(假设按从大到小排列)</li>
 <li>step2 - 然后将堆顶的数放置数组的末尾</li>
 <li>step3 - 对数组<strong>0 ~ len-1</strong>重复step1和2，直到遍历完数组</li>
 </ul>
-
-<pre><code class="language-golang">func siftDown(data *[]int, lo, hi int) {
-    index := lo
-    for {
-        // index的左儿子
-        child := 2*index + 1
-        if child &gt;= hi {
-            break
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-golang" data-lang="golang"><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">siftDown</span>(<span style="color:#a6e22e">data</span> <span style="color:#f92672">*</span>[]<span style="color:#66d9ef">int</span>, <span style="color:#a6e22e">lo</span>, <span style="color:#a6e22e">hi</span> <span style="color:#66d9ef">int</span>) {
+    <span style="color:#a6e22e">index</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">lo</span>
+    <span style="color:#66d9ef">for</span> {
+        <span style="color:#75715e">// index的左儿子
+</span><span style="color:#75715e"></span>        <span style="color:#a6e22e">child</span> <span style="color:#f92672">:=</span> <span style="color:#ae81ff">2</span><span style="color:#f92672">*</span><span style="color:#a6e22e">index</span> <span style="color:#f92672">+</span> <span style="color:#ae81ff">1</span>
+        <span style="color:#66d9ef">if</span> <span style="color:#a6e22e">child</span> <span style="color:#f92672">&gt;=</span> <span style="color:#a6e22e">hi</span> {
+            <span style="color:#66d9ef">break</span>
         }
-        // 在左右儿子中找到大的那一个
-        if child+1 &lt; hi &amp;&amp; (*data)[child] &lt; (*data)[child+1] {
-            child++
+        <span style="color:#75715e">// 在左右儿子中找到大的那一个
+</span><span style="color:#75715e"></span>        <span style="color:#66d9ef">if</span> <span style="color:#a6e22e">child</span><span style="color:#f92672">+</span><span style="color:#ae81ff">1</span> &lt; <span style="color:#a6e22e">hi</span> <span style="color:#f92672">&amp;&amp;</span> (<span style="color:#f92672">*</span><span style="color:#a6e22e">data</span>)[<span style="color:#a6e22e">child</span>] &lt; (<span style="color:#f92672">*</span><span style="color:#a6e22e">data</span>)[<span style="color:#a6e22e">child</span><span style="color:#f92672">+</span><span style="color:#ae81ff">1</span>] {
+            <span style="color:#a6e22e">child</span><span style="color:#f92672">++</span>
         }
-        // 如果父比大的那一个儿子大，就结束
-        if (*data)[index] &gt; (*data)[child] {
-            break
+        <span style="color:#75715e">// 如果父比大的那一个儿子大，就结束
+</span><span style="color:#75715e"></span>        <span style="color:#66d9ef">if</span> (<span style="color:#f92672">*</span><span style="color:#a6e22e">data</span>)[<span style="color:#a6e22e">index</span>] &gt; (<span style="color:#f92672">*</span><span style="color:#a6e22e">data</span>)[<span style="color:#a6e22e">child</span>] {
+            <span style="color:#66d9ef">break</span>
         }
-        // 否则就把父和较大的儿子替换
-        (*data)[index], (*data)[child] = (*data)[child], (*data)[index]
-        // 位置替换成大儿子的
-        index = child
+        <span style="color:#75715e">// 否则就把父和较大的儿子替换
+</span><span style="color:#75715e"></span>        (<span style="color:#f92672">*</span><span style="color:#a6e22e">data</span>)[<span style="color:#a6e22e">index</span>], (<span style="color:#f92672">*</span><span style="color:#a6e22e">data</span>)[<span style="color:#a6e22e">child</span>] = (<span style="color:#f92672">*</span><span style="color:#a6e22e">data</span>)[<span style="color:#a6e22e">child</span>], (<span style="color:#f92672">*</span><span style="color:#a6e22e">data</span>)[<span style="color:#a6e22e">index</span>]
+        <span style="color:#75715e">// 位置替换成大儿子的
+</span><span style="color:#75715e"></span>        <span style="color:#a6e22e">index</span> = <span style="color:#a6e22e">child</span>
     }
 }
 
-func heapSort(data *[]int) {
-    hi := len(*data)
+<span style="color:#66d9ef">func</span> <span style="color:#a6e22e">heapSort</span>(<span style="color:#a6e22e">data</span> <span style="color:#f92672">*</span>[]<span style="color:#66d9ef">int</span>) {
+    <span style="color:#a6e22e">hi</span> <span style="color:#f92672">:=</span> len(<span style="color:#f92672">*</span><span style="color:#a6e22e">data</span>)
 
-    // 建堆
-    for i := (hi - 1) / 2; i &gt;= 0; i-- {
-        siftDown(data, i, hi)
+    <span style="color:#75715e">// 建堆
+</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">for</span> <span style="color:#a6e22e">i</span> <span style="color:#f92672">:=</span> (<span style="color:#a6e22e">hi</span> <span style="color:#f92672">-</span> <span style="color:#ae81ff">1</span>) <span style="color:#f92672">/</span> <span style="color:#ae81ff">2</span>; <span style="color:#a6e22e">i</span> <span style="color:#f92672">&gt;=</span> <span style="color:#ae81ff">0</span>; <span style="color:#a6e22e">i</span><span style="color:#f92672">--</span> {
+        <span style="color:#a6e22e">siftDown</span>(<span style="color:#a6e22e">data</span>, <span style="color:#a6e22e">i</span>, <span style="color:#a6e22e">hi</span>)
     }
 
-    for i := hi - 1; i &gt;= 0; i-- {
-        // 堆顶是最大的值，放到最末尾，长度-1后继续建堆
-        (*data)[0], (*data)[i] = (*data)[i], (*data)[0]
-        siftDown(data, 0, i)
+    <span style="color:#66d9ef">for</span> <span style="color:#a6e22e">i</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">hi</span> <span style="color:#f92672">-</span> <span style="color:#ae81ff">1</span>; <span style="color:#a6e22e">i</span> <span style="color:#f92672">&gt;=</span> <span style="color:#ae81ff">0</span>; <span style="color:#a6e22e">i</span><span style="color:#f92672">--</span> {
+        <span style="color:#75715e">// 堆顶是最大的值，放到最末尾，长度-1后继续建堆
+</span><span style="color:#75715e"></span>        (<span style="color:#f92672">*</span><span style="color:#a6e22e">data</span>)[<span style="color:#ae81ff">0</span>], (<span style="color:#f92672">*</span><span style="color:#a6e22e">data</span>)[<span style="color:#a6e22e">i</span>] = (<span style="color:#f92672">*</span><span style="color:#a6e22e">data</span>)[<span style="color:#a6e22e">i</span>], (<span style="color:#f92672">*</span><span style="color:#a6e22e">data</span>)[<span style="color:#ae81ff">0</span>]
+        <span style="color:#a6e22e">siftDown</span>(<span style="color:#a6e22e">data</span>, <span style="color:#ae81ff">0</span>, <span style="color:#a6e22e">i</span>)
     }
 }
-</code></pre>
+</code></pre></div>
             </article>
           </div>
           
@@ -457,7 +439,7 @@ title="github icon"></i>
         
 				</ul>	<div class="design-credit">
 		
-		<p>&copy; Nevermore | 2019</p>
+		<p>© Nevermore | 2019</p>
 		
     </div>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>

@@ -175,228 +175,192 @@
           <div class="entry-content">
             <article>
               <p>Pandas是python的一款第三方包，强大，快速，多使用于数据挖掘和整合</p>
-
 <p>我会不定期记录使用pandas的心得</p>
-
 <p><strong>以下内容仅来自于个人经验，可能不是最优使用方式</strong></p>
-
 <p>Here we go</p>
-
 <p>pd中常用的对象: Series, DataFrame</p>
-
 <blockquote>
 <p>加载csv文件</p>
 </blockquote>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#75715e"># 加载，df的数据类型为DataFrame</span>
+df <span style="color:#f92672">=</span> pd<span style="color:#f92672">.</span>read_csv(<span style="color:#e6db74">&#34;16号线坡度表.csv&#34;</span>)
 
-<pre><code class="language-python"># 加载，df的数据类型为DataFrame
-df = pd.read_csv(&quot;16号线坡度表.csv&quot;)
+<span style="color:#75715e"># 显示前5行</span>
+df<span style="color:#f92672">.</span>head()
 
-# 显示前5行
-df.head()
+   <span style="color:#960050;background-color:#1e0010">序号</span>  <span style="color:#960050;background-color:#1e0010">行别</span>         <span style="color:#960050;background-color:#1e0010">起点里程</span>         <span style="color:#960050;background-color:#1e0010">终点里程</span>   <span style="color:#960050;background-color:#1e0010">坡度（‰）</span>     <span style="color:#960050;background-color:#1e0010">坡长（</span>m<span style="color:#960050;background-color:#1e0010">）</span>  <span style="color:#960050;background-color:#1e0010">起标高（</span>m<span style="color:#960050;background-color:#1e0010">）</span>  <span style="color:#960050;background-color:#1e0010">长链（</span>m<span style="color:#960050;background-color:#1e0010">）</span>  <span style="color:#960050;background-color:#1e0010">短链（</span>m<span style="color:#960050;background-color:#1e0010">）</span>  \
+<span style="color:#ae81ff">0</span>   <span style="color:#ae81ff">1</span>  <span style="color:#960050;background-color:#1e0010">上行</span>  <span style="color:#f92672">+</span>K00000<span style="color:#f92672">.</span><span style="color:#ae81ff">000</span>  <span style="color:#f92672">+</span>K00355<span style="color:#f92672">.</span><span style="color:#ae81ff">000</span>   <span style="color:#ae81ff">2.000</span>   <span style="color:#ae81ff">355.002</span>   <span style="color:#ae81ff">38.33</span>  <span style="color:#ae81ff">0.002</span>    NaN
+<span style="color:#ae81ff">1</span>   <span style="color:#ae81ff">2</span>  <span style="color:#960050;background-color:#1e0010">上行</span>  <span style="color:#f92672">+</span>K00355<span style="color:#f92672">.</span><span style="color:#ae81ff">000</span>  <span style="color:#f92672">+</span>K00780<span style="color:#f92672">.</span><span style="color:#ae81ff">000</span>  <span style="color:#f92672">-</span><span style="color:#ae81ff">2.000</span>   <span style="color:#ae81ff">425.000</span>   <span style="color:#ae81ff">39.04</span>    NaN    NaN
+<span style="color:#ae81ff">2</span>   <span style="color:#ae81ff">3</span>  <span style="color:#960050;background-color:#1e0010">上行</span>  <span style="color:#f92672">+</span>K00780<span style="color:#f92672">.</span><span style="color:#ae81ff">000</span>  <span style="color:#f92672">+</span>K01180<span style="color:#f92672">.</span><span style="color:#ae81ff">000</span> <span style="color:#f92672">-</span><span style="color:#ae81ff">28.000</span>   <span style="color:#ae81ff">400.000</span>   <span style="color:#ae81ff">38.19</span>    NaN    NaN
+<span style="color:#ae81ff">3</span>   <span style="color:#ae81ff">4</span>  <span style="color:#960050;background-color:#1e0010">上行</span>  <span style="color:#f92672">+</span>K01180<span style="color:#f92672">.</span><span style="color:#ae81ff">000</span>  <span style="color:#f92672">+</span>K01840<span style="color:#f92672">.</span><span style="color:#ae81ff">000</span> <span style="color:#f92672">-</span><span style="color:#ae81ff">19.500</span>   <span style="color:#ae81ff">660.000</span>   <span style="color:#ae81ff">26.99</span>    NaN    NaN
+<span style="color:#ae81ff">4</span>   <span style="color:#ae81ff">5</span>  <span style="color:#960050;background-color:#1e0010">上行</span>  <span style="color:#f92672">+</span>K01840<span style="color:#f92672">.</span><span style="color:#ae81ff">000</span>  <span style="color:#f92672">+</span>K02980<span style="color:#f92672">.</span><span style="color:#ae81ff">000</span>  <span style="color:#ae81ff">15.401</span>  <span style="color:#ae81ff">1141.220</span>   <span style="color:#ae81ff">14.12</span>  <span style="color:#ae81ff">1.220</span>    NaN
 
-   序号  行别         起点里程         终点里程   坡度（‰）     坡长（m）  起标高（m）  长链（m）  短链（m）  \
-0   1  上行  +K00000.000  +K00355.000   2.000   355.002   38.33  0.002    NaN
-1   2  上行  +K00355.000  +K00780.000  -2.000   425.000   39.04    NaN    NaN
-2   3  上行  +K00780.000  +K01180.000 -28.000   400.000   38.19    NaN    NaN
-3   4  上行  +K01180.000  +K01840.000 -19.500   660.000   26.99    NaN    NaN
-4   5  上行  +K01840.000  +K02980.000  15.401  1141.220   14.12  1.220    NaN
-
-   Unnamed: 9
-0         NaN
-1         NaN
-2         NaN
-3         NaN
-4         NaN
-</code></pre>
-
-<blockquote>
+   Unnamed: <span style="color:#ae81ff">9</span>
+<span style="color:#ae81ff">0</span>         NaN
+<span style="color:#ae81ff">1</span>         NaN
+<span style="color:#ae81ff">2</span>         NaN
+<span style="color:#ae81ff">3</span>         NaN
+<span style="color:#ae81ff">4</span>         NaN
+</code></pre></div><blockquote>
 <p>DataFrame每一列就是一个Series</p>
 </blockquote>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">df[<span style="color:#e6db74">&#34;起点里程&#34;</span>]
 
-<pre><code class="language-python">df[&quot;起点里程&quot;]
-
-0     +K00000.000
-1     +K00355.000
-2     +K00780.000
-3     +K01180.000
-         ...
-69    +K19450.000
-70    +K19720.000
-71    +K19980.000
-Name: 起点里程, Length: 72, dtype: object
-</code></pre>
-
-<blockquote>
+<span style="color:#ae81ff">0</span>     <span style="color:#f92672">+</span>K00000<span style="color:#f92672">.</span><span style="color:#ae81ff">000</span>
+<span style="color:#ae81ff">1</span>     <span style="color:#f92672">+</span>K00355<span style="color:#f92672">.</span><span style="color:#ae81ff">000</span>
+<span style="color:#ae81ff">2</span>     <span style="color:#f92672">+</span>K00780<span style="color:#f92672">.</span><span style="color:#ae81ff">000</span>
+<span style="color:#ae81ff">3</span>     <span style="color:#f92672">+</span>K01180<span style="color:#f92672">.</span><span style="color:#ae81ff">000</span>
+         <span style="color:#f92672">...</span>
+<span style="color:#ae81ff">69</span>    <span style="color:#f92672">+</span>K19450<span style="color:#f92672">.</span><span style="color:#ae81ff">000</span>
+<span style="color:#ae81ff">70</span>    <span style="color:#f92672">+</span>K19720<span style="color:#f92672">.</span><span style="color:#ae81ff">000</span>
+<span style="color:#ae81ff">71</span>    <span style="color:#f92672">+</span>K19980<span style="color:#f92672">.</span><span style="color:#ae81ff">000</span>
+Name: <span style="color:#960050;background-color:#1e0010">起点里程</span>, Length: <span style="color:#ae81ff">72</span>, dtype: object
+</code></pre></div><blockquote>
 <p>过滤掉不需要的内容</p>
 </blockquote>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">df <span style="color:#f92672">=</span> df<span style="color:#f92672">.</span>filter(items<span style="color:#f92672">=</span>[<span style="color:#e6db74">&#34;行别&#34;</span>, <span style="color:#e6db74">&#34;起点里程&#34;</span>, <span style="color:#e6db74">&#34;终点里程&#34;</span>, <span style="color:#e6db74">&#34;坡度（‰）&#34;</span>])
+df<span style="color:#f92672">.</span>head()
 
-<pre><code class="language-python">df = df.filter(items=[&quot;行别&quot;, &quot;起点里程&quot;, &quot;终点里程&quot;, &quot;坡度（‰）&quot;])
-df.head()
-
-   行别         起点里程         终点里程   坡度（‰）
-0  上行  +K00000.000  +K00355.000   2.000
-1  上行  +K00355.000  +K00780.000  -2.000
-2  上行  +K00780.000  +K01180.000 -28.000
-3  上行  +K01180.000  +K01840.000 -19.500
-4  上行  +K01840.000  +K02980.000  15.401
-</code></pre>
-
-<blockquote>
+   <span style="color:#960050;background-color:#1e0010">行别</span>         <span style="color:#960050;background-color:#1e0010">起点里程</span>         <span style="color:#960050;background-color:#1e0010">终点里程</span>   <span style="color:#960050;background-color:#1e0010">坡度（‰）</span>
+<span style="color:#ae81ff">0</span>  <span style="color:#960050;background-color:#1e0010">上行</span>  <span style="color:#f92672">+</span>K00000<span style="color:#f92672">.</span><span style="color:#ae81ff">000</span>  <span style="color:#f92672">+</span>K00355<span style="color:#f92672">.</span><span style="color:#ae81ff">000</span>   <span style="color:#ae81ff">2.000</span>
+<span style="color:#ae81ff">1</span>  <span style="color:#960050;background-color:#1e0010">上行</span>  <span style="color:#f92672">+</span>K00355<span style="color:#f92672">.</span><span style="color:#ae81ff">000</span>  <span style="color:#f92672">+</span>K00780<span style="color:#f92672">.</span><span style="color:#ae81ff">000</span>  <span style="color:#f92672">-</span><span style="color:#ae81ff">2.000</span>
+<span style="color:#ae81ff">2</span>  <span style="color:#960050;background-color:#1e0010">上行</span>  <span style="color:#f92672">+</span>K00780<span style="color:#f92672">.</span><span style="color:#ae81ff">000</span>  <span style="color:#f92672">+</span>K01180<span style="color:#f92672">.</span><span style="color:#ae81ff">000</span> <span style="color:#f92672">-</span><span style="color:#ae81ff">28.000</span>
+<span style="color:#ae81ff">3</span>  <span style="color:#960050;background-color:#1e0010">上行</span>  <span style="color:#f92672">+</span>K01180<span style="color:#f92672">.</span><span style="color:#ae81ff">000</span>  <span style="color:#f92672">+</span>K01840<span style="color:#f92672">.</span><span style="color:#ae81ff">000</span> <span style="color:#f92672">-</span><span style="color:#ae81ff">19.500</span>
+<span style="color:#ae81ff">4</span>  <span style="color:#960050;background-color:#1e0010">上行</span>  <span style="color:#f92672">+</span>K01840<span style="color:#f92672">.</span><span style="color:#ae81ff">000</span>  <span style="color:#f92672">+</span>K02980<span style="color:#f92672">.</span><span style="color:#ae81ff">000</span>  <span style="color:#ae81ff">15.401</span>
+</code></pre></div><blockquote>
 <p>替换df的列名称</p>
 </blockquote>
-
-<pre><code class="language-python">df.columns = [&quot;a&quot;, &quot;b&quot;, &quot;c&quot;, &quot;d&quot;]
-df.head()
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">df<span style="color:#f92672">.</span>columns <span style="color:#f92672">=</span> [<span style="color:#e6db74">&#34;a&#34;</span>, <span style="color:#e6db74">&#34;b&#34;</span>, <span style="color:#e6db74">&#34;c&#34;</span>, <span style="color:#e6db74">&#34;d&#34;</span>]
+df<span style="color:#f92672">.</span>head()
 
     a            b            c       d
-0  上行  +K00000.000  +K00355.000   2.000
-1  上行  +K00355.000  +K00780.000  -2.000
-2  上行  +K00780.000  +K01180.000 -28.000
-3  上行  +K01180.000  +K01840.000 -19.500
-4  上行  +K01840.000  +K02980.000  15.401
-</code></pre>
-
-<blockquote>
+<span style="color:#ae81ff">0</span>  <span style="color:#960050;background-color:#1e0010">上行</span>  <span style="color:#f92672">+</span>K00000<span style="color:#f92672">.</span><span style="color:#ae81ff">000</span>  <span style="color:#f92672">+</span>K00355<span style="color:#f92672">.</span><span style="color:#ae81ff">000</span>   <span style="color:#ae81ff">2.000</span>
+<span style="color:#ae81ff">1</span>  <span style="color:#960050;background-color:#1e0010">上行</span>  <span style="color:#f92672">+</span>K00355<span style="color:#f92672">.</span><span style="color:#ae81ff">000</span>  <span style="color:#f92672">+</span>K00780<span style="color:#f92672">.</span><span style="color:#ae81ff">000</span>  <span style="color:#f92672">-</span><span style="color:#ae81ff">2.000</span>
+<span style="color:#ae81ff">2</span>  <span style="color:#960050;background-color:#1e0010">上行</span>  <span style="color:#f92672">+</span>K00780<span style="color:#f92672">.</span><span style="color:#ae81ff">000</span>  <span style="color:#f92672">+</span>K01180<span style="color:#f92672">.</span><span style="color:#ae81ff">000</span> <span style="color:#f92672">-</span><span style="color:#ae81ff">28.000</span>
+<span style="color:#ae81ff">3</span>  <span style="color:#960050;background-color:#1e0010">上行</span>  <span style="color:#f92672">+</span>K01180<span style="color:#f92672">.</span><span style="color:#ae81ff">000</span>  <span style="color:#f92672">+</span>K01840<span style="color:#f92672">.</span><span style="color:#ae81ff">000</span> <span style="color:#f92672">-</span><span style="color:#ae81ff">19.500</span>
+<span style="color:#ae81ff">4</span>  <span style="color:#960050;background-color:#1e0010">上行</span>  <span style="color:#f92672">+</span>K01840<span style="color:#f92672">.</span><span style="color:#ae81ff">000</span>  <span style="color:#f92672">+</span>K02980<span style="color:#f92672">.</span><span style="color:#ae81ff">000</span>  <span style="color:#ae81ff">15.401</span>
+</code></pre></div><blockquote>
 <p>对df某一列处理</p>
 </blockquote>
-
-<pre><code class="language-python">df[&quot;b&quot;] = df[&quot;b&quot;].apply(lambda x: float(x[2:]))
-df.head()
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">df[<span style="color:#e6db74">&#34;b&#34;</span>] <span style="color:#f92672">=</span> df[<span style="color:#e6db74">&#34;b&#34;</span>]<span style="color:#f92672">.</span>apply(<span style="color:#66d9ef">lambda</span> x: float(x[<span style="color:#ae81ff">2</span>:]))
+df<span style="color:#f92672">.</span>head()
 
     a       b            c       d
-0  上行     0.0  +K00355.000   2.000
-1  上行   355.0  +K00780.000  -2.000
-2  上行   780.0  +K01180.000 -28.000
-3  上行  1180.0  +K01840.000 -19.500
-4  上行  1840.0  +K02980.000  15.401
-</code></pre>
-
-<blockquote>
+<span style="color:#ae81ff">0</span>  <span style="color:#960050;background-color:#1e0010">上行</span>     <span style="color:#ae81ff">0.0</span>  <span style="color:#f92672">+</span>K00355<span style="color:#f92672">.</span><span style="color:#ae81ff">000</span>   <span style="color:#ae81ff">2.000</span>
+<span style="color:#ae81ff">1</span>  <span style="color:#960050;background-color:#1e0010">上行</span>   <span style="color:#ae81ff">355.0</span>  <span style="color:#f92672">+</span>K00780<span style="color:#f92672">.</span><span style="color:#ae81ff">000</span>  <span style="color:#f92672">-</span><span style="color:#ae81ff">2.000</span>
+<span style="color:#ae81ff">2</span>  <span style="color:#960050;background-color:#1e0010">上行</span>   <span style="color:#ae81ff">780.0</span>  <span style="color:#f92672">+</span>K01180<span style="color:#f92672">.</span><span style="color:#ae81ff">000</span> <span style="color:#f92672">-</span><span style="color:#ae81ff">28.000</span>
+<span style="color:#ae81ff">3</span>  <span style="color:#960050;background-color:#1e0010">上行</span>  <span style="color:#ae81ff">1180.0</span>  <span style="color:#f92672">+</span>K01840<span style="color:#f92672">.</span><span style="color:#ae81ff">000</span> <span style="color:#f92672">-</span><span style="color:#ae81ff">19.500</span>
+<span style="color:#ae81ff">4</span>  <span style="color:#960050;background-color:#1e0010">上行</span>  <span style="color:#ae81ff">1840.0</span>  <span style="color:#f92672">+</span>K02980<span style="color:#f92672">.</span><span style="color:#ae81ff">000</span>  <span style="color:#ae81ff">15.401</span>
+</code></pre></div><blockquote>
 <p>找出Nan行并过滤掉</p>
 </blockquote>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#75715e"># b列3行更新为nan</span>
+df[<span style="color:#e6db74">&#34;b&#34;</span>][<span style="color:#ae81ff">2</span>] <span style="color:#f92672">=</span> np<span style="color:#f92672">.</span>nan
 
-<pre><code class="language-python"># b列3行更新为nan
-df[&quot;b&quot;][2] = np.nan
-
-# 找出为nan的行
-df[df.isnull().values == True]
+<span style="color:#75715e"># 找出为nan的行</span>
+df[df<span style="color:#f92672">.</span>isnull()<span style="color:#f92672">.</span>values <span style="color:#f92672">==</span> True]
 
     a   b            c     d
-2  上行 NaN  +K01180.000 -28.0
+<span style="color:#ae81ff">2</span>  <span style="color:#960050;background-color:#1e0010">上行</span> NaN  <span style="color:#f92672">+</span>K01180<span style="color:#f92672">.</span><span style="color:#ae81ff">000</span> <span style="color:#f92672">-</span><span style="color:#ae81ff">28.0</span>
 
 
-# 过滤掉nan行
- df[df[&quot;b&quot;].isnull().values == False]
-</code></pre>
-
-<blockquote>
+<span style="color:#75715e"># 过滤掉nan行</span>
+ df[df[<span style="color:#e6db74">&#34;b&#34;</span>]<span style="color:#f92672">.</span>isnull()<span style="color:#f92672">.</span>values <span style="color:#f92672">==</span> False]
+</code></pre></div><blockquote>
 <p>拼接多个DataFrame</p>
 </blockquote>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#75715e"># 按列拼接</span>
+df <span style="color:#f92672">=</span> pd<span style="color:#f92672">.</span>concat([df1, df2], axis<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>)
 
-<pre><code class="language-python"># 按列拼接
-df = pd.concat([df1, df2], axis=1)
+<span style="color:#75715e"># 按行拼接</span>
+df <span style="color:#f92672">=</span> pd<span style="color:#f92672">.</span>concat([df1, df2], axis<span style="color:#f92672">=</span><span style="color:#ae81ff">0</span>)
 
-# 按行拼接
-df = pd.concat([df1, df2], axis=0)
-
-# 按行拼接，忽略索引
-df = pd.concat([df1, df2], axis=0, ignore_index=True)
-</code></pre>
-
-<blockquote>
+<span style="color:#75715e"># 按行拼接，忽略索引</span>
+df <span style="color:#f92672">=</span> pd<span style="color:#f92672">.</span>concat([df1, df2], axis<span style="color:#f92672">=</span><span style="color:#ae81ff">0</span>, ignore_index<span style="color:#f92672">=</span>True)
+</code></pre></div><blockquote>
 <p>DataFrame转换数据类型</p>
 </blockquote>
-
-<pre><code class="language-python">df = df.astype(&quot;float32&quot;)
-</code></pre>
-
-<blockquote>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">df <span style="color:#f92672">=</span> df<span style="color:#f92672">.</span>astype(<span style="color:#e6db74">&#34;float32&#34;</span>)
+</code></pre></div><blockquote>
 <p>将unix时间戳转换成常用时间</p>
 </blockquote>
-
-<pre><code class="language-python">df = pd.read_csv(&quot;in_file&quot;)
-print(df.head())
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">df <span style="color:#f92672">=</span> pd<span style="color:#f92672">.</span>read_csv(<span style="color:#e6db74">&#34;in_file&#34;</span>)
+<span style="color:#66d9ef">print</span>(df<span style="color:#f92672">.</span>head())
 
     Timestamp  Weighted_Price
-0  1417411980           300.0
-1  1417412040           300.0
-2  1417412100           300.0
-3  1417412160           300.0
-4  1417412220           300.0
+<span style="color:#ae81ff">0</span>  <span style="color:#ae81ff">1417411980</span>           <span style="color:#ae81ff">300.0</span>
+<span style="color:#ae81ff">1</span>  <span style="color:#ae81ff">1417412040</span>           <span style="color:#ae81ff">300.0</span>
+<span style="color:#ae81ff">2</span>  <span style="color:#ae81ff">1417412100</span>           <span style="color:#ae81ff">300.0</span>
+<span style="color:#ae81ff">3</span>  <span style="color:#ae81ff">1417412160</span>           <span style="color:#ae81ff">300.0</span>
+<span style="color:#ae81ff">4</span>  <span style="color:#ae81ff">1417412220</span>           <span style="color:#ae81ff">300.0</span>
 
-# pd.to_datetime(df['Timestamp'], unit='s')
-# 按秒返回datetime类型
-# pd.Series.dt.date 按天返回结果
-df['date'] = pd.to_datetime(df['Timestamp'], unit='s').dt.date
-print(df.head())
+<span style="color:#75715e"># pd.to_datetime(df[&#39;Timestamp&#39;], unit=&#39;s&#39;)</span>
+<span style="color:#75715e"># 按秒返回datetime类型</span>
+<span style="color:#75715e"># pd.Series.dt.date 按天返回结果</span>
+df[<span style="color:#e6db74">&#39;date&#39;</span>] <span style="color:#f92672">=</span> pd<span style="color:#f92672">.</span>to_datetime(df[<span style="color:#e6db74">&#39;Timestamp&#39;</span>], unit<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;s&#39;</span>)<span style="color:#f92672">.</span>dt<span style="color:#f92672">.</span>date
+<span style="color:#66d9ef">print</span>(df<span style="color:#f92672">.</span>head())
 
     Timestamp  Weighted_Price        date
-0  1417411980           300.0  2014-12-01
-1  1417412040           300.0  2014-12-01
-2  1417412100           300.0  2014-12-01
-3  1417412160           300.0  2014-12-01
-4  1417412220           300.0  2014-12-01
-</code></pre>
-
-<blockquote>
+<span style="color:#ae81ff">0</span>  <span style="color:#ae81ff">1417411980</span>           <span style="color:#ae81ff">300.0</span>  <span style="color:#ae81ff">2014</span><span style="color:#f92672">-</span><span style="color:#ae81ff">12</span><span style="color:#f92672">-</span><span style="color:#ae81ff">01</span>
+<span style="color:#ae81ff">1</span>  <span style="color:#ae81ff">1417412040</span>           <span style="color:#ae81ff">300.0</span>  <span style="color:#ae81ff">2014</span><span style="color:#f92672">-</span><span style="color:#ae81ff">12</span><span style="color:#f92672">-</span><span style="color:#ae81ff">01</span>
+<span style="color:#ae81ff">2</span>  <span style="color:#ae81ff">1417412100</span>           <span style="color:#ae81ff">300.0</span>  <span style="color:#ae81ff">2014</span><span style="color:#f92672">-</span><span style="color:#ae81ff">12</span><span style="color:#f92672">-</span><span style="color:#ae81ff">01</span>
+<span style="color:#ae81ff">3</span>  <span style="color:#ae81ff">1417412160</span>           <span style="color:#ae81ff">300.0</span>  <span style="color:#ae81ff">2014</span><span style="color:#f92672">-</span><span style="color:#ae81ff">12</span><span style="color:#f92672">-</span><span style="color:#ae81ff">01</span>
+<span style="color:#ae81ff">4</span>  <span style="color:#ae81ff">1417412220</span>           <span style="color:#ae81ff">300.0</span>  <span style="color:#ae81ff">2014</span><span style="color:#f92672">-</span><span style="color:#ae81ff">12</span><span style="color:#f92672">-</span><span style="color:#ae81ff">01</span>
+</code></pre></div><blockquote>
 <p>聚合</p>
 </blockquote>
-
-<pre><code class="language-python">df = pd.read_csv(&quot;in_file&quot;)
-print(df.head())
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">df <span style="color:#f92672">=</span> pd<span style="color:#f92672">.</span>read_csv(<span style="color:#e6db74">&#34;in_file&#34;</span>)
+<span style="color:#66d9ef">print</span>(df<span style="color:#f92672">.</span>head())
 
     Timestamp  Weighted_Price        date
-0  1417411980           300.0  2014-12-01
-1  1417412040           300.0  2014-12-01
-2  1417412100           300.0  2014-12-01
-3  1417412160           300.0  2014-12-01
-4  1417412220           300.0  2014-12-01
+<span style="color:#ae81ff">0</span>  <span style="color:#ae81ff">1417411980</span>           <span style="color:#ae81ff">300.0</span>  <span style="color:#ae81ff">2014</span><span style="color:#f92672">-</span><span style="color:#ae81ff">12</span><span style="color:#f92672">-</span><span style="color:#ae81ff">01</span>
+<span style="color:#ae81ff">1</span>  <span style="color:#ae81ff">1417412040</span>           <span style="color:#ae81ff">300.0</span>  <span style="color:#ae81ff">2014</span><span style="color:#f92672">-</span><span style="color:#ae81ff">12</span><span style="color:#f92672">-</span><span style="color:#ae81ff">01</span>
+<span style="color:#ae81ff">2</span>  <span style="color:#ae81ff">1417412100</span>           <span style="color:#ae81ff">300.0</span>  <span style="color:#ae81ff">2014</span><span style="color:#f92672">-</span><span style="color:#ae81ff">12</span><span style="color:#f92672">-</span><span style="color:#ae81ff">01</span>
+<span style="color:#ae81ff">3</span>  <span style="color:#ae81ff">1417412160</span>           <span style="color:#ae81ff">300.0</span>  <span style="color:#ae81ff">2014</span><span style="color:#f92672">-</span><span style="color:#ae81ff">12</span><span style="color:#f92672">-</span><span style="color:#ae81ff">01</span>
+<span style="color:#ae81ff">4</span>  <span style="color:#ae81ff">1417412220</span>           <span style="color:#ae81ff">300.0</span>  <span style="color:#ae81ff">2014</span><span style="color:#f92672">-</span><span style="color:#ae81ff">12</span><span style="color:#f92672">-</span><span style="color:#ae81ff">01</span>
 
-# 按date聚合
-group = df.groupby('date')
+<span style="color:#75715e"># 按date聚合</span>
+group <span style="color:#f92672">=</span> df<span style="color:#f92672">.</span>groupby(<span style="color:#e6db74">&#39;date&#39;</span>)
 
-# 计算Weighted_Price列的平均值
-mean_price = group['Weighted_Price'].mean()
+<span style="color:#75715e"># 计算Weighted_Price列的平均值</span>
+mean_price <span style="color:#f92672">=</span> group[<span style="color:#e6db74">&#39;Weighted_Price&#39;</span>]<span style="color:#f92672">.</span>mean()
 
-# 转换为DataFrame
-df = pd.DataFrame(mean_price)
-print(df.head())
+<span style="color:#75715e"># 转换为DataFrame</span>
+df <span style="color:#f92672">=</span> pd<span style="color:#f92672">.</span>DataFrame(mean_price)
+<span style="color:#66d9ef">print</span>(df<span style="color:#f92672">.</span>head())
 
             Weighted_Price
 date
-2014-12-01      366.775068
-2014-12-02      375.943001
-2014-12-03      377.882701
-2014-12-04      377.991743
-2014-12-06      378.000000
-</code></pre>
-
-<blockquote>
+<span style="color:#ae81ff">2014</span><span style="color:#f92672">-</span><span style="color:#ae81ff">12</span><span style="color:#f92672">-</span><span style="color:#ae81ff">01</span>      <span style="color:#ae81ff">366.775068</span>
+<span style="color:#ae81ff">2014</span><span style="color:#f92672">-</span><span style="color:#ae81ff">12</span><span style="color:#f92672">-</span><span style="color:#ae81ff">02</span>      <span style="color:#ae81ff">375.943001</span>
+<span style="color:#ae81ff">2014</span><span style="color:#f92672">-</span><span style="color:#ae81ff">12</span><span style="color:#f92672">-</span><span style="color:#ae81ff">03</span>      <span style="color:#ae81ff">377.882701</span>
+<span style="color:#ae81ff">2014</span><span style="color:#f92672">-</span><span style="color:#ae81ff">12</span><span style="color:#f92672">-</span><span style="color:#ae81ff">04</span>      <span style="color:#ae81ff">377.991743</span>
+<span style="color:#ae81ff">2014</span><span style="color:#f92672">-</span><span style="color:#ae81ff">12</span><span style="color:#f92672">-</span><span style="color:#ae81ff">06</span>      <span style="color:#ae81ff">378.000000</span>
+</code></pre></div><blockquote>
 <p>随机打乱DataFrame</p>
 </blockquote>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#f92672">from</span> sklearn.utils <span style="color:#f92672">import</span> shuffle
 
-<pre><code class="language-python">from sklearn.utils import shuffle
-
-df = pd.read_csv(&quot;in_file&quot;)
-print(df.head())
+df <span style="color:#f92672">=</span> pd<span style="color:#f92672">.</span>read_csv(<span style="color:#e6db74">&#34;in_file&#34;</span>)
+<span style="color:#66d9ef">print</span>(df<span style="color:#f92672">.</span>head())
 
     Timestamp  Weighted_Price
-0  1417411980           300.0
-1  1417412040           300.0
-2  1417412100           300.0
-3  1417412160           300.0
-4  1417412220           300.0
+<span style="color:#ae81ff">0</span>  <span style="color:#ae81ff">1417411980</span>           <span style="color:#ae81ff">300.0</span>
+<span style="color:#ae81ff">1</span>  <span style="color:#ae81ff">1417412040</span>           <span style="color:#ae81ff">300.0</span>
+<span style="color:#ae81ff">2</span>  <span style="color:#ae81ff">1417412100</span>           <span style="color:#ae81ff">300.0</span>
+<span style="color:#ae81ff">3</span>  <span style="color:#ae81ff">1417412160</span>           <span style="color:#ae81ff">300.0</span>
+<span style="color:#ae81ff">4</span>  <span style="color:#ae81ff">1417412220</span>           <span style="color:#ae81ff">300.0</span>
 
-df = shuffle(df)
-print(df.head())
+df <span style="color:#f92672">=</span> shuffle(df)
+<span style="color:#66d9ef">print</span>(df<span style="color:#f92672">.</span>head())
 
           Timestamp  Weighted_Price
-73203    1425305400      260.685737
-8789     1421332380      150.000000
-24615    1422390120      263.547273
-1357887  1502386440     3417.436340
-1073833  1485343200      895.790112
-</code></pre>
+<span style="color:#ae81ff">73203</span>    <span style="color:#ae81ff">1425305400</span>      <span style="color:#ae81ff">260.685737</span>
+<span style="color:#ae81ff">8789</span>     <span style="color:#ae81ff">1421332380</span>      <span style="color:#ae81ff">150.000000</span>
+<span style="color:#ae81ff">24615</span>    <span style="color:#ae81ff">1422390120</span>      <span style="color:#ae81ff">263.547273</span>
+<span style="color:#ae81ff">1357887</span>  <span style="color:#ae81ff">1502386440</span>     <span style="color:#ae81ff">3417.436340</span>
+<span style="color:#ae81ff">1073833</span>  <span style="color:#ae81ff">1485343200</span>      <span style="color:#ae81ff">895.790112</span>
+</code></pre></div>
             </article>
           </div>
           
@@ -547,7 +511,7 @@ title="github icon"></i>
         
 				</ul>	<div class="design-credit">
 		
-		<p>&copy; Nevermore | 2019</p>
+		<p>© Nevermore | 2019</p>
 		
     </div>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>

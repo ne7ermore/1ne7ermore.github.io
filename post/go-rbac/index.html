@@ -176,93 +176,73 @@
             <article>
               <p>Role-Based Access Control(下简称rbac)
 以角色为基础的访问控制模型，通过角色连接用户和权限，达到两者解耦的目的</p>
-
 <blockquote>
 <p>rbac中有三种类型：用户、角色、权限，分别解释一下各自的作用</p>
 </blockquote>
-
 <ul>
 <li>用户：使用系统的个体，一般是自然人，通过操作系统达到一定目的</li>
 <li>权限：系统中每一个模块的操作，curd，的使用许可证明</li>
 <li>角色：用户和权限之间的桥梁，是一个抽象的概念，与用户或权限可以是一对多，一对一，多对一，多对多的关系，当用户操作某一个模块时，会先将用户名下的角色取出来和模块权限进行对比，如果满足条件即可操作，反之则不行</li>
 </ul>
-
 <blockquote>
 <p>使用介绍</p>
 </blockquote>
-
 <ul>
 <li>安装</li>
 </ul>
-
 <pre><code>go get github.com/ne7ermore/gRBAC
-</code></pre>
-
-<ul>
+</code></pre><ul>
 <li>数据库配置
 本项目使用的mongodb,如果没有安装mongo请先安装</li>
 </ul>
-
 <pre><code>go get gopkg.in/mgo.v2
-</code></pre>
-
-<p>数据库信息配置在 <strong>github.com/ne7ermore/gRBAC/common/const.go</strong> 中,可以根据自己实际情况修改,默认为：</p>
-
-<pre><code class="language-golang">var (
-    Addrs     string = &quot;127.0.0.1:27017&quot;
-    Timeout   int64  = 5
-    PoolLimit int    = 1000
+</code></pre><p>数据库信息配置在 <strong>github.com/ne7ermore/gRBAC/common/const.go</strong> 中,可以根据自己实际情况修改,默认为：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-golang" data-lang="golang"><span style="color:#66d9ef">var</span> (
+    <span style="color:#a6e22e">Addrs</span>     <span style="color:#66d9ef">string</span> = <span style="color:#e6db74">&#34;127.0.0.1:27017&#34;</span>
+    <span style="color:#a6e22e">Timeout</span>   <span style="color:#66d9ef">int64</span>  = <span style="color:#ae81ff">5</span>
+    <span style="color:#a6e22e">PoolLimit</span> <span style="color:#66d9ef">int</span>    = <span style="color:#ae81ff">1000</span>
 )
-</code></pre>
-
-<ul>
+</code></pre></div><ul>
 <li>引入auth模块</li>
 </ul>
-
-<pre><code class="language-golang">import &quot;github.com/ne7ermore/gRBAC/auth&quot;
-</code></pre>
-
-<ul>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-golang" data-lang="golang"><span style="color:#f92672">import</span> <span style="color:#e6db74">&#34;github.com/ne7ermore/gRBAC/auth&#34;</span>
+</code></pre></div><ul>
 <li>使用</li>
 </ul>
-
-<pre><code class="language-golang">func createPerm() {
-    p, err := auth.CreatePermisson(&quot;p1&quot;, &quot;form1:abc:view&quot;)
-    if err != nil {
-        panic(err)
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-golang" data-lang="golang"><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">createPerm</span>() {
+    <span style="color:#a6e22e">p</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">auth</span>.<span style="color:#a6e22e">CreatePermisson</span>(<span style="color:#e6db74">&#34;p1&#34;</span>, <span style="color:#e6db74">&#34;form1:abc:view&#34;</span>)
+    <span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
+        panic(<span style="color:#a6e22e">err</span>)
     }
-    // handle p
-}
+    <span style="color:#75715e">// handle p
+</span><span style="color:#75715e"></span>}
 
-func createRole() {
-    r, err := auth.CreateRole(&quot;role1&quot;)
-    if err != nil {
-        panic(err)
-    }
-
-    // add permission
-    if _, err := auth.Assign(r.Id.Hex(), p.Id.Hex()); err != nil {
-        panic(err)
-    }
-}
-
-func createUser() {
-    u, err := auth.CreateUser(&quot;use1&quot;)
-    if err != nil {
-        panic(err)
+<span style="color:#66d9ef">func</span> <span style="color:#a6e22e">createRole</span>() {
+    <span style="color:#a6e22e">r</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">auth</span>.<span style="color:#a6e22e">CreateRole</span>(<span style="color:#e6db74">&#34;role1&#34;</span>)
+    <span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
+        panic(<span style="color:#a6e22e">err</span>)
     }
 
-    // add role
-    if _, err := auth.AddRole(u.Id.Hex(), r.Id.Hex()); err != nil {
-        panic(err)
+    <span style="color:#75715e">// add permission
+</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">if</span> <span style="color:#a6e22e">_</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">auth</span>.<span style="color:#a6e22e">Assign</span>(<span style="color:#a6e22e">r</span>.<span style="color:#a6e22e">Id</span>.<span style="color:#a6e22e">Hex</span>(), <span style="color:#a6e22e">p</span>.<span style="color:#a6e22e">Id</span>.<span style="color:#a6e22e">Hex</span>()); <span style="color:#a6e22e">err</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
+        panic(<span style="color:#a6e22e">err</span>)
     }
 }
-</code></pre>
 
-<blockquote>
+<span style="color:#66d9ef">func</span> <span style="color:#a6e22e">createUser</span>() {
+    <span style="color:#a6e22e">u</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">auth</span>.<span style="color:#a6e22e">CreateUser</span>(<span style="color:#e6db74">&#34;use1&#34;</span>)
+    <span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
+        panic(<span style="color:#a6e22e">err</span>)
+    }
+
+    <span style="color:#75715e">// add role
+</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">if</span> <span style="color:#a6e22e">_</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">auth</span>.<span style="color:#a6e22e">AddRole</span>(<span style="color:#a6e22e">u</span>.<span style="color:#a6e22e">Id</span>.<span style="color:#a6e22e">Hex</span>(), <span style="color:#a6e22e">r</span>.<span style="color:#a6e22e">Id</span>.<span style="color:#a6e22e">Hex</span>()); <span style="color:#a6e22e">err</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
+        panic(<span style="color:#a6e22e">err</span>)
+    }
+}
+</code></pre></div><blockquote>
 <p>所有API</p>
 </blockquote>
-
 <table>
 <thead>
 <tr>
@@ -270,94 +250,76 @@ func createUser() {
 <th>Description</th>
 </tr>
 </thead>
-
 <tbody>
 <tr>
 <td>CreatePermisson</td>
 <td>Create a new permisson</td>
 </tr>
-
 <tr>
 <td>GetPerm</td>
 <td>get permission by id</td>
 </tr>
-
 <tr>
 <td>UpdatePerm</td>
 <td>update permission by id</td>
 </tr>
-
 <tr>
 <td>CreateRole</td>
 <td>Create a new role</td>
 </tr>
-
 <tr>
 <td>GetRole</td>
 <td>Get role by id</td>
 </tr>
-
 <tr>
 <td>Assign</td>
 <td>Assign a permission to a role</td>
 </tr>
-
 <tr>
 <td>Revoke</td>
 <td>Revoke a permission from the role</td>
 </tr>
-
 <tr>
 <td>CreateUser</td>
 <td>Create a new user</td>
 </tr>
-
 <tr>
 <td>GetUser</td>
 <td>Get one user by mongid</td>
 </tr>
-
 <tr>
 <td>GetUserByUid</td>
 <td>Get one user by Uid</td>
 </tr>
-
 <tr>
 <td>AddRole</td>
 <td>Add one role to a user</td>
 </tr>
-
 <tr>
 <td>DelRole</td>
 <td>Delete one role from the user</td>
 </tr>
-
 <tr>
 <td>IsPrmitted</td>
 <td>A user has a permission or not</td>
 </tr>
-
 <tr>
 <td>GetAllPerms</td>
 <td>Get all permissions</td>
 </tr>
-
 <tr>
 <td>GetAllRoles</td>
 <td>Get all roles</td>
 </tr>
-
 <tr>
 <td>GetAllUsers</td>
 <td>Get all users</td>
 </tr>
 </tbody>
 </table>
-
 <blockquote>
 <p>作者</p>
 </blockquote>
-
 <ul>
 <li><a href="https://github.com/ne7ermore">ne7ermore</a></li>
 <li><a href="https://github.com/yeqown">yeqown</a></li>
@@ -512,7 +474,7 @@ title="github icon"></i>
         
 				</ul>	<div class="design-credit">
 		
-		<p>&copy; Nevermore | 2019</p>
+		<p>© Nevermore | 2019</p>
 		
     </div>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>

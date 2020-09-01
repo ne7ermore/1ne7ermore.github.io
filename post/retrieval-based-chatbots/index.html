@@ -176,115 +176,100 @@
           <div class="entry-content">
             <article>
               <p>介绍一篇多轮对话任务的论文</p>
-
 <p>论文地址: <a href="https://arxiv.org/pdf/1612.01627.pdf">戳我</a></p>
-
 <p>训练使用豆瓣对话数据，也是从论文作者哪里获取的，在此感谢</p>
-
 <p>作者将模型命名为sequential matching network(SMN)，顾名思义，大体为一个序列模型，SMN主要分为三层</p>
-
 <ul>
 <li>第一层：将答案与每一句对话做word和sentence层面特征的矩阵乘法，word特征来自于word embedding，sentence特征来自于单向RNN，然后将结果组成一个2d conv的输入，通过cnn和max pooling抽取高维特征</li>
 <li>第二层：将特征降维，使用不带偏移的W权重做线性回归，这里论文中没有明确说出激活函数，我使用的Relu，然后将输出按时间序列拼接在一起，喂给第二个RNN</li>
 <li>第三层：使用全连接层+softmax输出分数</li>
 </ul>
-
 <p>损失函数使用的交叉熵，优化函数使用的adam，就不多说了</p>
-
 <blockquote>
 <p>代码</p>
 </blockquote>
-
 <p><a href="https://github.com/ne7ermore/torch_light/tree/master/retrieval-based-chatbots">Pytorch版</a></p>
-
 <p><a href="https://github.com/ne7ermore/deeping-flow/tree/master/retrieval-based-chatbots">Tensorflow版</a></p>
-
 <p>数据预处理就不多说了，具体可以参见项目的readme</p>
-
 <p>模型代码比较简单，没有需要单独拿出来解释的地方</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Model</span>(nn<span style="color:#f92672">.</span>Module):
+    <span style="color:#66d9ef">def</span> __init__(self, args):
+        super()<span style="color:#f92672">.</span>__init__()
 
-<pre><code class="language-python">class Model(nn.Module):
-    def __init__(self, args):
-        super().__init__()
+        <span style="color:#66d9ef">for</span> k, v <span style="color:#f92672">in</span> args<span style="color:#f92672">.</span>__dict__<span style="color:#f92672">.</span>items():
+            self<span style="color:#f92672">.</span>__setattr__(k, v)
 
-        for k, v in args.__dict__.items():
-            self.__setattr__(k, v)
+        self<span style="color:#f92672">.</span>emb <span style="color:#f92672">=</span> nn<span style="color:#f92672">.</span>Embedding(self<span style="color:#f92672">.</span>dict_size, self<span style="color:#f92672">.</span>emb_dim)
+        self<span style="color:#f92672">.</span>first_gru <span style="color:#f92672">=</span> torch<span style="color:#f92672">.</span>nn<span style="color:#f92672">.</span>GRU(input_size<span style="color:#f92672">=</span>self<span style="color:#f92672">.</span>emb_dim,
+                                      hidden_size<span style="color:#f92672">=</span>self<span style="color:#f92672">.</span>first_rnn_hsz,
+                                      num_layers<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>,
+                                      batch_first<span style="color:#f92672">=</span>True)
+        self<span style="color:#f92672">.</span>transform_A <span style="color:#f92672">=</span> nn<span style="color:#f92672">.</span>Linear(
+            self<span style="color:#f92672">.</span>first_rnn_hsz, self<span style="color:#f92672">.</span>first_rnn_hsz, bias<span style="color:#f92672">=</span>False)
+        self<span style="color:#f92672">.</span>cnn <span style="color:#f92672">=</span> nn<span style="color:#f92672">.</span>Conv2d(in_channels<span style="color:#f92672">=</span><span style="color:#ae81ff">2</span>,
+                             out_channels<span style="color:#f92672">=</span>self<span style="color:#f92672">.</span>fillters,
+                             kernel_size<span style="color:#f92672">=</span>self<span style="color:#f92672">.</span>kernel_size)
+        self<span style="color:#f92672">.</span>match_vec <span style="color:#f92672">=</span> nn<span style="color:#f92672">.</span>Linear(<span style="color:#ae81ff">16</span> <span style="color:#f92672">*</span> <span style="color:#ae81ff">16</span> <span style="color:#f92672">*</span> <span style="color:#ae81ff">8</span>, self<span style="color:#f92672">.</span>match_vec_dim)
+        self<span style="color:#f92672">.</span>second_gru <span style="color:#f92672">=</span> torch<span style="color:#f92672">.</span>nn<span style="color:#f92672">.</span>GRU(input_size<span style="color:#f92672">=</span>self<span style="color:#f92672">.</span>match_vec_dim,
+                                       hidden_size<span style="color:#f92672">=</span>self<span style="color:#f92672">.</span>second_rnn_hsz,
+                                       num_layers<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>)
+        self<span style="color:#f92672">.</span>pred <span style="color:#f92672">=</span> nn<span style="color:#f92672">.</span>Linear(self<span style="color:#f92672">.</span>match_vec_dim, <span style="color:#ae81ff">2</span>)
 
-        self.emb = nn.Embedding(self.dict_size, self.emb_dim)
-        self.first_gru = torch.nn.GRU(input_size=self.emb_dim,
-                                      hidden_size=self.first_rnn_hsz,
-                                      num_layers=1,
-                                      batch_first=True)
-        self.transform_A = nn.Linear(
-            self.first_rnn_hsz, self.first_rnn_hsz, bias=False)
-        self.cnn = nn.Conv2d(in_channels=2,
-                             out_channels=self.fillters,
-                             kernel_size=self.kernel_size)
-        self.match_vec = nn.Linear(16 * 16 * 8, self.match_vec_dim)
-        self.second_gru = torch.nn.GRU(input_size=self.match_vec_dim,
-                                       hidden_size=self.second_rnn_hsz,
-                                       num_layers=1)
-        self.pred = nn.Linear(self.match_vec_dim, 2)
+        self<span style="color:#f92672">.</span>_reset_parameters()
 
-        self._reset_parameters()
+    <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">_reset_parameters</span>(self):
+        stdv <span style="color:#f92672">=</span> <span style="color:#ae81ff">1.</span> <span style="color:#f92672">/</span> math<span style="color:#f92672">.</span>sqrt(self<span style="color:#f92672">.</span>emb_dim)
 
-    def _reset_parameters(self):
-        stdv = 1. / math.sqrt(self.emb_dim)
+        self<span style="color:#f92672">.</span>emb<span style="color:#f92672">.</span>weight<span style="color:#f92672">.</span>data<span style="color:#f92672">.</span>uniform_(<span style="color:#f92672">-</span>stdv, stdv)
 
-        self.emb.weight.data.uniform_(-stdv, stdv)
+        self<span style="color:#f92672">.</span>transform_A<span style="color:#f92672">.</span>weight<span style="color:#f92672">.</span>data<span style="color:#f92672">.</span>uniform_(<span style="color:#f92672">-</span>stdv, stdv)
+        self<span style="color:#f92672">.</span>transform_A<span style="color:#f92672">.</span>bias<span style="color:#f92672">.</span>data<span style="color:#f92672">.</span>fill_(<span style="color:#ae81ff">0</span>)
 
-        self.transform_A.weight.data.uniform_(-stdv, stdv)
-        self.transform_A.bias.data.fill_(0)
+        self<span style="color:#f92672">.</span>match_vec<span style="color:#f92672">.</span>weight<span style="color:#f92672">.</span>data<span style="color:#f92672">.</span>uniform_(<span style="color:#f92672">-</span>stdv, stdv)
+        self<span style="color:#f92672">.</span>match_vec<span style="color:#f92672">.</span>bias<span style="color:#f92672">.</span>data<span style="color:#f92672">.</span>fill_(<span style="color:#ae81ff">0</span>)
 
-        self.match_vec.weight.data.uniform_(-stdv, stdv)
-        self.match_vec.bias.data.fill_(0)
+        self<span style="color:#f92672">.</span>pred<span style="color:#f92672">.</span>weight<span style="color:#f92672">.</span>data<span style="color:#f92672">.</span>uniform_(<span style="color:#f92672">-</span>stdv, stdv)
+        self<span style="color:#f92672">.</span>pred<span style="color:#f92672">.</span>bias<span style="color:#f92672">.</span>data<span style="color:#f92672">.</span>fill_(<span style="color:#ae81ff">0</span>)
 
-        self.pred.weight.data.uniform_(-stdv, stdv)
-        self.pred.bias.data.fill_(0)
+    <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">forward</span>(self, utterances, responses):
+        bsz <span style="color:#f92672">=</span> utterances<span style="color:#f92672">.</span>size(<span style="color:#ae81ff">0</span>)
 
-    def forward(self, utterances, responses):
-        bsz = utterances.size(0)
+        resps_emb <span style="color:#f92672">=</span> self<span style="color:#f92672">.</span>emb(responses)
+        resps_gru, _ <span style="color:#f92672">=</span> self<span style="color:#f92672">.</span>first_gru(resps_emb)
+        resps_gru <span style="color:#f92672">=</span> F<span style="color:#f92672">.</span>dropout(resps_gru, p<span style="color:#f92672">=</span>self<span style="color:#f92672">.</span>dropout)
 
-        resps_emb = self.emb(responses)
-        resps_gru, _ = self.first_gru(resps_emb)
-        resps_gru = F.dropout(resps_gru, p=self.dropout)
+        resps_emb_t <span style="color:#f92672">=</span> resps_emb<span style="color:#f92672">.</span>transpose(<span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">2</span>)
+        resps_gru_t <span style="color:#f92672">=</span> resps_gru<span style="color:#f92672">.</span>transpose(<span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">2</span>)
+        uttes_t <span style="color:#f92672">=</span> utterances<span style="color:#f92672">.</span>transpose(<span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">1</span>)
 
-        resps_emb_t = resps_emb.transpose(1, 2)
-        resps_gru_t = resps_gru.transpose(1, 2)
-        uttes_t = utterances.transpose(0, 1)
+        match_vecs <span style="color:#f92672">=</span> []
+        <span style="color:#66d9ef">for</span> utte <span style="color:#f92672">in</span> uttes_t:
+            utte_emb <span style="color:#f92672">=</span> self<span style="color:#f92672">.</span>emb(utte)
+            mat_1 <span style="color:#f92672">=</span> torch<span style="color:#f92672">.</span>matmul(utte_emb, resps_emb_t)
+            utte_gru, _ <span style="color:#f92672">=</span> self<span style="color:#f92672">.</span>first_gru(utte_emb)
+            utte_gru <span style="color:#f92672">=</span> F<span style="color:#f92672">.</span>dropout(utte_gru, p<span style="color:#f92672">=</span>self<span style="color:#f92672">.</span>dropout)
+            mat_2 <span style="color:#f92672">=</span> torch<span style="color:#f92672">.</span>matmul(self<span style="color:#f92672">.</span>transform_A(utte_gru), resps_gru_t)
 
-        match_vecs = []
-        for utte in uttes_t:
-            utte_emb = self.emb(utte)
-            mat_1 = torch.matmul(utte_emb, resps_emb_t)
-            utte_gru, _ = self.first_gru(utte_emb)
-            utte_gru = F.dropout(utte_gru, p=self.dropout)
-            mat_2 = torch.matmul(self.transform_A(utte_gru), resps_gru_t)
+            M <span style="color:#f92672">=</span> torch<span style="color:#f92672">.</span>stack([mat_1, mat_2], <span style="color:#ae81ff">1</span>)
+            cnn_layer <span style="color:#f92672">=</span> F<span style="color:#f92672">.</span>relu(self<span style="color:#f92672">.</span>cnn(M))
+            pool_layer <span style="color:#f92672">=</span> F<span style="color:#f92672">.</span>max_pool2d(cnn_layer,
+                                      self<span style="color:#f92672">.</span>kernel_size,
+                                      stride<span style="color:#f92672">=</span>self<span style="color:#f92672">.</span>kernel_size)
+            pool_layer <span style="color:#f92672">=</span> pool_layer<span style="color:#f92672">.</span>view(bsz, <span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>)
+            match_vec <span style="color:#f92672">=</span> F<span style="color:#f92672">.</span>relu(self<span style="color:#f92672">.</span>match_vec(pool_layer))
+            match_vecs<span style="color:#f92672">.</span>append(match_vec)
 
-            M = torch.stack([mat_1, mat_2], 1)
-            cnn_layer = F.relu(self.cnn(M))
-            pool_layer = F.max_pool2d(cnn_layer,
-                                      self.kernel_size,
-                                      stride=self.kernel_size)
-            pool_layer = pool_layer.view(bsz, -1)
-            match_vec = F.relu(self.match_vec(pool_layer))
-            match_vecs.append(match_vec)
+        match_vecs <span style="color:#f92672">=</span> torch<span style="color:#f92672">.</span>stack(match_vecs, <span style="color:#ae81ff">0</span>)
+        match_vecs <span style="color:#f92672">=</span> F<span style="color:#f92672">.</span>dropout(match_vecs, p<span style="color:#f92672">=</span>self<span style="color:#f92672">.</span>dropout)
+        _, hidden <span style="color:#f92672">=</span> self<span style="color:#f92672">.</span>second_gru(match_vecs)
+        hidden <span style="color:#f92672">=</span> F<span style="color:#f92672">.</span>dropout(hidden[<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>], p<span style="color:#f92672">=</span>self<span style="color:#f92672">.</span>dropout)
+        props <span style="color:#f92672">=</span> F<span style="color:#f92672">.</span>log_softmax(self<span style="color:#f92672">.</span>pred(hidden), dim<span style="color:#f92672">=-</span><span style="color:#ae81ff">1</span>)
 
-        match_vecs = torch.stack(match_vecs, 0)
-        match_vecs = F.dropout(match_vecs, p=self.dropout)
-        _, hidden = self.second_gru(match_vecs)
-        hidden = F.dropout(hidden[-1], p=self.dropout)
-        props = F.log_softmax(self.pred(hidden), dim=-1)
-
-        return props
-</code></pre>
-
-<blockquote>
+        <span style="color:#66d9ef">return</span> props
+</code></pre></div><blockquote>
 <p>结果</p>
 </blockquote>
-
-<p><img src="/img/rbc/loss.png" style="height: 250px" alt="python">
-<img src="/img/rbc/cor.png" style="height: 250px" alt="python"></p>
+<!-- raw HTML omitted -->
             </article>
           </div>
           
@@ -435,7 +420,7 @@ title="github icon"></i>
         
 				</ul>	<div class="design-credit">
 		
-		<p>&copy; Nevermore | 2019</p>
+		<p>© Nevermore | 2019</p>
 		
     </div>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>

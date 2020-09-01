@@ -176,63 +176,36 @@
           <div class="entry-content">
             <article>
               <p>Bi-directional LSTM-CNNs-CRF</p>
-
 <p><a href="https://github.com/ne7ermore/torch_light/tree/master/cnn-text-classfication">代码</a></p>
-
 <p>有些朋友可能会问，上一期讲的以N-gram思想实现的模型在实际场景中能用到吗，具体使用在哪里，本期将会讲述N-gram配合CNN实现文本分类模型</p>
-
 <p>CNN-卷积神经网路(Convolutional Neural Network)</p>
-
 <p>cnn开始用于图像识别中，如下图即为图像识别分类模型，2*cnn+逻辑回归+softmax</p>
-
-<p><img src="/img/cnn/img2.jpg" style="height: 350px" alt=""></p>
-
+<!-- raw HTML omitted -->
 <p>卷积核扫描示意图</p>
-
-<p><img src="/img/cnn/img3.jpg" style="height: 350px" alt=""></p>
-
+<!-- raw HTML omitted -->
 <blockquote>
 <p>CNN用于自然语言文本分类</p>
 </blockquote>
-
 <p>本期模型源于论文Convolutional Neural Networks for Sentence Classification</p>
-
-<p><img src="/img/cnn/img4.jpg" style="height: 300px" alt=""></p>
-
+<!-- raw HTML omitted -->
 <p>以下对模型额描述摘自论文，加一点点自己理解：</p>
-
 <p>本模型是CNN architecture of Collobert的变体。首先将一句话按单词分开计算长度（这里指英文），将单词映射到Word Embedding层（参见Word2vec），就如上图左边。</p>
-
-<p>使用filter扫描embbeding层生成新特征，filter定义：$w \in R^{hk}$ 其中<strong>h</strong>是词长度（本文中使用3~5），k为词特征长度。例如：特征 c<em>{i}由词窗口 x</em>{i:i+h-1}生成，公式：</p>
-
-<p><img src="/img/cnn/img5.jpg" style="height: 100px" alt=""></p>
-
-<p>b是偏移向量，f是激活函数，常用Relu。扫描句子的每一个可以的词窗口 {x1 h是词长度（本文中使用3~5），k为词特征长度。例如：特征公式1等到 $c = [c1, c2, &hellip; , cn−h+1]$。</p>
-
+<p>使用filter扫描embbeding层生成新特征，filter定义：$w \in R^{hk}$ 其中<strong>h</strong>是词长度（本文中使用3~5），k为词特征长度。例如：特征 c_{i}由词窗口 x_{i:i+h-1}生成，公式：</p>
+<!-- raw HTML omitted -->
+<p>b是偏移向量，f是激活函数，常用Relu。扫描句子的每一个可以的词窗口 {x1 h是词长度（本文中使用3~5），k为词特征长度。例如：特征公式1等到 $c = [c1, c2, . . . , cn−h+1]$。</p>
 <p>接下来使用max-pool进行采样，获取最大值 $\hat{c}  = c_{max}$</p>
-
 <p>最后接入多分类和softmax。</p>
-
 <h4 id="代码实现">代码实现</h4>
-
 <p>训练数据和测试数据取自Learning Question Classifiers，训练数据5000+条，测试数据500条。</p>
-
 <p>数据预处理略过，具体实现可以参见<a href="https://github.com/ne7ermore/torch_light/blob/master/cnn-text-classfication/corpus.py">corpus.py</a></p>
-
 <p>模型实现：</p>
-
 <p>这里解释下，在没有用Batch Normal的情况下，测试数据准确率更高一些，猜测是训练数据不多
 权重初始化非常重要，使用了3个样例，分别是 -2~2，-1~1，-0.1~0.1，第三组效果好很多</p>
-
-<p><img src="/img/cnn/img6.jpg" style="height: 800px" alt=""></p>
-
+<!-- raw HTML omitted -->
 <p>训练数据提取</p>
-
-<p><img src="/img/cnn/img7.jpg" style="height: 800px" alt=""></p>
-
+<!-- raw HTML omitted -->
 <p>结果：500条测试数据，预测正确493条</p>
-
-<p><img src="/img/cnn/img8.jpg" style="height: 500px" alt=""></p>
+<!-- raw HTML omitted -->
             </article>
           </div>
           
@@ -383,7 +356,7 @@ title="github icon"></i>
         
 				</ul>	<div class="design-credit">
 		
-		<p>&copy; Nevermore | 2019</p>
+		<p>© Nevermore | 2019</p>
 		
     </div>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>

@@ -175,314 +175,296 @@
           <div class="entry-content">
             <article>
               <p>映射</p>
-
 <p><a href="https://github.com/ne7ermore/playground/tree/master/python/map">代码</a></p>
-
 <ul>
 <li>HashTable</li>
 </ul>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">HashTable</span>(object):
+    _empty <span style="color:#f92672">=</span> object()
+    _deleted <span style="color:#f92672">=</span> object()
 
-<pre><code class="language-python">class HashTable(object):
-    _empty = object()
-    _deleted = object()
+    <span style="color:#66d9ef">def</span> __init__(self, size<span style="color:#f92672">=</span><span style="color:#ae81ff">11</span>):
+        self<span style="color:#f92672">.</span>size <span style="color:#f92672">=</span> size
+        self<span style="color:#f92672">.</span>_len <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>
+        self<span style="color:#f92672">.</span>_keys <span style="color:#f92672">=</span> [self<span style="color:#f92672">.</span>_empty] <span style="color:#f92672">*</span> size  <span style="color:#75715e"># keys</span>
+        self<span style="color:#f92672">.</span>_values <span style="color:#f92672">=</span> [self<span style="color:#f92672">.</span>_empty] <span style="color:#f92672">*</span> size  <span style="color:#75715e"># values</span>
 
-    def __init__(self, size=11):
-        self.size = size
-        self._len = 0
-        self._keys = [self._empty] * size  # keys
-        self._values = [self._empty] * size  # values
+    <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">put</span>(self, key, value):
+        initial_hash <span style="color:#f92672">=</span> hash_ <span style="color:#f92672">=</span> self<span style="color:#f92672">.</span>hash(key)
 
-    def put(self, key, value):
-        initial_hash = hash_ = self.hash(key)
+        <span style="color:#66d9ef">while</span> True:
+            <span style="color:#66d9ef">if</span> self<span style="color:#f92672">.</span>_keys[hash_] <span style="color:#f92672">is</span> self<span style="color:#f92672">.</span>_empty <span style="color:#f92672">or</span> self<span style="color:#f92672">.</span>_keys[hash_] <span style="color:#f92672">is</span> self<span style="color:#f92672">.</span>_deleted:
+                <span style="color:#75715e"># can assign to hash_ index</span>
+                self<span style="color:#f92672">.</span>_keys[hash_] <span style="color:#f92672">=</span> key
+                self<span style="color:#f92672">.</span>_values[hash_] <span style="color:#f92672">=</span> value
+                self<span style="color:#f92672">.</span>_len <span style="color:#f92672">+=</span> <span style="color:#ae81ff">1</span>
+                <span style="color:#66d9ef">return</span>
+            <span style="color:#66d9ef">elif</span> self<span style="color:#f92672">.</span>_keys[hash_] <span style="color:#f92672">==</span> key:
+                <span style="color:#75715e"># key already exists here, assign over</span>
+                self<span style="color:#f92672">.</span>_keys[hash_] <span style="color:#f92672">=</span> key
+                self<span style="color:#f92672">.</span>_values[hash_] <span style="color:#f92672">=</span> value
+                <span style="color:#66d9ef">return</span>
 
-        while True:
-            if self._keys[hash_] is self._empty or self._keys[hash_] is self._deleted:
-                # can assign to hash_ index
-                self._keys[hash_] = key
-                self._values[hash_] = value
-                self._len += 1
-                return
-            elif self._keys[hash_] == key:
-                # key already exists here, assign over
-                self._keys[hash_] = key
-                self._values[hash_] = value
-                return
+            hash_ <span style="color:#f92672">=</span> self<span style="color:#f92672">.</span>_rehash(hash_)
 
-            hash_ = self._rehash(hash_)
+            <span style="color:#66d9ef">if</span> initial_hash <span style="color:#f92672">==</span> hash_:
+                <span style="color:#75715e"># table is full</span>
+                <span style="color:#66d9ef">raise</span> <span style="color:#a6e22e">ValueError</span>(<span style="color:#e6db74">&#34;Table is full&#34;</span>)
 
-            if initial_hash == hash_:
-                # table is full
-                raise ValueError(&quot;Table is full&quot;)
+    <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">get</span>(self, key):
+        initial_hash <span style="color:#f92672">=</span> hash_ <span style="color:#f92672">=</span> self<span style="color:#f92672">.</span>hash(key)
+        <span style="color:#66d9ef">while</span> True:
+            <span style="color:#66d9ef">if</span> self<span style="color:#f92672">.</span>_keys[hash_] <span style="color:#f92672">is</span> self<span style="color:#f92672">.</span>_empty:
+                <span style="color:#75715e"># That key was never assigned</span>
+                <span style="color:#66d9ef">return</span> None
+            <span style="color:#66d9ef">elif</span> self<span style="color:#f92672">.</span>_keys[hash_] <span style="color:#f92672">==</span> key:
+                <span style="color:#75715e"># key found</span>
+                <span style="color:#66d9ef">return</span> self<span style="color:#f92672">.</span>_values[hash_]
 
-    def get(self, key):
-        initial_hash = hash_ = self.hash(key)
-        while True:
-            if self._keys[hash_] is self._empty:
-                # That key was never assigned
-                return None
-            elif self._keys[hash_] == key:
-                # key found
-                return self._values[hash_]
+            hash_ <span style="color:#f92672">=</span> self<span style="color:#f92672">.</span>_rehash(hash_)
+            <span style="color:#66d9ef">if</span> initial_hash <span style="color:#f92672">==</span> hash_:
+                <span style="color:#75715e"># table is full and wrapped around</span>
+                <span style="color:#66d9ef">return</span> None
 
-            hash_ = self._rehash(hash_)
-            if initial_hash == hash_:
-                # table is full and wrapped around
-                return None
+    <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">del_</span>(self, key):
+        initial_hash <span style="color:#f92672">=</span> hash_ <span style="color:#f92672">=</span> self<span style="color:#f92672">.</span>hash(key)
+        <span style="color:#66d9ef">while</span> True:
+            <span style="color:#66d9ef">if</span> self<span style="color:#f92672">.</span>_keys[hash_] <span style="color:#f92672">is</span> self<span style="color:#f92672">.</span>_empty:
+                <span style="color:#75715e"># That key was never assigned</span>
+                <span style="color:#66d9ef">return</span> None
+            <span style="color:#66d9ef">elif</span> self<span style="color:#f92672">.</span>_keys[hash_] <span style="color:#f92672">==</span> key:
+                <span style="color:#75715e"># key found, assign with deleted sentinel</span>
+                self<span style="color:#f92672">.</span>_keys[hash_] <span style="color:#f92672">=</span> self<span style="color:#f92672">.</span>_deleted
+                self<span style="color:#f92672">.</span>_values[hash_] <span style="color:#f92672">=</span> self<span style="color:#f92672">.</span>_deleted
+                self<span style="color:#f92672">.</span>_len <span style="color:#f92672">-=</span> <span style="color:#ae81ff">1</span>
+                <span style="color:#66d9ef">return</span>
 
-    def del_(self, key):
-        initial_hash = hash_ = self.hash(key)
-        while True:
-            if self._keys[hash_] is self._empty:
-                # That key was never assigned
-                return None
-            elif self._keys[hash_] == key:
-                # key found, assign with deleted sentinel
-                self._keys[hash_] = self._deleted
-                self._values[hash_] = self._deleted
-                self._len -= 1
-                return
+            hash_ <span style="color:#f92672">=</span> self<span style="color:#f92672">.</span>_rehash(hash_)
+            <span style="color:#66d9ef">if</span> initial_hash <span style="color:#f92672">==</span> hash_:
+                <span style="color:#75715e"># table is full and wrapped around</span>
+                <span style="color:#66d9ef">return</span> None
 
-            hash_ = self._rehash(hash_)
-            if initial_hash == hash_:
-                # table is full and wrapped around
-                return None
+    <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">hash</span>(self, key):
+        <span style="color:#66d9ef">return</span> key <span style="color:#f92672">%</span> self<span style="color:#f92672">.</span>size
 
-    def hash(self, key):
-        return key % self.size
+    <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">_rehash</span>(self, old_hash):
+        <span style="color:#e6db74">&#34;&#34;&#34;
+</span><span style="color:#e6db74">        linear probing
+</span><span style="color:#e6db74">        &#34;&#34;&#34;</span>
+        <span style="color:#66d9ef">return</span> (old_hash <span style="color:#f92672">+</span> <span style="color:#ae81ff">1</span>) <span style="color:#f92672">%</span> self<span style="color:#f92672">.</span>size
 
-    def _rehash(self, old_hash):
-        &quot;&quot;&quot;
-        linear probing
-        &quot;&quot;&quot;
-        return (old_hash + 1) % self.size
+    <span style="color:#66d9ef">def</span> __getitem__(self, key):
+        <span style="color:#66d9ef">return</span> self<span style="color:#f92672">.</span>get(key)
 
-    def __getitem__(self, key):
-        return self.get(key)
+    <span style="color:#66d9ef">def</span> __delitem__(self, key):
+        <span style="color:#66d9ef">return</span> self<span style="color:#f92672">.</span>del_(key)
 
-    def __delitem__(self, key):
-        return self.del_(key)
+    <span style="color:#66d9ef">def</span> __setitem__(self, key, value):
+        self<span style="color:#f92672">.</span>put(key, value)
 
-    def __setitem__(self, key, value):
-        self.put(key, value)
-
-    def __len__(self):
-        return self._len
-
-
-class ResizableHashTable(HashTable):
-    MIN_SIZE = 8
-
-    def __init__(self):
-        super().__init__(self.MIN_SIZE)
-
-    def put(self, key, value):
-        super().put(key, value)
-        # increase size of dict * 2 if filled &gt;= 2/3 size (like python dict)
-        if len(self) &gt;= (self.size * 2) / 3:
-            self.__resize()
-
-    def __resize(self):
-        keys, values = self._keys, self._values
-        self.size *= 2  # this will be the new size
-        self._len = 0
-        self._keys = [self._empty] * self.size
-        self._values = [self._empty] * self.size
-        for key, value in zip(keys, values):
-            if key is not self._empty and key is not self._deleted:
-                self.put(key, value)
+    <span style="color:#66d9ef">def</span> __len__(self):
+        <span style="color:#66d9ef">return</span> self<span style="color:#f92672">.</span>_len
 
 
-if __name__ == &quot;__main__&quot;:
-    s = &quot;hello&quot;
-    print(hash(s))
-</code></pre>
+<span style="color:#66d9ef">class</span> <span style="color:#a6e22e">ResizableHashTable</span>(HashTable):
+    MIN_SIZE <span style="color:#f92672">=</span> <span style="color:#ae81ff">8</span>
 
-<ul>
+    <span style="color:#66d9ef">def</span> __init__(self):
+        super()<span style="color:#f92672">.</span>__init__(self<span style="color:#f92672">.</span>MIN_SIZE)
+
+    <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">put</span>(self, key, value):
+        super()<span style="color:#f92672">.</span>put(key, value)
+        <span style="color:#75715e"># increase size of dict * 2 if filled &gt;= 2/3 size (like python dict)</span>
+        <span style="color:#66d9ef">if</span> len(self) <span style="color:#f92672">&gt;=</span> (self<span style="color:#f92672">.</span>size <span style="color:#f92672">*</span> <span style="color:#ae81ff">2</span>) <span style="color:#f92672">/</span> <span style="color:#ae81ff">3</span>:
+            self<span style="color:#f92672">.</span>__resize()
+
+    <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">__resize</span>(self):
+        keys, values <span style="color:#f92672">=</span> self<span style="color:#f92672">.</span>_keys, self<span style="color:#f92672">.</span>_values
+        self<span style="color:#f92672">.</span>size <span style="color:#f92672">*=</span> <span style="color:#ae81ff">2</span>  <span style="color:#75715e"># this will be the new size</span>
+        self<span style="color:#f92672">.</span>_len <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>
+        self<span style="color:#f92672">.</span>_keys <span style="color:#f92672">=</span> [self<span style="color:#f92672">.</span>_empty] <span style="color:#f92672">*</span> self<span style="color:#f92672">.</span>size
+        self<span style="color:#f92672">.</span>_values <span style="color:#f92672">=</span> [self<span style="color:#f92672">.</span>_empty] <span style="color:#f92672">*</span> self<span style="color:#f92672">.</span>size
+        <span style="color:#66d9ef">for</span> key, value <span style="color:#f92672">in</span> zip(keys, values):
+            <span style="color:#66d9ef">if</span> key <span style="color:#f92672">is</span> <span style="color:#f92672">not</span> self<span style="color:#f92672">.</span>_empty <span style="color:#f92672">and</span> key <span style="color:#f92672">is</span> <span style="color:#f92672">not</span> self<span style="color:#f92672">.</span>_deleted:
+                self<span style="color:#f92672">.</span>put(key, value)
+
+
+<span style="color:#66d9ef">if</span> __name__ <span style="color:#f92672">==</span> <span style="color:#e6db74">&#34;__main__&#34;</span>:
+    s <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;hello&#34;</span>
+    <span style="color:#66d9ef">print</span>(hash(s))
+</code></pre></div><ul>
 <li>SeparateChainingHashTable</li>
 </ul>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Node</span>(object):
+    <span style="color:#66d9ef">def</span> __init__(self, key<span style="color:#f92672">=</span>None, value<span style="color:#f92672">=</span>None, next<span style="color:#f92672">=</span>None):
+        self<span style="color:#f92672">.</span>key <span style="color:#f92672">=</span> key
+        self<span style="color:#f92672">.</span>value <span style="color:#f92672">=</span> value
+        self<span style="color:#f92672">.</span>next <span style="color:#f92672">=</span> next
 
-<pre><code class="language-python">class Node(object):
-    def __init__(self, key=None, value=None, next=None):
-        self.key = key
-        self.value = value
-        self.next = next
 
+<span style="color:#66d9ef">class</span> <span style="color:#a6e22e">SeparateChainingHashTable</span>(object):
+    _empty <span style="color:#f92672">=</span> None
 
-class SeparateChainingHashTable(object):
-    _empty = None
+    <span style="color:#66d9ef">def</span> __init__(self, size<span style="color:#f92672">=</span><span style="color:#ae81ff">11</span>):
+        self<span style="color:#f92672">.</span>size <span style="color:#f92672">=</span> size
+        self<span style="color:#f92672">.</span>_len <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>
+        self<span style="color:#f92672">.</span>_table <span style="color:#f92672">=</span> [self<span style="color:#f92672">.</span>_empty] <span style="color:#f92672">*</span> size
 
-    def __init__(self, size=11):
-        self.size = size
-        self._len = 0
-        self._table = [self._empty] * size
+    <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">put</span>(self, key, value):
+        hash_ <span style="color:#f92672">=</span> self<span style="color:#f92672">.</span>hash(key)
+        node_ <span style="color:#f92672">=</span> self<span style="color:#f92672">.</span>_table[hash_]
+        <span style="color:#66d9ef">if</span> node_ <span style="color:#f92672">is</span> self<span style="color:#f92672">.</span>_empty:
+            self<span style="color:#f92672">.</span>_table[hash_] <span style="color:#f92672">=</span> Node(key, value)
+        <span style="color:#66d9ef">else</span>:
+            <span style="color:#66d9ef">while</span> node_<span style="color:#f92672">.</span>next <span style="color:#f92672">is</span> <span style="color:#f92672">not</span> None:
+                <span style="color:#66d9ef">if</span> node_<span style="color:#f92672">.</span>key <span style="color:#f92672">==</span> key:
+                    node_<span style="color:#f92672">.</span>value <span style="color:#f92672">=</span> value
+                    <span style="color:#66d9ef">return</span>
+                node_ <span style="color:#f92672">=</span> node_<span style="color:#f92672">.</span>next
+            node_<span style="color:#f92672">.</span>next <span style="color:#f92672">=</span> Node(key, value)
+        self<span style="color:#f92672">.</span>_len <span style="color:#f92672">+=</span> <span style="color:#ae81ff">1</span>
 
-    def put(self, key, value):
-        hash_ = self.hash(key)
-        node_ = self._table[hash_]
-        if node_ is self._empty:
-            self._table[hash_] = Node(key, value)
-        else:
-            while node_.next is not None:
-                if node_.key == key:
-                    node_.value = value
-                    return
-                node_ = node_.next
-            node_.next = Node(key, value)
-        self._len += 1
+    <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">get</span>(self, key):
+        hash_ <span style="color:#f92672">=</span> self<span style="color:#f92672">.</span>hash(key)
+        node_ <span style="color:#f92672">=</span> self<span style="color:#f92672">.</span>_table[hash_]
+        <span style="color:#66d9ef">while</span> node_ <span style="color:#f92672">is</span> <span style="color:#f92672">not</span> self<span style="color:#f92672">.</span>_empty:
+            <span style="color:#66d9ef">if</span> node_<span style="color:#f92672">.</span>key <span style="color:#f92672">==</span> key:
+                <span style="color:#66d9ef">return</span> node_<span style="color:#f92672">.</span>value
+            node_ <span style="color:#f92672">=</span> node_<span style="color:#f92672">.</span>next
+        <span style="color:#66d9ef">return</span> None
 
-    def get(self, key):
-        hash_ = self.hash(key)
-        node_ = self._table[hash_]
-        while node_ is not self._empty:
-            if node_.key == key:
-                return node_.value
-            node_ = node_.next
-        return None
+    <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">del_</span>(self, key):
+        hash_ <span style="color:#f92672">=</span> self<span style="color:#f92672">.</span>hash(key)
+        node_ <span style="color:#f92672">=</span> self<span style="color:#f92672">.</span>_table[hash_]
+        pre_node <span style="color:#f92672">=</span> None
+        <span style="color:#66d9ef">while</span> node_ <span style="color:#f92672">is</span> <span style="color:#f92672">not</span> None:
+            <span style="color:#66d9ef">if</span> node_<span style="color:#f92672">.</span>key <span style="color:#f92672">==</span> key:
+                <span style="color:#66d9ef">if</span> pre_node <span style="color:#f92672">is</span> None:
+                    self<span style="color:#f92672">.</span>_table[hash_] <span style="color:#f92672">=</span> node_<span style="color:#f92672">.</span>next
+                <span style="color:#66d9ef">else</span>:
+                    pre_node<span style="color:#f92672">.</span>next <span style="color:#f92672">=</span> node_<span style="color:#f92672">.</span>next
+                self<span style="color:#f92672">.</span>_len <span style="color:#f92672">-=</span> <span style="color:#ae81ff">1</span>
+            pre_node <span style="color:#f92672">=</span> node_
+            node_ <span style="color:#f92672">=</span> node_<span style="color:#f92672">.</span>next
 
-    def del_(self, key):
-        hash_ = self.hash(key)
-        node_ = self._table[hash_]
-        pre_node = None
-        while node_ is not None:
-            if node_.key == key:
-                if pre_node is None:
-                    self._table[hash_] = node_.next
-                else:
-                    pre_node.next = node_.next
-                self._len -= 1
-            pre_node = node_
-            node_ = node_.next
+    <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">hash</span>(self, key):
+        <span style="color:#66d9ef">return</span> hash(key) <span style="color:#f92672">%</span> self<span style="color:#f92672">.</span>size
 
-    def hash(self, key):
-        return hash(key) % self.size
+    <span style="color:#66d9ef">def</span> __len__(self):
+        <span style="color:#66d9ef">return</span> self<span style="color:#f92672">.</span>_len
 
-    def __len__(self):
-        return self._len
+    <span style="color:#66d9ef">def</span> __getitem__(self, key):
+        <span style="color:#66d9ef">return</span> self<span style="color:#f92672">.</span>get(key)
 
-    def __getitem__(self, key):
-        return self.get(key)
+    <span style="color:#66d9ef">def</span> __delitem__(self, key):
+        <span style="color:#66d9ef">return</span> self<span style="color:#f92672">.</span>del_(key)
 
-    def __delitem__(self, key):
-        return self.del_(key)
-
-    def __setitem__(self, key, value):
-        self.put(key, value)
-</code></pre>
-
-<ul>
+    <span style="color:#66d9ef">def</span> __setitem__(self, key, value):
+        self<span style="color:#f92672">.</span>put(key, value)
+</code></pre></div><ul>
 <li>最大子序列</li>
 </ul>
-
 <p>思路：记录下两个序列成员连续相等的index，存储最大长度</p>
-
-<pre><code class="language-python">def max_common_sub_string(s1, s2):
-    # Assuming s2 has all unique chars
-    s2dic = {s2[i]: i for i in range(len(s2))}
-    maxr = 0
-    subs = ''
-    i = 0
-    while i &lt; len(s1):
-        if s1[i] in s2dic:
-            j = s2dic[s1[i]]
-            k = i
-            while j &lt; len(s2) and k &lt; len(s1) and s1[k] == s2[j]:
-                k += 1
-                j += 1
-            if k - i &gt; maxr:
-                maxr = k-i
-                subs = s1[i:k]
-            i = k
-        else:
-            i += 1
-    return subs
-</code></pre>
-
-<ul>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">max_common_sub_string</span>(s1, s2):
+    <span style="color:#75715e"># Assuming s2 has all unique chars</span>
+    s2dic <span style="color:#f92672">=</span> {s2[i]: i <span style="color:#66d9ef">for</span> i <span style="color:#f92672">in</span> range(len(s2))}
+    maxr <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>
+    subs <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;&#39;</span>
+    i <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>
+    <span style="color:#66d9ef">while</span> i <span style="color:#f92672">&lt;</span> len(s1):
+        <span style="color:#66d9ef">if</span> s1[i] <span style="color:#f92672">in</span> s2dic:
+            j <span style="color:#f92672">=</span> s2dic[s1[i]]
+            k <span style="color:#f92672">=</span> i
+            <span style="color:#66d9ef">while</span> j <span style="color:#f92672">&lt;</span> len(s2) <span style="color:#f92672">and</span> k <span style="color:#f92672">&lt;</span> len(s1) <span style="color:#f92672">and</span> s1[k] <span style="color:#f92672">==</span> s2[j]:
+                k <span style="color:#f92672">+=</span> <span style="color:#ae81ff">1</span>
+                j <span style="color:#f92672">+=</span> <span style="color:#ae81ff">1</span>
+            <span style="color:#66d9ef">if</span> k <span style="color:#f92672">-</span> i <span style="color:#f92672">&gt;</span> maxr:
+                maxr <span style="color:#f92672">=</span> k<span style="color:#f92672">-</span>i
+                subs <span style="color:#f92672">=</span> s1[i:k]
+            i <span style="color:#f92672">=</span> k
+        <span style="color:#66d9ef">else</span>:
+            i <span style="color:#f92672">+=</span> <span style="color:#ae81ff">1</span>
+    <span style="color:#66d9ef">return</span> subs
+</code></pre></div><ul>
 <li>最大子成员</li>
 </ul>
-
 <pre><code>和子序列的区别，eg，s1 = &quot;13456778&quot;，s2 = &quot;357486782&quot;，最大子成员为['3', '5', '7', '7', '8']
 
 思路：需要运用到动态规划的方式，首先初始化一个二维向量，行为s2的长度，列为s1的长度，遍历s1和s2的字符，如果相等，res[i][j] = res[i-1][j-1] + 1，如果不相等，max(res[i-1][j], res[i][j-1])；然后反向查找共有的字符
-</code></pre>
+</code></pre><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">longest_common_seq</span>(s1, s2):
+    len1, len2 <span style="color:#f92672">=</span> len(s1), len(s2)
 
-<pre><code class="language-python">def longest_common_seq(s1, s2):
-    len1, len2 = len(s1), len(s2)
+    res <span style="color:#f92672">=</span> [[<span style="color:#ae81ff">0</span>]<span style="color:#f92672">*</span>(len2<span style="color:#f92672">+</span><span style="color:#ae81ff">1</span>) <span style="color:#66d9ef">for</span> _ <span style="color:#f92672">in</span> range((len1<span style="color:#f92672">+</span><span style="color:#ae81ff">1</span>))]
 
-    res = [[0]*(len2+1) for _ in range((len1+1))]
+    <span style="color:#66d9ef">for</span> j <span style="color:#f92672">in</span> range(<span style="color:#ae81ff">1</span>, len2<span style="color:#f92672">+</span><span style="color:#ae81ff">1</span>):
+        <span style="color:#66d9ef">for</span> i <span style="color:#f92672">in</span> range(<span style="color:#ae81ff">1</span>, len1<span style="color:#f92672">+</span><span style="color:#ae81ff">1</span>):
+            <span style="color:#66d9ef">if</span> s1[i<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>] <span style="color:#f92672">==</span> s2[j<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>]:
+                res[i][j] <span style="color:#f92672">=</span> res[i<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>][j<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>] <span style="color:#f92672">+</span> <span style="color:#ae81ff">1</span>
+            <span style="color:#66d9ef">else</span>:
+                res[i][j] <span style="color:#f92672">=</span> max(res[i<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>][j], res[i][j<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>])
 
-    for j in range(1, len2+1):
-        for i in range(1, len1+1):
-            if s1[i-1] == s2[j-1]:
-                res[i][j] = res[i-1][j-1] + 1
-            else:
-                res[i][j] = max(res[i-1][j], res[i][j-1])
+    out <span style="color:#f92672">=</span> []
+    <span style="color:#66d9ef">while</span> len1 <span style="color:#f92672">&gt;</span> <span style="color:#ae81ff">0</span> <span style="color:#f92672">and</span> len2 <span style="color:#f92672">&gt;</span> <span style="color:#ae81ff">0</span>:
+        <span style="color:#66d9ef">if</span> s1[len1<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>] <span style="color:#f92672">==</span> s2[len2<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>]:
+            out<span style="color:#f92672">.</span>append(s1[len1<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>])
+            len1 <span style="color:#f92672">-=</span> <span style="color:#ae81ff">1</span>
+            len2 <span style="color:#f92672">-=</span> <span style="color:#ae81ff">1</span>
+        <span style="color:#66d9ef">elif</span> res[len1<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>][len2] <span style="color:#f92672">==</span> res[len1][len2<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>]:
+            len2 <span style="color:#f92672">-=</span> <span style="color:#ae81ff">1</span>
+        <span style="color:#66d9ef">elif</span> res[len1<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>][len2] <span style="color:#f92672">&gt;</span> res[len1][len2<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>]:
+            len1 <span style="color:#f92672">-=</span> <span style="color:#ae81ff">1</span>
+        <span style="color:#66d9ef">else</span>:
+            len2 <span style="color:#f92672">-=</span> <span style="color:#ae81ff">1</span>
 
-    out = []
-    while len1 &gt; 0 and len2 &gt; 0:
-        if s1[len1-1] == s2[len2-1]:
-            out.append(s1[len1-1])
-            len1 -= 1
-            len2 -= 1
-        elif res[len1-1][len2] == res[len1][len2-1]:
-            len2 -= 1
-        elif res[len1-1][len2] &gt; res[len1][len2-1]:
-            len1 -= 1
-        else:
-            len2 -= 1
-
-    out.reverse()
-    return out
+    out<span style="color:#f92672">.</span>reverse()
+    <span style="color:#66d9ef">return</span> out
 
 
-if __name__ == &quot;__main__&quot;:
-    s1 = &quot;13456778&quot;
-    s2 = &quot;357486782&quot;
+<span style="color:#66d9ef">if</span> __name__ <span style="color:#f92672">==</span> <span style="color:#e6db74">&#34;__main__&#34;</span>:
+    s1 <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;13456778&#34;</span>
+    s2 <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;357486782&#34;</span>
 
-    assert longest_common_seq(s1, s2) == ['3', '5', '7', '7', '8']
-</code></pre>
-
-<ul>
+    <span style="color:#66d9ef">assert</span> longest_common_seq(s1, s2) <span style="color:#f92672">==</span> [<span style="color:#e6db74">&#39;3&#39;</span>, <span style="color:#e6db74">&#39;5&#39;</span>, <span style="color:#e6db74">&#39;7&#39;</span>, <span style="color:#e6db74">&#39;7&#39;</span>, <span style="color:#e6db74">&#39;8&#39;</span>]
+</code></pre></div><ul>
 <li>布隆过滤器</li>
 </ul>
-
-<pre><code class="language-python">import mmh3
-from bitarray import bitarray
-
-
-class BloomFilter(object):
-
-    def __init__(self, bit_size=5000000, seeds=[11, 12, 13, 14, 15]):
-        bit_array = bitarray(bit_size)
-        bit_array.setall(0)
-
-        self.bit_array = bit_array
-        self.seeds = seeds
-        self.bit_size = bit_size
-
-    def add(self, url):
-        for b in self.get_slots(url):
-            self.bit_array[b] = 1
-
-    def contains(self, url):
-        slots = self.get_slots(url)
-        return all([self.bit_array[b] for b in slots])
-
-    def hash(self, args):
-        return mmh3.hash(args[0], args[1]) % self.bit_size
-
-    def get_slots(self, url):
-        return map(self.hash, zip([url] * len(self.seeds), self.seeds))
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#f92672">import</span> mmh3
+<span style="color:#f92672">from</span> bitarray <span style="color:#f92672">import</span> bitarray
 
 
-if __name__ == &quot;__main__&quot;:
-    b = BloomFilter()
+<span style="color:#66d9ef">class</span> <span style="color:#a6e22e">BloomFilter</span>(object):
 
-    url = &quot;https://ne7ermore.github.io/&quot;
-    print(b.contains(url))
-    b.add(url)
-    print(b.contains(url))
-</code></pre>
+    <span style="color:#66d9ef">def</span> __init__(self, bit_size<span style="color:#f92672">=</span><span style="color:#ae81ff">5000000</span>, seeds<span style="color:#f92672">=</span>[<span style="color:#ae81ff">11</span>, <span style="color:#ae81ff">12</span>, <span style="color:#ae81ff">13</span>, <span style="color:#ae81ff">14</span>, <span style="color:#ae81ff">15</span>]):
+        bit_array <span style="color:#f92672">=</span> bitarray(bit_size)
+        bit_array<span style="color:#f92672">.</span>setall(<span style="color:#ae81ff">0</span>)
+
+        self<span style="color:#f92672">.</span>bit_array <span style="color:#f92672">=</span> bit_array
+        self<span style="color:#f92672">.</span>seeds <span style="color:#f92672">=</span> seeds
+        self<span style="color:#f92672">.</span>bit_size <span style="color:#f92672">=</span> bit_size
+
+    <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">add</span>(self, url):
+        <span style="color:#66d9ef">for</span> b <span style="color:#f92672">in</span> self<span style="color:#f92672">.</span>get_slots(url):
+            self<span style="color:#f92672">.</span>bit_array[b] <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span>
+
+    <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">contains</span>(self, url):
+        slots <span style="color:#f92672">=</span> self<span style="color:#f92672">.</span>get_slots(url)
+        <span style="color:#66d9ef">return</span> all([self<span style="color:#f92672">.</span>bit_array[b] <span style="color:#66d9ef">for</span> b <span style="color:#f92672">in</span> slots])
+
+    <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">hash</span>(self, args):
+        <span style="color:#66d9ef">return</span> mmh3<span style="color:#f92672">.</span>hash(args[<span style="color:#ae81ff">0</span>], args[<span style="color:#ae81ff">1</span>]) <span style="color:#f92672">%</span> self<span style="color:#f92672">.</span>bit_size
+
+    <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">get_slots</span>(self, url):
+        <span style="color:#66d9ef">return</span> map(self<span style="color:#f92672">.</span>hash, zip([url] <span style="color:#f92672">*</span> len(self<span style="color:#f92672">.</span>seeds), self<span style="color:#f92672">.</span>seeds))
+
+
+<span style="color:#66d9ef">if</span> __name__ <span style="color:#f92672">==</span> <span style="color:#e6db74">&#34;__main__&#34;</span>:
+    b <span style="color:#f92672">=</span> BloomFilter()
+
+    url <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;https://ne7ermore.github.io/&#34;</span>
+    <span style="color:#66d9ef">print</span>(b<span style="color:#f92672">.</span>contains(url))
+    b<span style="color:#f92672">.</span>add(url)
+    <span style="color:#66d9ef">print</span>(b<span style="color:#f92672">.</span>contains(url))
+</code></pre></div>
             </article>
           </div>
           
@@ -633,7 +615,7 @@ title="github icon"></i>
         
 				</ul>	<div class="design-credit">
 		
-		<p>&copy; Nevermore | 2019</p>
+		<p>© Nevermore | 2019</p>
 		
     </div>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>

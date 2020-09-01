@@ -176,79 +176,47 @@
           <div class="entry-content">
             <article>
               <p>风格迁移</p>
-
 <p><a href="https://github.com/ne7ermore/torch-light/tree/master/neural-artistic-style">代码</a></p>
-
 <p>本期做一个笔者认为神奇的实现，将一张真实的照片加入名画的风格生成一张新的照片。</p>
-
 <p>论文地址：<a href="https://arxiv.org/abs/1508.06576">A Neural Algorithm of Artistic Style</a></p>
-
 <p>首先介绍两个前置知识点，VGG和迁移学习</p>
-
 <p>VGG</p>
-
-<p><img src="/img/nas/img2.jpg" style="height: 450px" alt=""></p>
-
+<!-- raw HTML omitted -->
 <p>结构可以看成由CNN和FC组成，CNN（本期我们只会用到这一部分）又由五个Block组成：k个CNN3X3 + MaxPool。本期使用图中的E，VGG19。</p>
-
 <p>迁移学习
 导入已经训练好的模型参数来训练我们自己的模型，Pytorch使用迁移学习非常方便。</p>
-
 <h4 id="论文浅析">论文浅析</h4>
-
 <p>论文前半部分描述了实践和理解，确实可以做出比较理想的结果，但是笔者私以为数学支撑比较薄弱。</p>
-
 <p>所以笔者直接从章节Methods开始说：</p>
-
 <ul>
 <li>首先，整个图片融合过程有三张图片：1、实际照片（下称p），2、名画（下称s），3、融合1和2的生成照片（下称x）。</li>
 <li>融合分两步：1、x和p在vgg的某几层使用Mean Squared Error来计算loss，2、x和s的矫正就有些微不同，论文中将图片降维后使用Matrix来存放各自特征，然后使用Mean Squared Error来计算loss。</li>
 <li>最后，上述所有loss相加后BP。</li>
 </ul>
-
 <p><strong>这里需要注意一点：整个训练流程VGG、p、s一直不变，只有x的参数在随BP更新</strong></p>
-
 <h4 id="代码实现">代码实现</h4>
-
 <p>首先提取已训练好的vgg参数来构建我们的模型</p>
-
 <p>加载VGG19并导入已训练好的参数，行60， 65</p>
-
 <p>而我们的模型构建就非常简单了，行40~55</p>
-
-<p><img src="/img/nas/img3.jpg" style="height: 450px" alt=""></p>
-
+<!-- raw HTML omitted -->
 <p>Style Loss</p>
-
-<p><img src="/img/nas/img4.jpg" style="height:450px" alt=""></p>
-
+<!-- raw HTML omitted -->
 <p>图片的提取和保存<a href="https://github.com/ne7ermore/torch-light/blob/master/neural-artistic-style/img_loader.py">点我查看</a>，这里不在详述。</p>
-
 <p>优化函数使用的LBFGS，代码：</p>
-
-<p><img src="/img/nas/img5.jpg" style="height: 450px" alt=""></p>
-
+<!-- raw HTML omitted -->
 <h4 id="结果">结果</h4>
-
 <blockquote>
 <p>梵高-星空</p>
 </blockquote>
-
-<p><img src="/img/nas/img6.jpg" style="height: 450px" alt=""></p>
-
-<p><img src="/img/nas/img7.jpg" style="height: 450px" alt=""></p>
-
-<p><img src="/img/nas/img8.jpg" style="height: 450px" alt=""></p>
-
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
 <blockquote>
 <p>毕加索</p>
 </blockquote>
-
-<p><img src="/img/nas/img9.jpg" style="height: 450px" alt=""></p>
-
-<p><img src="/img/nas/img10.jpg" style="height: 450px" alt=""></p>
-
-<p><img src="/img/nas/img11.jpg" style="height: 450px" alt=""></p>
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
             </article>
           </div>
           
@@ -399,7 +367,7 @@ title="github icon"></i>
         
 				</ul>	<div class="design-credit">
 		
-		<p>&copy; Nevermore | 2019</p>
+		<p>© Nevermore | 2019</p>
 		
     </div>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>

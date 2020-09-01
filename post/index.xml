@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Posts on Nevermore</title>
@@ -217,7 +217,6 @@
       
       <guid>https://ne7ermore.github.io/post/pandas/</guid>
       <description>&lt;p&gt;Pandas是python的一款第三方包，强大，快速，多使用于数据挖掘和整合&lt;/p&gt;
-
 &lt;p&gt;我会不定期记录使用pandas的心得&lt;/p&gt;</description>
     </item>
     
@@ -274,7 +273,6 @@ yolo是一种使用深度卷积神经网络学得的特征来检测对象的目�
       
       <guid>https://ne7ermore.github.io/post/actor-critic/</guid>
       <description>&lt;p&gt;强化学习 - Actor Critic&lt;/p&gt;
-
 &lt;p&gt;基于Actor Critic算法使用TensorFlow实现Cart-Pole&lt;/p&gt;</description>
     </item>
     

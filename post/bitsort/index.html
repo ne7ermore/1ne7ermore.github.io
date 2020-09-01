@@ -176,53 +176,44 @@
           <div class="entry-content">
             <article>
               <p>介绍一个时间和空间复杂度都比较合理的排序方式 - 位排序</p>
-
 <p>不同于堆排、快排、融合排序，位排序的思想简单粗暴。假设对一组不重复且属于[0, 10000000)区间的数A进行排序，初始化一个长度为10000000的数组，所有成员值默认为0，然后遍历A，假如存在，就在数组对应的index上修改为1；最后遍历数组，去掉为0的成员，并将值为1的成员值替换成对应index，排序就完成了。不过这样操作有个缺点，空间复杂度过高，所以就有了位排序。</p>
-
 <blockquote>
-<p>总体思想，将[0, 10000000)切分成 <sup>10000000</sup>&frasl;<sub>32</sub>+1 个成员，以二进制来表示对应index的数存在与否</p>
+<p>总体思想，将[0, 10000000)切分成 10000000/32+1 个成员，以二进制来表示对应index的数存在与否</p>
 </blockquote>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-Golang" data-lang="Golang"><span style="color:#75715e">// 初始化成员
+</span><span style="color:#75715e"></span><span style="color:#a6e22e">top</span> <span style="color:#f92672">:=</span> int(len(<span style="color:#a6e22e">list</span>)<span style="color:#f92672">/</span><span style="color:#a6e22e">BITSPERWORD</span>) <span style="color:#f92672">+</span> <span style="color:#ae81ff">1</span>
+<span style="color:#a6e22e">a</span> <span style="color:#f92672">:=</span> make([]<span style="color:#66d9ef">uint</span>, <span style="color:#a6e22e">top</span>)
 
-<pre><code class="language-Golang">// 初始化成员
-top := int(len(list)/BITSPERWORD) + 1
-a := make([]uint, top)
-
-for i := 0; i &lt; top; i++ {
-    a[i] = 0
+<span style="color:#66d9ef">for</span> <span style="color:#a6e22e">i</span> <span style="color:#f92672">:=</span> <span style="color:#ae81ff">0</span>; <span style="color:#a6e22e">i</span> &lt; <span style="color:#a6e22e">top</span>; <span style="color:#a6e22e">i</span><span style="color:#f92672">++</span> {
+    <span style="color:#a6e22e">a</span>[<span style="color:#a6e22e">i</span>] = <span style="color:#ae81ff">0</span>
 }
-</code></pre>
+</code></pre></div><p>那怎么来分配某个数属于那个一成员里面呢，其实很简单，因为每个slot有32个成员，那直接num除以32取整就可以了，举个例子：129//32 = 4，即129应该放入第四个成员中；第二步，数怎么在成员中表示呢，也很简单，num除以32取余数，即num%32，最后一步，加起来，至于为什么是加起来，请自行思考。表述比较啰嗦，代码其实就一行。</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-Golang" data-lang="Golang"><span style="color:#a6e22e">a</span>[<span style="color:#a6e22e">member</span><span style="color:#f92672">&gt;&gt;</span><span style="color:#a6e22e">SHIFT</span>] <span style="color:#f92672">|=</span> <span style="color:#ae81ff">1</span> <span style="color:#f92672">&lt;&lt;</span> (<span style="color:#a6e22e">member</span> <span style="color:#f92672">&amp;</span> <span style="color:#a6e22e">MASK</span>)
+</code></pre></div><p><a href="https://github.com/ne7ermore/playground/blob/master/golang/sort/bitsort.go">全部代码</a></p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-Golang" data-lang="Golang"><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">bitsort</span>(<span style="color:#a6e22e">list</span> []<span style="color:#66d9ef">uint</span>, <span style="color:#a6e22e">max</span> <span style="color:#66d9ef">uint</span>) []<span style="color:#66d9ef">uint</span> {
+    <span style="color:#66d9ef">var</span> <span style="color:#a6e22e">SHIFT</span>, <span style="color:#a6e22e">MASK</span> <span style="color:#66d9ef">uint</span> = <span style="color:#ae81ff">5</span>, <span style="color:#ae81ff">0x1f</span>
+    <span style="color:#66d9ef">var</span> <span style="color:#a6e22e">BITSPERWORD</span> <span style="color:#66d9ef">int</span> = <span style="color:#ae81ff">32</span>
+    <span style="color:#a6e22e">top</span> <span style="color:#f92672">:=</span> int(len(<span style="color:#a6e22e">list</span>)<span style="color:#f92672">/</span><span style="color:#a6e22e">BITSPERWORD</span>) <span style="color:#f92672">+</span> <span style="color:#ae81ff">1</span>
 
-<p>那怎么来分配某个数属于那个一成员里面呢，其实很简单，因为每个slot有32个成员，那直接num除以32取整就可以了，举个例子：129//32 = 4，即129应该放入第四个成员中；第二步，数怎么在成员中表示呢，也很简单，num除以32取余数，即num%32，最后一步，加起来，至于为什么是加起来，请自行思考。表述比较啰嗦，代码其实就一行。</p>
-
-<pre><code class="language-Golang">a[member&gt;&gt;SHIFT] |= 1 &lt;&lt; (member &amp; MASK)
-</code></pre>
-
-<p><a href="https://github.com/ne7ermore/playground/blob/master/golang/sort/bitsort.go">全部代码</a></p>
-
-<pre><code class="language-Golang">func bitsort(list []uint, max uint) []uint {
-    var SHIFT, MASK uint = 5, 0x1f
-    var BITSPERWORD int = 32
-    top := int(len(list)/BITSPERWORD) + 1
-
-    a := make([]uint, top)
-    for i := 0; i &lt; top; i++ {
-        a[i] = 0
+    <span style="color:#a6e22e">a</span> <span style="color:#f92672">:=</span> make([]<span style="color:#66d9ef">uint</span>, <span style="color:#a6e22e">top</span>)
+    <span style="color:#66d9ef">for</span> <span style="color:#a6e22e">i</span> <span style="color:#f92672">:=</span> <span style="color:#ae81ff">0</span>; <span style="color:#a6e22e">i</span> &lt; <span style="color:#a6e22e">top</span>; <span style="color:#a6e22e">i</span><span style="color:#f92672">++</span> {
+        <span style="color:#a6e22e">a</span>[<span style="color:#a6e22e">i</span>] = <span style="color:#ae81ff">0</span>
     }
 
-    for _, member := range list {
-        a[member&gt;&gt;SHIFT] |= 1 &lt;&lt; (member &amp; MASK)
+    <span style="color:#66d9ef">for</span> <span style="color:#a6e22e">_</span>, <span style="color:#a6e22e">member</span> <span style="color:#f92672">:=</span> <span style="color:#66d9ef">range</span> <span style="color:#a6e22e">list</span> {
+        <span style="color:#a6e22e">a</span>[<span style="color:#a6e22e">member</span><span style="color:#f92672">&gt;&gt;</span><span style="color:#a6e22e">SHIFT</span>] <span style="color:#f92672">|=</span> <span style="color:#ae81ff">1</span> <span style="color:#f92672">&lt;&lt;</span> (<span style="color:#a6e22e">member</span> <span style="color:#f92672">&amp;</span> <span style="color:#a6e22e">MASK</span>)
     }
 
-    var slot int = 0
-    for i := uint(0); i &lt; max; i++ {
-        if a[i&gt;&gt;SHIFT]&amp;(uint(1)&lt;&lt;(i&amp;MASK)) != 0 {
-            list[slot] = i
-            slot++
+    <span style="color:#66d9ef">var</span> <span style="color:#a6e22e">slot</span> <span style="color:#66d9ef">int</span> = <span style="color:#ae81ff">0</span>
+    <span style="color:#66d9ef">for</span> <span style="color:#a6e22e">i</span> <span style="color:#f92672">:=</span> uint(<span style="color:#ae81ff">0</span>); <span style="color:#a6e22e">i</span> &lt; <span style="color:#a6e22e">max</span>; <span style="color:#a6e22e">i</span><span style="color:#f92672">++</span> {
+        <span style="color:#66d9ef">if</span> <span style="color:#a6e22e">a</span>[<span style="color:#a6e22e">i</span><span style="color:#f92672">&gt;&gt;</span><span style="color:#a6e22e">SHIFT</span>]<span style="color:#f92672">&amp;</span>(uint(<span style="color:#ae81ff">1</span>)<span style="color:#f92672">&lt;&lt;</span>(<span style="color:#a6e22e">i</span><span style="color:#f92672">&amp;</span><span style="color:#a6e22e">MASK</span>)) <span style="color:#f92672">!=</span> <span style="color:#ae81ff">0</span> {
+            <span style="color:#a6e22e">list</span>[<span style="color:#a6e22e">slot</span>] = <span style="color:#a6e22e">i</span>
+            <span style="color:#a6e22e">slot</span><span style="color:#f92672">++</span>
         }
     }
-    return list
+    <span style="color:#66d9ef">return</span> <span style="color:#a6e22e">list</span>
 }
-</code></pre>
+</code></pre></div>
             </article>
           </div>
           
@@ -373,7 +364,7 @@ title="github icon"></i>
         
 				</ul>	<div class="design-credit">
 		
-		<p>&copy; Nevermore | 2019</p>
+		<p>© Nevermore | 2019</p>
 		
     </div>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>

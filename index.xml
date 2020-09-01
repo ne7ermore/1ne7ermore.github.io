@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Nevermore</title>
@@ -6,7 +6,7 @@
     <description>Recent content on Nevermore</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Fri, 24 Jan 2020 10:00:25 +0800</lastBuildDate>
+    <lastBuildDate>Thu, 01 Nov 2018 13:00:25 +0800</lastBuildDate>
     
 	<atom:link href="https://ne7ermore.github.io/index.xml" rel="self" type="application/rss+xml" />
     
@@ -217,7 +217,6 @@
       
       <guid>https://ne7ermore.github.io/post/pandas/</guid>
       <description>&lt;p&gt;Pandas是python的一款第三方包，强大，快速，多使用于数据挖掘和整合&lt;/p&gt;
-
 &lt;p&gt;我会不定期记录使用pandas的心得&lt;/p&gt;</description>
     </item>
     
@@ -274,7 +273,6 @@ yolo是一种使用深度卷积神经网络学得的特征来检测对象的目�
       
       <guid>https://ne7ermore.github.io/post/actor-critic/</guid>
       <description>&lt;p&gt;强化学习 - Actor Critic&lt;/p&gt;
-
 &lt;p&gt;基于Actor Critic算法使用TensorFlow实现Cart-Pole&lt;/p&gt;</description>
     </item>
     
@@ -351,8 +349,7 @@ yolo是一种使用深度卷积神经网络学得的特征来检测对象的目�
 Tensorflow教程：https://github.com/ne7ermore/deeping-flow
 yolo-v3：https://github.com/ne7ermore/yolo-v3
 权限系统：https://github.com/ne7ermore/gRBAC
-算法：https://github.com/ne7ermore/playground
-求职，有兴趣可以右上角邮件联系</description>
+算法：https://github.com/ne7ermore/playground</description>
     </item>
     
     <item>

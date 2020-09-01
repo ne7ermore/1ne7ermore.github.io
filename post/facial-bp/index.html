@@ -176,87 +176,73 @@
           <div class="entry-content">
             <article>
               <p>Facial Beauty Prediction</p>
-
 <p>模型很简单，重要的是训练数据，在此感谢<a href="https://arxiv.org/abs/1801.06345">A Diverse Benchmark Dataset for Multi-Paradigm Facial Beauty Prediction</a>
 打分标准：0~5，应该是开区间吧，不然得0分的怎么办，比如我。。。
 简单说下我使用的模型</p>
-
 <ul>
 <li>按照论文说明，使用效果最好的训练好的resnet50</li>
 <li>最后接一层linear输出分数，使用Relu作为激活函数</li>
 <li>损失函数使用SmoothL1Loss，在我这里效果优于MSEloss，前期更快收敛（猜测，无证明）</li>
 </ul>
-
 <p>贴下代码</p>
-
 <p>模型</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Beauty</span>(nn<span style="color:#f92672">.</span>Module):
+    <span style="color:#66d9ef">def</span> __init__(self):
+        super()<span style="color:#f92672">.</span>__init__()
 
-<pre><code class="language-python">class Beauty(nn.Module):
-    def __init__(self):
-        super().__init__()
+        self<span style="color:#f92672">.</span>resnet <span style="color:#f92672">=</span> resnet50(True)
+        self<span style="color:#f92672">.</span>predict <span style="color:#f92672">=</span> nn<span style="color:#f92672">.</span>Linear(<span style="color:#ae81ff">1000</span>, <span style="color:#ae81ff">1</span>)
 
-        self.resnet = resnet50(True)
-        self.predict = nn.Linear(1000, 1)
+        self<span style="color:#f92672">.</span>_reset_parameters()
 
-        self._reset_parameters()
+    <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">forward</span>(self, x):
+        out <span style="color:#f92672">=</span> nn<span style="color:#f92672">.</span>functional<span style="color:#f92672">.</span>relu(self<span style="color:#f92672">.</span>resnet(x))
+        score <span style="color:#f92672">=</span> self<span style="color:#f92672">.</span>predict(out)
+        <span style="color:#66d9ef">return</span> score
 
-    def forward(self, x):
-        out = nn.functional.relu(self.resnet(x))
-        score = self.predict(out)
-        return score
+    <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">_reset_parameters</span>(self):
+        <span style="color:#66d9ef">for</span> p <span style="color:#f92672">in</span> self<span style="color:#f92672">.</span>resnet<span style="color:#f92672">.</span>parameters():
+            p<span style="color:#f92672">.</span>requires_grad <span style="color:#f92672">=</span> False
 
-    def _reset_parameters(self):
-        for p in self.resnet.parameters():
-            p.requires_grad = False
+        self<span style="color:#f92672">.</span>predict<span style="color:#f92672">.</span>weight<span style="color:#f92672">.</span>data<span style="color:#f92672">.</span>uniform_(<span style="color:#f92672">-.</span><span style="color:#ae81ff">1</span>, <span style="color:#f92672">.</span><span style="color:#ae81ff">1</span>)
 
-        self.predict.weight.data.uniform_(-.1, .1)
+    <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">get_trainable_parameters</span>(self):
+        <span style="color:#66d9ef">return</span> filter(<span style="color:#66d9ef">lambda</span> m: m<span style="color:#f92672">.</span>requires_grad, self<span style="color:#f92672">.</span>parameters())
+</code></pre></div><p>预测</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Predict</span>:
+    <span style="color:#66d9ef">def</span> __init__(self):
+        model_source <span style="color:#f92672">=</span> torch<span style="color:#f92672">.</span>load(
+            <span style="color:#e6db74">&#34;./model.pt&#34;</span>, map_location<span style="color:#f92672">=</span><span style="color:#66d9ef">lambda</span> storage, loc: storage)
+        model <span style="color:#f92672">=</span> Beauty()
+        model<span style="color:#f92672">.</span>load_state_dict(model_source[<span style="color:#e6db74">&#34;model&#34;</span>])
+        model<span style="color:#f92672">.</span>eval()
+        self<span style="color:#f92672">.</span>model <span style="color:#f92672">=</span> model
 
-    def get_trainable_parameters(self):
-        return filter(lambda m: m.requires_grad, self.parameters())
-</code></pre>
-
-<p>预测</p>
-
-<pre><code class="language-python">class Predict:
-    def __init__(self):
-        model_source = torch.load(
-            &quot;./model.pt&quot;, map_location=lambda storage, loc: storage)
-        model = Beauty()
-        model.load_state_dict(model_source[&quot;model&quot;])
-        model.eval()
-        self.model = model
-
-        self.encode = T.Compose([
-            T.Resize(224),
-            T.ToTensor()
+        self<span style="color:#f92672">.</span>encode <span style="color:#f92672">=</span> T<span style="color:#f92672">.</span>Compose([
+            T<span style="color:#f92672">.</span>Resize(<span style="color:#ae81ff">224</span>),
+            T<span style="color:#f92672">.</span>ToTensor()
         ])
 
-    def img2V(self, img):
-        t = self.encode(Image.open(img).convert('RGB')).unsqueeze(0)
-        return Variable(t, volatile=True)
+    <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">img2V</span>(self, img):
+        t <span style="color:#f92672">=</span> self<span style="color:#f92672">.</span>encode(Image<span style="color:#f92672">.</span>open(img)<span style="color:#f92672">.</span>convert(<span style="color:#e6db74">&#39;RGB&#39;</span>))<span style="color:#f92672">.</span>unsqueeze(<span style="color:#ae81ff">0</span>)
+        <span style="color:#66d9ef">return</span> Variable(t, volatile<span style="color:#f92672">=</span>True)
 
-    def divine(self, img):
-        v = self.img2V(img)
-        score = self.model(v)
+    <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">divine</span>(self, img):
+        v <span style="color:#f92672">=</span> self<span style="color:#f92672">.</span>img2V(img)
+        score <span style="color:#f92672">=</span> self<span style="color:#f92672">.</span>model(v)
 
-        return round(score.data.tolist()[0][0], 3)
-</code></pre>
-
-<blockquote>
+        <span style="color:#66d9ef">return</span> round(score<span style="color:#f92672">.</span>data<span style="color:#f92672">.</span>tolist()[<span style="color:#ae81ff">0</span>][<span style="color:#ae81ff">0</span>], <span style="color:#ae81ff">3</span>)
+</code></pre></div><blockquote>
 <p>预测效果</p>
 </blockquote>
-
 <ul>
 <li>吴彦祖 4.251分</li>
 </ul>
-
-<p><img src="/img/facial-bp/wyz.jpeg" alt="pic" /></p>
-
+<p><img src="/img/facial-bp/wyz.jpeg" alt="pic"></p>
 <ul>
 <li>来个我同学(已征得同意) 2.298分</li>
 </ul>
-
-<p><img src="/img/facial-bp/mj.jpeg" alt="pic" /></p>
+<p><img src="/img/facial-bp/mj.jpeg" alt="pic"></p>
             </article>
           </div>
           
@@ -407,7 +393,7 @@ title="github icon"></i>
         
 				</ul>	<div class="design-credit">
 		
-		<p>&copy; Nevermore | 2019</p>
+		<p>© Nevermore | 2019</p>
 		
     </div>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>

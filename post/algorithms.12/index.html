@@ -175,7 +175,6 @@
           <div class="entry-content">
             <article>
               <p>N-Queens</p>
-
 <pre><code>The n-queens puzzle is the problem of placing n queens on an n×n chessboard such that no two queens attack each other.
 
 Given an integer n, return the number of distinct solutions to the n-queens puzzle.
@@ -196,107 +195,88 @@ Explanation: There are two distinct solutions to the 4-queens puzzle as shown be
   &quot;...Q&quot;,
   &quot;.Q..&quot;]
 ]
-</code></pre>
-
-<p>题目解释：国际象棋的棋子皇后，可以横向纵向和斜向吃掉对方棋子，题目的目标是一个NxN的棋盘上放置n个皇后并且不会相互攻击到彼此</p>
-
+</code></pre><p>题目解释：国际象棋的棋子皇后，可以横向纵向和斜向吃掉对方棋子，题目的目标是一个NxN的棋盘上放置n个皇后并且不会相互攻击到彼此</p>
 <p>典型backtrack场景，多选择问题</p>
-
 <p>backtrack三要素：</p>
-
 <ul>
 <li>目的</li>
 <li>约束</li>
 <li>选择</li>
 </ul>
-
 <p>回归到这道题上来看：</p>
-
 <ul>
 <li>目的：放置n个皇后</li>
 <li>约束：皇后之间两两不能攻击</li>
 <li>选择：按行逐个逐个尝试</li>
 </ul>
-
 <p>本期使用c++</p>
-
 <p>目的：</p>
-
-<pre><code class="language-c++">if (row == n)
-    count++;
-</code></pre>
-
-<p>约束：
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++"><span style="color:#66d9ef">if</span> (row <span style="color:#f92672">==</span> n)
+    count<span style="color:#f92672">++</span>;
+</code></pre></div><p>约束：
 显然每一行只能有一个皇后，然后就剩下比较纵向和斜向是否可行
 等于0是纵向，等于rowid - i是斜向</p>
-
-<pre><code class="language-c++">bool isvalid(std::vector&lt;int&gt; place)
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++"><span style="color:#66d9ef">bool</span> <span style="color:#a6e22e">isvalid</span>(std<span style="color:#f92672">::</span>vector<span style="color:#f92672">&lt;</span><span style="color:#66d9ef">int</span><span style="color:#f92672">&gt;</span> place)
 {
-    int rowid = place.size() - 1;
-    for (int i = 0; i &lt; rowid; i++)
+    <span style="color:#66d9ef">int</span> rowid <span style="color:#f92672">=</span> place.size() <span style="color:#f92672">-</span> <span style="color:#ae81ff">1</span>;
+    <span style="color:#66d9ef">for</span> (<span style="color:#66d9ef">int</span> i <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>; i <span style="color:#f92672">&lt;</span> rowid; i<span style="color:#f92672">++</span>)
     {
-        int diff = abs(place[i] - place[rowid]);
-        // 等于0是纵向，等于rowid - i是斜向
-        if (diff == 0 || diff == rowid - i)
-            return false;
+        <span style="color:#66d9ef">int</span> diff <span style="color:#f92672">=</span> abs(place[i] <span style="color:#f92672">-</span> place[rowid]);
+        <span style="color:#75715e">// 等于0是纵向，等于rowid - i是斜向
+</span><span style="color:#75715e"></span>        <span style="color:#66d9ef">if</span> (diff <span style="color:#f92672">==</span> <span style="color:#ae81ff">0</span> <span style="color:#f92672">||</span> diff <span style="color:#f92672">==</span> rowid <span style="color:#f92672">-</span> i)
+            <span style="color:#66d9ef">return</span> false;
     }
-    return true;
+    <span style="color:#66d9ef">return</span> true;
 }
-</code></pre>
-
-<p>选择：
+</code></pre></div><p>选择：
 每一行逐一尝试</p>
-
-<pre><code class="language-c++">for (int i = 0; i &lt; row; i++)
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++"><span style="color:#66d9ef">for</span> (<span style="color:#66d9ef">int</span> i <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>; i <span style="color:#f92672">&lt;</span> row; i<span style="color:#f92672">++</span>)
 {
     place.push_back(i);
-    if (isvalid(place))
+    <span style="color:#66d9ef">if</span> (isvalid(place))
     {
         backtrack(row, n, count, place);
     }
     place.pop_back();
 }
-</code></pre>
-
-<p>完整代码</p>
-
-<pre><code class="language-c++">#include &lt;vector&gt;
-
-class Solution
+</code></pre></div><p>完整代码</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++"><span style="color:#75715e">#include</span> <span style="color:#75715e">&lt;vector&gt;</span><span style="color:#75715e">
+</span><span style="color:#75715e"></span>
+<span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Solution</span>
 {
-  public:
-    int totalNQueens(int n)
+  <span style="color:#66d9ef">public</span><span style="color:#f92672">:</span>
+    <span style="color:#66d9ef">int</span> totalNQueens(<span style="color:#66d9ef">int</span> n)
     {
-        int count = 0;
-        std::vector&lt;int&gt; place;
-        backtrack(n, 0, count, place);
-        return count;
+        <span style="color:#66d9ef">int</span> count <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>;
+        std<span style="color:#f92672">::</span>vector<span style="color:#f92672">&lt;</span><span style="color:#66d9ef">int</span><span style="color:#f92672">&gt;</span> place;
+        backtrack(n, <span style="color:#ae81ff">0</span>, count, place);
+        <span style="color:#66d9ef">return</span> count;
     }
 
-  private:
-    bool isvalid(std::vector&lt;int&gt; place)
+  <span style="color:#66d9ef">private</span><span style="color:#f92672">:</span>
+    <span style="color:#66d9ef">bool</span> isvalid(std<span style="color:#f92672">::</span>vector<span style="color:#f92672">&lt;</span><span style="color:#66d9ef">int</span><span style="color:#f92672">&gt;</span> place)
     {
-        int rowid = place.size() - 1;
-        for (int i = 0; i &lt; rowid; i++)
+        <span style="color:#66d9ef">int</span> rowid <span style="color:#f92672">=</span> place.size() <span style="color:#f92672">-</span> <span style="color:#ae81ff">1</span>;
+        <span style="color:#66d9ef">for</span> (<span style="color:#66d9ef">int</span> i <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>; i <span style="color:#f92672">&lt;</span> rowid; i<span style="color:#f92672">++</span>)
         {
-            int diff = abs(place[i] - place[rowid]);
-            if (diff == 0 || diff == rowid - i)
-                return false;
+            <span style="color:#66d9ef">int</span> diff <span style="color:#f92672">=</span> abs(place[i] <span style="color:#f92672">-</span> place[rowid]);
+            <span style="color:#66d9ef">if</span> (diff <span style="color:#f92672">==</span> <span style="color:#ae81ff">0</span> <span style="color:#f92672">||</span> diff <span style="color:#f92672">==</span> rowid <span style="color:#f92672">-</span> i)
+                <span style="color:#66d9ef">return</span> false;
         }
-        return true;
+        <span style="color:#66d9ef">return</span> true;
     }
 
-    void backtrack(int row, int n, int &amp;count, std::vector&lt;int&gt; &amp;place)
+    <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">backtrack</span>(<span style="color:#66d9ef">int</span> row, <span style="color:#66d9ef">int</span> n, <span style="color:#66d9ef">int</span> <span style="color:#f92672">&amp;</span>count, std<span style="color:#f92672">::</span>vector<span style="color:#f92672">&lt;</span><span style="color:#66d9ef">int</span><span style="color:#f92672">&gt;</span> <span style="color:#f92672">&amp;</span>place)
     {
-        if (row == n)
-            count++;
-        else
+        <span style="color:#66d9ef">if</span> (row <span style="color:#f92672">==</span> n)
+            count<span style="color:#f92672">++</span>;
+        <span style="color:#66d9ef">else</span>
         {
-            n++;
-            for (int i = 0; i &lt; row; i++)
+            n<span style="color:#f92672">++</span>;
+            <span style="color:#66d9ef">for</span> (<span style="color:#66d9ef">int</span> i <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>; i <span style="color:#f92672">&lt;</span> row; i<span style="color:#f92672">++</span>)
             {
                 place.push_back(i);
-                if (isvalid(place))
+                <span style="color:#66d9ef">if</span> (isvalid(place))
                 {
                     backtrack(row, n, count, place);
                 }
@@ -305,7 +285,7 @@ class Solution
         }
     }
 };
-</code></pre>
+</code></pre></div>
             </article>
           </div>
           
@@ -456,7 +436,7 @@ title="github icon"></i>
         
 				</ul>	<div class="design-credit">
 		
-		<p>&copy; Nevermore | 2019</p>
+		<p>© Nevermore | 2019</p>
 		
     </div>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>

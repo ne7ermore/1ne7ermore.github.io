@@ -176,80 +176,44 @@
           <div class="entry-content">
             <article>
               <p>DC-GAN</p>
-
 <p><a href="https://github.com/ne7ermore/torch-light/tree/master/dc-gan">代码</a></p>
-
 <p>本期基于GAN实现图片生成，笔者本来计划在NLP中使用GAN实现文本生成，但是由于NLP中G生成word是不可导的，所以最后改为使用VAE实现，点我具体查看</p>
-
-<p>GAN开山之作：<a href="https://arxiv.org/abs/1406.2661">https://arxiv.org/abs/1406.2661</a></p>
-
+<p>GAN开山之作：https://arxiv.org/abs/1406.2661</p>
 <p>据说是Goodfellow和朋友打赌时产生的灵感，论文第四章Theoretical Results值得反复揣摩。模型有两个，Generator(生成器，下称G)和Discriminator(判别器，下称D)，数据来源有两个，真实样本和噪音样本，笔者本期使用高斯分布代替随机向生成噪音样本。</p>
-
-<p><img src="/img/dcgan/img2.jpg" style="height: 450px" alt=""></p>
-
+<!-- raw HTML omitted -->
 <p>优化函数：SGD+momentum，迭代使用minibatch算法，minibatch中分别更新k次D，更新1次G。更新D时，分别对真实样本和G生成样本采样，喂入模型，使D的目标函数最大化；更新G时，仅对G生成样本采样，喂入模型，使G的目标函数最小化。</p>
-
 <p>D目标函数构成</p>
-
-<p><img src="/img/dcgan/img3.jpg" style="height: 50px" alt=""></p>
-
+<!-- raw HTML omitted -->
 <p>假设G固定，公式1可变化为</p>
-
-<p><img src="/img/dcgan/img4.jpg" style="height: 100px" alt=""></p>
-
+<!-- raw HTML omitted -->
 <p>可见公式2由两部分组成： $alog(y) + blog(1-y)$ 其中 $y = D(x)$, $a = p_{data}$, $b = p_g$</p>
-
-<p><img src="/img/dcgan/img5.jpg" style="height: 450px" alt=""></p>
-
+<!-- raw HTML omitted -->
 <p>如图： $log(x)$ 在(0, 1)上单调递增</p>
-
-<p><img src="/img/dcgan/img6.jpg" style="height: 450px" alt=""></p>
-
+<!-- raw HTML omitted -->
 <p>如图： log(1-x) 在(0, 1)上单调递减</p>
-
 <p>求公式1中最大D可转化为求其导数</p>
-
-<p><img src="/img/dcgan/img7.jpg" style="height: 350px" alt=""></p>
-
+<!-- raw HTML omitted -->
 <p>求公式1在D最大是，最小G</p>
-
-<p><img src="/img/dcgan/img8.jpg" style="height: 500px" alt=""></p>
-
-<p>由于 $D<em>{kl}$ 非负，所以当且仅当 $p</em>{data} = p_{g}$ 时等式最小</p>
-
+<!-- raw HTML omitted -->
+<p>由于 $D_{kl}$ 非负，所以当且仅当 $p_{data} = p_{g}$ 时等式最小</p>
 <h4 id="代码实现">代码实现</h4>
-
 <p>本期使用CNN充当G和D</p>
-
-<p><img src="/img/dcgan/img9.jpg" style="height: 300px" alt=""></p>
-
+<!-- raw HTML omitted -->
 <p>生成模型是一个反向CNN</p>
-
-<p><img src="/img/dcgan/img10.jpg" style="height: 650px" alt=""></p>
-
+<!-- raw HTML omitted -->
 <p>判别模型，使用LeakyReLU</p>
-
-<p><img src="/img/dcgan/img11.jpg" style="height: 650px" alt=""></p>
-
+<!-- raw HTML omitted -->
 <p>噪音样本服从高斯分布</p>
-
-<p><img src="/img/dcgan/img12.jpg" style="height: 200px" alt=""></p>
-
+<!-- raw HTML omitted -->
 <p>G和D的参数更新</p>
-
-<p><img src="/img/dcgan/img13.jpg" style="height: 450px" alt=""></p>
-
+<!-- raw HTML omitted -->
 <blockquote>
 <p>结果</p>
 </blockquote>
-
 <p>epoch 2</p>
-
-<p><img src="/img/dcgan/img14.jpg" style="height: 600px" alt=""></p>
-
+<!-- raw HTML omitted -->
 <p>epoch 40</p>
-
-<p><img src="/img/dcgan/img15.jpg" style="height: 600px" alt=""></p>
+<!-- raw HTML omitted -->
             </article>
           </div>
           
@@ -400,7 +364,7 @@ title="github icon"></i>
         
 				</ul>	<div class="design-credit">
 		
-		<p>&copy; Nevermore | 2019</p>
+		<p>© Nevermore | 2019</p>
 		
     </div>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>

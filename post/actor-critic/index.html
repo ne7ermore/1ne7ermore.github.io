@@ -188,143 +188,130 @@
           <div class="entry-content">
             <article>
               <p>强化学习 - Actor Critic</p>
-
 <p>基于Actor Critic算法使用TensorFlow实现Cart-Pole</p>
-
 <p>Actor Critic算法是在Policy Gradient基础上加入<strong>评分</strong>系统，并与真实的价值做比较，然后优化</p>
-
 <p>模型也是比较简单的，两层隐藏层足矣，唯一区分的就是输出层一个输出所有action的概率，一个输出一个标量，即当前action的评价分数</p>
-
 <p>首先引入gym-CartPole</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#f92672">import</span> gym
+env <span style="color:#f92672">=</span> gym<span style="color:#f92672">.</span>make(<span style="color:#e6db74">&#39;CartPole-v0&#39;</span>)<span style="color:#f92672">.</span>unwrapped
+env<span style="color:#f92672">.</span>seed(args<span style="color:#f92672">.</span>seed)
 
-<pre><code class="language-python">import gym
-env = gym.make('CartPole-v0').unwrapped
-env.seed(args.seed)
+<span style="color:#75715e"># state维度</span>
+IN_DIM <span style="color:#f92672">=</span> env<span style="color:#f92672">.</span>observation_space<span style="color:#f92672">.</span>shape[<span style="color:#ae81ff">0</span>]
+<span style="color:#75715e"># action维度</span>
+OUT_DIM <span style="color:#f92672">=</span> env<span style="color:#f92672">.</span>action_space<span style="color:#f92672">.</span>n
+</code></pre></div><p>然后定义模型</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#f92672">import</span> tensorflow <span style="color:#f92672">as</span> tf
+<span style="color:#f92672">import</span> numpy <span style="color:#f92672">as</span> np
 
-# state维度
-IN_DIM = env.observation_space.shape[0]
-# action维度
-OUT_DIM = env.action_space.n
-</code></pre>
-
-<p>然后定义模型</p>
-
-<pre><code class="language-python">import tensorflow as tf
-import numpy as np
-
-tf.set_random_seed(args.seed)
+tf<span style="color:#f92672">.</span>set_random_seed(args<span style="color:#f92672">.</span>seed)
 
 
-class ActorCritic(object):
-    def __init__(self, in_dim, out_dim, h_dim):
-        self.global_step = tf.train.get_or_create_global_step()
+<span style="color:#66d9ef">class</span> <span style="color:#a6e22e">ActorCritic</span>(object):
+    <span style="color:#66d9ef">def</span> __init__(self, in_dim, out_dim, h_dim):
+        self<span style="color:#f92672">.</span>global_step <span style="color:#f92672">=</span> tf<span style="color:#f92672">.</span>train<span style="color:#f92672">.</span>get_or_create_global_step()
 
-        with tf.variable_scope('init_variables'):
-            self.state = tf.placeholder(
-                tf.float32, [None, in_dim], name=&quot;state&quot;)
-            self.rewards = tf.placeholder(
-                tf.float32, [None], name=&quot;rewards&quot;)
-            self.selected_actions = tf.placeholder(
-                tf.float32, [None], name=&quot;actions&quot;)
-            self.td_error = tf.placeholder(
-                tf.float32, [None], name=&quot;td_error&quot;)
+        <span style="color:#66d9ef">with</span> tf<span style="color:#f92672">.</span>variable_scope(<span style="color:#e6db74">&#39;init_variables&#39;</span>):
+            self<span style="color:#f92672">.</span>state <span style="color:#f92672">=</span> tf<span style="color:#f92672">.</span>placeholder(
+                tf<span style="color:#f92672">.</span>float32, [None, in_dim], name<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;state&#34;</span>)
+            self<span style="color:#f92672">.</span>rewards <span style="color:#f92672">=</span> tf<span style="color:#f92672">.</span>placeholder(
+                tf<span style="color:#f92672">.</span>float32, [None], name<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;rewards&#34;</span>)
+            self<span style="color:#f92672">.</span>selected_actions <span style="color:#f92672">=</span> tf<span style="color:#f92672">.</span>placeholder(
+                tf<span style="color:#f92672">.</span>float32, [None], name<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;actions&#34;</span>)
+            self<span style="color:#f92672">.</span>td_error <span style="color:#f92672">=</span> tf<span style="color:#f92672">.</span>placeholder(
+                tf<span style="color:#f92672">.</span>float32, [None], name<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;td_error&#34;</span>)
 
-        # 模型结构，激活函数使用Relu
-        with tf.variable_scope('init_layers'):
-            h_layer = tf.keras.layers.Dense(h_dim, activation=tf.nn.relu)
-            action_layer = tf.keras.layers.Dense(
-                out_dim, activation=tf.nn.softmax)
-            value_layer = tf.keras.layers.Dense(1)
+        <span style="color:#75715e"># 模型结构，激活函数使用Relu</span>
+        <span style="color:#66d9ef">with</span> tf<span style="color:#f92672">.</span>variable_scope(<span style="color:#e6db74">&#39;init_layers&#39;</span>):
+            h_layer <span style="color:#f92672">=</span> tf<span style="color:#f92672">.</span>keras<span style="color:#f92672">.</span>layers<span style="color:#f92672">.</span>Dense(h_dim, activation<span style="color:#f92672">=</span>tf<span style="color:#f92672">.</span>nn<span style="color:#f92672">.</span>relu)
+            action_layer <span style="color:#f92672">=</span> tf<span style="color:#f92672">.</span>keras<span style="color:#f92672">.</span>layers<span style="color:#f92672">.</span>Dense(
+                out_dim, activation<span style="color:#f92672">=</span>tf<span style="color:#f92672">.</span>nn<span style="color:#f92672">.</span>softmax)
+            value_layer <span style="color:#f92672">=</span> tf<span style="color:#f92672">.</span>keras<span style="color:#f92672">.</span>layers<span style="color:#f92672">.</span>Dense(<span style="color:#ae81ff">1</span>)
 
-        with tf.variable_scope('init_graph'):
-            hidden = h_layer(self.state)
-            props = action_layer(hidden)
-            self.value = tf.reshape(value_layer(hidden), [-1])
+        <span style="color:#66d9ef">with</span> tf<span style="color:#f92672">.</span>variable_scope(<span style="color:#e6db74">&#39;init_graph&#39;</span>):
+            hidden <span style="color:#f92672">=</span> h_layer(self<span style="color:#f92672">.</span>state)
+            props <span style="color:#f92672">=</span> action_layer(hidden)
+            self<span style="color:#f92672">.</span>value <span style="color:#f92672">=</span> tf<span style="color:#f92672">.</span>reshape(value_layer(hidden), [<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>])
 
-            dist = tf.distributions.Categorical(props)
-            self.action = dist.sample()
-            self.log_scores = dist.log_prob(self.selected_actions)
+            dist <span style="color:#f92672">=</span> tf<span style="color:#f92672">.</span>distributions<span style="color:#f92672">.</span>Categorical(props)
+            self<span style="color:#f92672">.</span>action <span style="color:#f92672">=</span> dist<span style="color:#f92672">.</span>sample()
+            self<span style="color:#f92672">.</span>log_scores <span style="color:#f92672">=</span> dist<span style="color:#f92672">.</span>log_prob(self<span style="color:#f92672">.</span>selected_actions)
 
-        with tf.variable_scope('loss'):
-            value_loss = self._smooth_l1_loss(self.value, self.rewards)
-            action_loss = -tf.reduce_sum(self.log_scores * self.td_error)
+        <span style="color:#66d9ef">with</span> tf<span style="color:#f92672">.</span>variable_scope(<span style="color:#e6db74">&#39;loss&#39;</span>):
+            value_loss <span style="color:#f92672">=</span> self<span style="color:#f92672">.</span>_smooth_l1_loss(self<span style="color:#f92672">.</span>value, self<span style="color:#f92672">.</span>rewards)
+            action_loss <span style="color:#f92672">=</span> <span style="color:#f92672">-</span>tf<span style="color:#f92672">.</span>reduce_sum(self<span style="color:#f92672">.</span>log_scores <span style="color:#f92672">*</span> self<span style="color:#f92672">.</span>td_error)
 
-            self.train_op = tf.train.AdamOptimizer(
-                args.lr).minimize(value_loss + action_loss, global_step=self.global_step)
+            self<span style="color:#f92672">.</span>train_op <span style="color:#f92672">=</span> tf<span style="color:#f92672">.</span>train<span style="color:#f92672">.</span>AdamOptimizer(
+                args<span style="color:#f92672">.</span>lr)<span style="color:#f92672">.</span>minimize(value_loss <span style="color:#f92672">+</span> action_loss, global_step<span style="color:#f92672">=</span>self<span style="color:#f92672">.</span>global_step)
 
-    # tf没有现成的smooth_l1_loss，自己写一个
-    def _smooth_l1_loss(self, value, rewards):
-        thres = tf.constant(1, dtype=tf.float32)
-        mae = tf.abs(value - rewards)
-        loss = tf.keras.backend.switch(tf.greater(
-            mae, thres), (mae - 0.5), 0.5 * tf.pow(mae, 2))
+    <span style="color:#75715e"># tf没有现成的smooth_l1_loss，自己写一个</span>
+    <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">_smooth_l1_loss</span>(self, value, rewards):
+        thres <span style="color:#f92672">=</span> tf<span style="color:#f92672">.</span>constant(<span style="color:#ae81ff">1</span>, dtype<span style="color:#f92672">=</span>tf<span style="color:#f92672">.</span>float32)
+        mae <span style="color:#f92672">=</span> tf<span style="color:#f92672">.</span>abs(value <span style="color:#f92672">-</span> rewards)
+        loss <span style="color:#f92672">=</span> tf<span style="color:#f92672">.</span>keras<span style="color:#f92672">.</span>backend<span style="color:#f92672">.</span>switch(tf<span style="color:#f92672">.</span>greater(
+            mae, thres), (mae <span style="color:#f92672">-</span> <span style="color:#ae81ff">0.5</span>), <span style="color:#ae81ff">0.5</span> <span style="color:#f92672">*</span> tf<span style="color:#f92672">.</span>pow(mae, <span style="color:#ae81ff">2</span>))
 
-        return tf.reduce_sum(loss)
-</code></pre>
-
-<p>最后训练</p>
-
-<pre><code class="language-python">ac = ActorCritic(IN_DIM, OUT_DIM, args.hidden_dim)
+        <span style="color:#66d9ef">return</span> tf<span style="color:#f92672">.</span>reduce_sum(loss)
+</code></pre></div><p>最后训练</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">ac <span style="color:#f92672">=</span> ActorCritic(IN_DIM, OUT_DIM, args<span style="color:#f92672">.</span>hidden_dim)
 
 
-def train():
-    init = tf.global_variables_initializer()
-    config = tf.ConfigProto()
-    config.gpu_options.allow_growth = True
-    more = 0
+<span style="color:#66d9ef">def</span> <span style="color:#a6e22e">train</span>():
+    init <span style="color:#f92672">=</span> tf<span style="color:#f92672">.</span>global_variables_initializer()
+    config <span style="color:#f92672">=</span> tf<span style="color:#f92672">.</span>ConfigProto()
+    config<span style="color:#f92672">.</span>gpu_options<span style="color:#f92672">.</span>allow_growth <span style="color:#f92672">=</span> True
+    more <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>
 
-    saver = tf.train.Saver()
-    saver_hook = tf.train.CheckpointSaverHook(
-        './train/', save_steps=2, saver=saver)
+    saver <span style="color:#f92672">=</span> tf<span style="color:#f92672">.</span>train<span style="color:#f92672">.</span>Saver()
+    saver_hook <span style="color:#f92672">=</span> tf<span style="color:#f92672">.</span>train<span style="color:#f92672">.</span>CheckpointSaverHook(
+        <span style="color:#e6db74">&#39;./train/&#39;</span>, save_steps<span style="color:#f92672">=</span><span style="color:#ae81ff">2</span>, saver<span style="color:#f92672">=</span>saver)
 
-    summary_op = tf.summary.scalar('value', 1)
-    summary_hook = tf.train.SummarySaverHook(save_steps=2,
-                                             summary_op=summary_op)
+    summary_op <span style="color:#f92672">=</span> tf<span style="color:#f92672">.</span>summary<span style="color:#f92672">.</span>scalar(<span style="color:#e6db74">&#39;value&#39;</span>, <span style="color:#ae81ff">1</span>)
+    summary_hook <span style="color:#f92672">=</span> tf<span style="color:#f92672">.</span>train<span style="color:#f92672">.</span>SummarySaverHook(save_steps<span style="color:#f92672">=</span><span style="color:#ae81ff">2</span>,
+                                             summary_op<span style="color:#f92672">=</span>summary_op)
 
-    with tf.train.MonitoredTrainingSession(config=config, hooks=[saver_hook, summary_hook]) as sess:
-        for epoch in count(1):
-            state = env.reset()
-            if args.render:
-                env.render()
-            states, policy_rewards, actions, values = [
+    <span style="color:#66d9ef">with</span> tf<span style="color:#f92672">.</span>train<span style="color:#f92672">.</span>MonitoredTrainingSession(config<span style="color:#f92672">=</span>config, hooks<span style="color:#f92672">=</span>[saver_hook, summary_hook]) <span style="color:#66d9ef">as</span> sess:
+        <span style="color:#66d9ef">for</span> epoch <span style="color:#f92672">in</span> count(<span style="color:#ae81ff">1</span>):
+            state <span style="color:#f92672">=</span> env<span style="color:#f92672">.</span>reset()
+            <span style="color:#66d9ef">if</span> args<span style="color:#f92672">.</span>render:
+                env<span style="color:#f92672">.</span>render()
+            states, policy_rewards, actions, values <span style="color:#f92672">=</span> [
                 state], [], [], []
 
-            for step in range(10000):
-                action, value = sess.run([ac.action, ac.value], feed_dict={
-                    ac.state: [state]})
-                action, value = action[0], value[0]
-                state, reward, done, _ = env.step(action)
-                policy_rewards.append(reward)
-                actions.append(action)
-                values.append(value)
-                if done:
-                    break
-                states.append(state)
+            <span style="color:#66d9ef">for</span> step <span style="color:#f92672">in</span> range(<span style="color:#ae81ff">10000</span>):
+                action, value <span style="color:#f92672">=</span> sess<span style="color:#f92672">.</span>run([ac<span style="color:#f92672">.</span>action, ac<span style="color:#f92672">.</span>value], feed_dict<span style="color:#f92672">=</span>{
+                    ac<span style="color:#f92672">.</span>state: [state]})
+                action, value <span style="color:#f92672">=</span> action[<span style="color:#ae81ff">0</span>], value[<span style="color:#ae81ff">0</span>]
+                state, reward, done, _ <span style="color:#f92672">=</span> env<span style="color:#f92672">.</span>step(action)
+                policy_rewards<span style="color:#f92672">.</span>append(reward)
+                actions<span style="color:#f92672">.</span>append(action)
+                values<span style="color:#f92672">.</span>append(value)
+                <span style="color:#66d9ef">if</span> done:
+                    <span style="color:#66d9ef">break</span>
+                states<span style="color:#f92672">.</span>append(state)
 
-            R, rewards = 0, []
-            for r in policy_rewards[::-1]:
-                R = r + args.gamma * R
-                rewards.insert(0, R)
+            R, rewards <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>, []
+            <span style="color:#66d9ef">for</span> r <span style="color:#f92672">in</span> policy_rewards[::<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>]:
+                R <span style="color:#f92672">=</span> r <span style="color:#f92672">+</span> args<span style="color:#f92672">.</span>gamma <span style="color:#f92672">*</span> R
+                rewards<span style="color:#f92672">.</span>insert(<span style="color:#ae81ff">0</span>, R)
 
-            rewards = np.asarray(rewards)
-            rewards = (rewards - rewards.mean()) / \
-                (rewards.std() + np.finfo(np.float32).eps)
-            values = np.asarray(values)
+            rewards <span style="color:#f92672">=</span> np<span style="color:#f92672">.</span>asarray(rewards)
+            rewards <span style="color:#f92672">=</span> (rewards <span style="color:#f92672">-</span> rewards<span style="color:#f92672">.</span>mean()) <span style="color:#f92672">/</span> \
+                (rewards<span style="color:#f92672">.</span>std() <span style="color:#f92672">+</span> np<span style="color:#f92672">.</span>finfo(np<span style="color:#f92672">.</span>float32)<span style="color:#f92672">.</span>eps)
+            values <span style="color:#f92672">=</span> np<span style="color:#f92672">.</span>asarray(values)
 
-            feed_dict = {
-                ac.state: np.asarray(states),
-                ac.rewards: rewards,
-                ac.selected_actions: np.asarray(actions),
-                ac.td_error: (rewards - values),
+            feed_dict <span style="color:#f92672">=</span> {
+                ac<span style="color:#f92672">.</span>state: np<span style="color:#f92672">.</span>asarray(states),
+                ac<span style="color:#f92672">.</span>rewards: rewards,
+                ac<span style="color:#f92672">.</span>selected_actions: np<span style="color:#f92672">.</span>asarray(actions),
+                ac<span style="color:#f92672">.</span>td_error: (rewards <span style="color:#f92672">-</span> values),
             }
-            sess.run([ac.global_step, ac.train_op], feed_dict)
+            sess<span style="color:#f92672">.</span>run([ac<span style="color:#f92672">.</span>global_step, ac<span style="color:#f92672">.</span>train_op], feed_dict)
 
-            if more &lt; step:
-                print('Epoch {}\tlength: {:5d}\t'.format(epoch, step))
-                more = step
-</code></pre>
-
-<p><a href="https://github.com/ne7ermore/deeping-flow/blob/master/gym/actor_critic.py">猛击查看全部代码</a></p>
+            <span style="color:#66d9ef">if</span> more <span style="color:#f92672">&lt;</span> step:
+                <span style="color:#66d9ef">print</span>(<span style="color:#e6db74">&#39;Epoch {}</span><span style="color:#ae81ff">\t</span><span style="color:#e6db74">length: {:5d}</span><span style="color:#ae81ff">\t</span><span style="color:#e6db74">&#39;</span><span style="color:#f92672">.</span>format(epoch, step))
+                more <span style="color:#f92672">=</span> step
+</code></pre></div><p><a href="https://github.com/ne7ermore/deeping-flow/blob/master/gym/actor_critic.py">猛击查看全部代码</a></p>
             </article>
           </div>
           
@@ -475,7 +462,7 @@ title="github icon"></i>
         
 				</ul>	<div class="design-credit">
 		
-		<p>&copy; Nevermore | 2019</p>
+		<p>© Nevermore | 2019</p>
 		
     </div>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>

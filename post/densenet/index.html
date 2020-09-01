@@ -176,70 +176,40 @@
           <div class="entry-content">
             <article>
               <p>DenseNet for CIFAR-100</p>
-
 <p><a href="https://github.com/ne7ermore/torch_light/tree/master/DenseNet">代码</a></p>
-
 <p>下期开始会逐步实现一些有意思的Computer Vision相关内容。本期实现一个DenseNet在CIFAR-100上分类。</p>
-
 <p>首先介绍一下Pytorch自带专注处理图像相关任务的库torchvision，主要有3个包。</p>
-
 <ul>
 <li>datasats：数据相关，包括CIFAR，SVHN， MNIST等等，所有对象都继承于一个抽象类data.Dataset</li>
 <li>models：计算机视图模型，包括DenseNet，ResNet，AlexNet等等，代码中还有所有模型对应的已经训练好的模型参数下载地址，方便用于迁移训练。</li>
 <li>transforms：用于图片预处理。
 这里举个图片提取和预处理的样例，<a href="https://github.com/ne7ermore/torch_light/blob/master/DenseNet/train.py#L47">代码出处</a>：</li>
 </ul>
-
-<p><img src="/img/dn/img2.jpg" style="height: 400px" alt=""></p>
-
+<!-- raw HTML omitted -->
 <p>DenseNet论文浅析</p>
-
 <p>CNN作为图像识别主要手段，从最早的LeNet5到VGG，GoogleNet，ResNet，DenseNet，可见模型层数越来越深，就有一个无法绕过的问题：特征随着模型的深入而丢失。GoogleNet解决方法是每一个block使用不同size的kernel、ResNet则是使用 $y = f( x,{ \omega }) + x$ ，DenseNet的思想可以使用图1诠释：</p>
-
-<p><img src="/img/dn/img3.jpg" style="height: 100px" alt=""></p>
-
+<!-- raw HTML omitted -->
 <p>模型使用一层BN-ReLU-Conv(3×3)接入，中间为N个Dense Block和N-1个Transition，最后一层BN-ReLU-avgPool-FC作为输出。</p>
-
 <p>DenseNet-B中Dense Block使用k个BN-ReLU-Conv(1×1)-BN-ReLU-Conv(3×3)，k个层与层之间的输入来自于1 ~ k-1层的输出按channel维度拼接在一起(如图1所示)，更多细节会在代码实现中解释。</p>
-
 <h4 id="代码实现">代码实现</h4>
-
 <p>DenseBlock中单层layer实现</p>
-
 <p>41行 - 本层的总输出是本层输入通过本层网络输出后按channel维度拼接输入后输出</p>
-
-<p><img src="/img/dn/img4.jpg" style="height: 400px" alt=""></p>
-
+<!-- raw HTML omitted -->
 <p>DenseBlock实现</p>
-
 <p>51行 - 按num_layers生成denselayer组，growth_rate是增长率，具体可查看图2中35行</p>
-
-<p><img src="/img/dn/img5.jpg" style="height: 150px" alt=""></p>
-
+<!-- raw HTML omitted -->
 <p>Transition实现，使用AvgPool</p>
-
-<p><img src="/img/dn/img6.jpg" style="height: 350px" alt=""></p>
-
+<!-- raw HTML omitted -->
 <p>DenseNet</p>
-
 <p>60 ~ 64行 - 第一层接入 BN-ReLU-Conv(3×3)</p>
-
 <p>70行 - DenseBlock与DenseBlock中间的输出/输入处理</p>
-
 <p>74 ~ 83行 - 最后一层BN-ReLU-avgPool-FC作为输出</p>
-
-<p><img src="/img/dn/img7.jpg" style="height: 500px" alt=""></p>
-
+<!-- raw HTML omitted -->
 <p>超参数</p>
-
 <p>学习率初始0.1，每1/3总迭代数变为lr/10</p>
-
 <pre><code>args.layer_nums = [(args.depth-4)//6 for _ in range(3)]
-</code></pre>
-
-<p><img src="/img/dn/img8.jpg" style="height: 350px" alt=""></p>
-
-<p><img src="/img/dn/img9.jpg" style="height: 450px" alt=""></p>
+</code></pre><!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
             </article>
           </div>
           
@@ -390,7 +360,7 @@ title="github icon"></i>
         
 				</ul>	<div class="design-credit">
 		
-		<p>&copy; Nevermore | 2019</p>
+		<p>© Nevermore | 2019</p>
 		
     </div>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>

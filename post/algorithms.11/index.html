@@ -175,77 +175,57 @@
           <div class="entry-content">
             <article>
               <p>平衡树</p>
-
 <p><a href="https://github.com/ne7ermore/playground/blob/master/python/tree/avl.py">代码</a></p>
-
 <p>二叉树的变种，区别在动态添加和删除叶节点，能够通过一些指标，对二叉树的形状变化进行监督，当发现树的形状开始变得不平衡的时候，立即修正二叉树的形状。</p>
-
 <p>先看一张图</p>
-
-<p><img src="/img/algorithm.11/avl.gif" style="height: 200px" alt=""></p>
-
+<!-- raw HTML omitted -->
 <p>监督的重要指标 - 平衡因子，左子树的高度减去右子树的高度</p>
-
 <p>平衡二叉树（AVL）： 所有结点的平衡因子的绝对值都不超过1。即对平衡二叉树每个结点来说，其左子树的高度 - 右子树高度得到的差值只能为 1， 0 ， -1 这三个值。 取得小于 -1或者大于1的值，都被视为打破了二叉树的平衡</p>
-
 <p>当插入新节点打破平衡时，就需要一定的操作来维持平衡，即：左右旋</p>
-
 <p>左旋</p>
-
-<p><img src="/img/algorithm.11/rotate_left.png" style="height: 200px" alt=""></p>
-
+<!-- raw HTML omitted -->
 <p>可以看见，节点‘2’的平衡因子目前为-2，所以需要选择右子树来维持平衡，首先断开右子树中最小成员‘3’，然后将2的右儿子作为新根节点，最后将‘3’查到‘2’的右节点上</p>
-
-<pre><code class="language-python">def rotate_left(self):
-    new_root = self.node.right.node
-    new_sub_right = new_root.left.node
-    old_root = self.node
-    new_root.left.node = old_root
-    old_root.right.node = new_sub_right
-    self.node = new_root
-</code></pre>
-
-<p>右旋</p>
-
-<p><img src="/img/algorithm.11/rotate_right.png" style="height: 200px" alt=""></p>
-
-<pre><code class="language-python">def rotate_right(self):
-    new_root = self.node.left.node
-    new_sub_left = new_root.right.node
-    old_root = self.node
-    new_root.right.node = old_root
-    old_root.left.node = new_sub_left
-    self.node = new_root
-</code></pre>
-
-<p>根据平衡因子的情况，将失衡后的树分为四种情况</p>
-
-<p><img src="/img/algorithm.11/bf.png" style="height: 400px" alt=""></p>
-
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">rotate_left</span>(self):
+    new_root <span style="color:#f92672">=</span> self<span style="color:#f92672">.</span>node<span style="color:#f92672">.</span>right<span style="color:#f92672">.</span>node
+    new_sub_right <span style="color:#f92672">=</span> new_root<span style="color:#f92672">.</span>left<span style="color:#f92672">.</span>node
+    old_root <span style="color:#f92672">=</span> self<span style="color:#f92672">.</span>node
+    new_root<span style="color:#f92672">.</span>left<span style="color:#f92672">.</span>node <span style="color:#f92672">=</span> old_root
+    old_root<span style="color:#f92672">.</span>right<span style="color:#f92672">.</span>node <span style="color:#f92672">=</span> new_sub_right
+    self<span style="color:#f92672">.</span>node <span style="color:#f92672">=</span> new_root
+</code></pre></div><p>右旋</p>
+<!-- raw HTML omitted -->
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">rotate_right</span>(self):
+    new_root <span style="color:#f92672">=</span> self<span style="color:#f92672">.</span>node<span style="color:#f92672">.</span>left<span style="color:#f92672">.</span>node
+    new_sub_left <span style="color:#f92672">=</span> new_root<span style="color:#f92672">.</span>right<span style="color:#f92672">.</span>node
+    old_root <span style="color:#f92672">=</span> self<span style="color:#f92672">.</span>node
+    new_root<span style="color:#f92672">.</span>right<span style="color:#f92672">.</span>node <span style="color:#f92672">=</span> old_root
+    old_root<span style="color:#f92672">.</span>left<span style="color:#f92672">.</span>node <span style="color:#f92672">=</span> new_sub_left
+    self<span style="color:#f92672">.</span>node <span style="color:#f92672">=</span> new_root
+</code></pre></div><p>根据平衡因子的情况，将失衡后的树分为四种情况</p>
+<!-- raw HTML omitted -->
 <p>删除节点，按节点值大小找到对应节点后，找出右子树中最小节点，删除它后作为新根节点的右子树，将这个节点作为新的根节点，原根节点的左子树作为新节点的左子树</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">    <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">delete_node</span>(self, value):
+        <span style="color:#66d9ef">if</span> <span style="color:#f92672">not</span> self<span style="color:#f92672">.</span>node:
+            <span style="color:#66d9ef">return</span>
 
-<pre><code class="language-python">    def delete_node(self, value):
-        if not self.node:
-            return
+        <span style="color:#66d9ef">if</span> value <span style="color:#f92672">&gt;</span> self<span style="color:#f92672">.</span>node<span style="color:#f92672">.</span>value:
+            self<span style="color:#f92672">.</span>node<span style="color:#f92672">.</span>right<span style="color:#f92672">.</span>delete_node(value)
+        <span style="color:#66d9ef">elif</span> value <span style="color:#f92672">&lt;</span> self<span style="color:#f92672">.</span>node<span style="color:#f92672">.</span>value:
+            self<span style="color:#f92672">.</span>node<span style="color:#f92672">.</span>left<span style="color:#f92672">.</span>delete_node(value)
+        <span style="color:#66d9ef">else</span>:
+            <span style="color:#66d9ef">if</span> <span style="color:#f92672">not</span> self<span style="color:#f92672">.</span>node<span style="color:#f92672">.</span>left<span style="color:#f92672">.</span>node:
+                self<span style="color:#f92672">.</span>node <span style="color:#f92672">=</span> self<span style="color:#f92672">.</span>node<span style="color:#f92672">.</span>right<span style="color:#f92672">.</span>node
+            <span style="color:#66d9ef">elif</span> <span style="color:#f92672">not</span> self<span style="color:#f92672">.</span>node<span style="color:#f92672">.</span>right<span style="color:#f92672">.</span>node:
+                self<span style="color:#f92672">.</span>node <span style="color:#f92672">=</span> self<span style="color:#f92672">.</span>node<span style="color:#f92672">.</span>left<span style="color:#f92672">.</span>node
+            <span style="color:#66d9ef">else</span>:
+                new_node <span style="color:#f92672">=</span> min_node(self<span style="color:#f92672">.</span>node<span style="color:#f92672">.</span>right<span style="color:#f92672">.</span>node)
+                new_node<span style="color:#f92672">.</span>right<span style="color:#f92672">.</span>node <span style="color:#f92672">=</span> delete_min(self<span style="color:#f92672">.</span>node<span style="color:#f92672">.</span>right<span style="color:#f92672">.</span>node)
+                new_node<span style="color:#f92672">.</span>left <span style="color:#f92672">=</span> self<span style="color:#f92672">.</span>node<span style="color:#f92672">.</span>left
+                self<span style="color:#f92672">.</span>node <span style="color:#f92672">=</span> new_node
 
-        if value &gt; self.node.value:
-            self.node.right.delete_node(value)
-        elif value &lt; self.node.value:
-            self.node.left.delete_node(value)
-        else:
-            if not self.node.left.node:
-                self.node = self.node.right.node
-            elif not self.node.right.node:
-                self.node = self.node.left.node
-            else:
-                new_node = min_node(self.node.right.node)
-                new_node.right.node = delete_min(self.node.right.node)
-                new_node.left = self.node.left
-                self.node = new_node
-
-        self.update_heights()
-        self.update_balances()
-</code></pre>
+        self<span style="color:#f92672">.</span>update_heights()
+        self<span style="color:#f92672">.</span>update_balances()
+</code></pre></div>
             </article>
           </div>
           
@@ -396,7 +376,7 @@ title="github icon"></i>
         
 				</ul>	<div class="design-credit">
 		
-		<p>&copy; Nevermore | 2019</p>
+		<p>© Nevermore | 2019</p>
 		
     </div>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>

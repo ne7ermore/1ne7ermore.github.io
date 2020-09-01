@@ -175,100 +175,84 @@
           <div class="entry-content">
             <article>
               <p>Unsafe包很有意思，源码中短短几行代码，剩下更多的是注释，初略一看感觉并不重要，其实恰恰相反，很多package中都有它的影子，比如reflect</p>
-
 <p>先从包名讲起，unsafe - 不安全，为什么不安全呢？ <strong>Package unsafe contains operations that step around the type safety of Go programs</strong></p>
-
 <ul>
 <li>A pointer value of any type can be converted to a Pointer.</li>
 <li>A Pointer can be converted to a pointer value of any type.</li>
 <li>A uintptr can be converted to a Pointer.</li>
 <li>A Pointer can be converted to a uintptr.</li>
 </ul>
-
 <p>简单来说就是</p>
-
 <blockquote>
 <p>指针 &lt;—&gt; unsafe.Pointer &lt;—&gt; unitptr</p>
 </blockquote>
-
 <p>例子 - 强制转换类型</p>
-
-<pre><code class="language-golang">type stringHeader struct {
-    Data unsafe.Pointer
-    Len  int
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-golang" data-lang="golang"><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">stringHeader</span> <span style="color:#66d9ef">struct</span> {
+    <span style="color:#a6e22e">Data</span> <span style="color:#a6e22e">unsafe</span>.<span style="color:#a6e22e">Pointer</span>
+    <span style="color:#a6e22e">Len</span>  <span style="color:#66d9ef">int</span>
 }
 
-var s stinrg = “abc&quot;
+<span style="color:#66d9ef">var</span> <span style="color:#a6e22e">s</span> <span style="color:#a6e22e">stinrg</span> = <span style="color:#960050;background-color:#1e0010">“</span><span style="color:#a6e22e">abc</span><span style="color:#960050;background-color:#1e0010">&#34;</span>
 
-// *string -&gt; unsafe.Pointer -&gt; *stringHeader
-hdr := (*stringHeader)(unsafe.Pointer(&amp;s))
+<span style="color:#75715e">// *string -&gt; unsafe.Pointer -&gt; *stringHeader
+</span><span style="color:#75715e"></span><span style="color:#a6e22e">hdr</span> <span style="color:#f92672">:=</span> (<span style="color:#f92672">*</span><span style="color:#a6e22e">stringHeader</span>)(<span style="color:#a6e22e">unsafe</span>.<span style="color:#a6e22e">Pointer</span>(<span style="color:#f92672">&amp;</span><span style="color:#a6e22e">s</span>))
 
-println(&amp;s) // 0xc42000e260
-println(&amp;hdr.Data) // 0xc42000e260
-println(&amp;hdr.Len) // 0xc42000e268
-hdr.Data = unsafe.Pointer(&amp;b[3])
-hdr.Len = int(b[1])&lt;&lt;8 | int(b[2])
-</code></pre>
-
-<p>例子 - 通过位置获取值</p>
-
-<pre><code class="language-golang">// 数组
-func add(p unsafe.Pointer, x uintptr) unsafe.Pointer {
-    return unsafe.Pointer(uintptr(p) + x)
+println(<span style="color:#f92672">&amp;</span><span style="color:#a6e22e">s</span>) <span style="color:#75715e">// 0xc42000e260
+</span><span style="color:#75715e"></span>println(<span style="color:#f92672">&amp;</span><span style="color:#a6e22e">hdr</span>.<span style="color:#a6e22e">Data</span>) <span style="color:#75715e">// 0xc42000e260
+</span><span style="color:#75715e"></span>println(<span style="color:#f92672">&amp;</span><span style="color:#a6e22e">hdr</span>.<span style="color:#a6e22e">Len</span>) <span style="color:#75715e">// 0xc42000e268
+</span><span style="color:#75715e"></span><span style="color:#a6e22e">hdr</span>.<span style="color:#a6e22e">Data</span> = <span style="color:#a6e22e">unsafe</span>.<span style="color:#a6e22e">Pointer</span>(<span style="color:#f92672">&amp;</span><span style="color:#a6e22e">b</span>[<span style="color:#ae81ff">3</span>])
+<span style="color:#a6e22e">hdr</span>.<span style="color:#a6e22e">Len</span> = int(<span style="color:#a6e22e">b</span>[<span style="color:#ae81ff">1</span>])<span style="color:#f92672">&lt;&lt;</span><span style="color:#ae81ff">8</span> | int(<span style="color:#a6e22e">b</span>[<span style="color:#ae81ff">2</span>])
+</code></pre></div><p>例子 - 通过位置获取值</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-golang" data-lang="golang"><span style="color:#75715e">// 数组
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">add</span>(<span style="color:#a6e22e">p</span> <span style="color:#a6e22e">unsafe</span>.<span style="color:#a6e22e">Pointer</span>, <span style="color:#a6e22e">x</span> <span style="color:#66d9ef">uintptr</span>) <span style="color:#a6e22e">unsafe</span>.<span style="color:#a6e22e">Pointer</span> {
+    <span style="color:#66d9ef">return</span> <span style="color:#a6e22e">unsafe</span>.<span style="color:#a6e22e">Pointer</span>(uintptr(<span style="color:#a6e22e">p</span>) <span style="color:#f92672">+</span> <span style="color:#a6e22e">x</span>)
 }
 
-func main() {
-    ints := []int64{1, 22, 123} // 数组
-    println(&amp;ints[2]) // 第三个成员的地址 0xc42003bf70
-    up := add(unsafe.Pointer(&amp;ints[0]), 2*unsafe.Sizeof(ints[0])) // 根据成员的size，移动Pointer到目标位置
-    println((*int)(up)) // 通过add方法移动到的地址 0xc42003bf70
-    println(*(*int)(up)) // 地址对应的值
-}
-</code></pre>
-
-<p>最后一个例子 - 通过指针强制转换和移动位置修改私有成员</p>
-
+<span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>() {
+    <span style="color:#a6e22e">ints</span> <span style="color:#f92672">:=</span> []<span style="color:#66d9ef">int64</span>{<span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">22</span>, <span style="color:#ae81ff">123</span>} <span style="color:#75715e">// 数组
+</span><span style="color:#75715e"></span>    println(<span style="color:#f92672">&amp;</span><span style="color:#a6e22e">ints</span>[<span style="color:#ae81ff">2</span>]) <span style="color:#75715e">// 第三个成员的地址 0xc42003bf70
+</span><span style="color:#75715e"></span>    <span style="color:#a6e22e">up</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">add</span>(<span style="color:#a6e22e">unsafe</span>.<span style="color:#a6e22e">Pointer</span>(<span style="color:#f92672">&amp;</span><span style="color:#a6e22e">ints</span>[<span style="color:#ae81ff">0</span>]), <span style="color:#ae81ff">2</span><span style="color:#f92672">*</span><span style="color:#a6e22e">unsafe</span>.<span style="color:#a6e22e">Sizeof</span>(<span style="color:#a6e22e">ints</span>[<span style="color:#ae81ff">0</span>])) <span style="color:#75715e">// 根据成员的size，移动Pointer到目标位置
+</span><span style="color:#75715e"></span>    println((<span style="color:#f92672">*</span><span style="color:#66d9ef">int</span>)(<span style="color:#a6e22e">up</span>)) <span style="color:#75715e">// 通过add方法移动到的地址 0xc42003bf70
+</span><span style="color:#75715e"></span>    println(<span style="color:#f92672">*</span>(<span style="color:#f92672">*</span><span style="color:#66d9ef">int</span>)(<span style="color:#a6e22e">up</span>)) <span style="color:#75715e">// 地址对应的值
+</span><span style="color:#75715e"></span>}
+</code></pre></div><p>最后一个例子 - 通过指针强制转换和移动位置修改私有成员</p>
 <p>文件夹 pointer 中定义一个P的类，<strong>P的成员，i和s，都是私有类型</strong>，所以只能查看(<strong>GetI, GetS公有</strong>)而不能修改</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-golang" data-lang="golang"><span style="color:#f92672">package</span> <span style="color:#a6e22e">pointer</span>
 
-<pre><code class="language-golang">package pointer
-
-type P struct {
-    i int32
-    s string
+<span style="color:#66d9ef">type</span> <span style="color:#a6e22e">P</span> <span style="color:#66d9ef">struct</span> {
+    <span style="color:#a6e22e">i</span> <span style="color:#66d9ef">int32</span>
+    <span style="color:#a6e22e">s</span> <span style="color:#66d9ef">string</span>
 }
 
-func (p *P) GetI() int32 {
-    return p.i
+<span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">p</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">P</span>) <span style="color:#a6e22e">GetI</span>() <span style="color:#66d9ef">int32</span> {
+    <span style="color:#66d9ef">return</span> <span style="color:#a6e22e">p</span>.<span style="color:#a6e22e">i</span>
 }
 
-func (p *P) GetS() string {
-    return p.s
+<span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">p</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">P</span>) <span style="color:#a6e22e">GetS</span>() <span style="color:#66d9ef">string</span> {
+    <span style="color:#66d9ef">return</span> <span style="color:#a6e22e">p</span>.<span style="color:#a6e22e">s</span>
 }
-</code></pre>
+</code></pre></div><p>然后在包外写一个main文件</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-golang" data-lang="golang"><span style="color:#f92672">package</span> <span style="color:#a6e22e">main</span>
 
-<p>然后在包外写一个main文件</p>
-
-<pre><code class="language-golang">package main
-
-import (
-    &quot;pointer&quot;
+<span style="color:#f92672">import</span> (
+    <span style="color:#e6db74">&#34;pointer&#34;</span>
 )
 
-func main() {
-    p := new(pointer.P)
-    println(p.GetI())
-    println(p.GetS())
+<span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>() {
+    <span style="color:#a6e22e">p</span> <span style="color:#f92672">:=</span> new(<span style="color:#a6e22e">pointer</span>.<span style="color:#a6e22e">P</span>)
+    println(<span style="color:#a6e22e">p</span>.<span style="color:#a6e22e">GetI</span>())
+    println(<span style="color:#a6e22e">p</span>.<span style="color:#a6e22e">GetS</span>())
 
-    // 修改
-    pointI := (*int32)(unsafe.Pointer(p))
-    *pointI = 20
-    println(p.GetI())
+    <span style="color:#75715e">// 修改
+</span><span style="color:#75715e"></span>    <span style="color:#a6e22e">pointI</span> <span style="color:#f92672">:=</span> (<span style="color:#f92672">*</span><span style="color:#66d9ef">int32</span>)(<span style="color:#a6e22e">unsafe</span>.<span style="color:#a6e22e">Pointer</span>(<span style="color:#a6e22e">p</span>))
+    <span style="color:#f92672">*</span><span style="color:#a6e22e">pointI</span> = <span style="color:#ae81ff">20</span>
+    println(<span style="color:#a6e22e">p</span>.<span style="color:#a6e22e">GetI</span>())
 
-    pointS := (*string)(add(unsafe.Pointer(p), uintptr(8)))
-    *pointS = &quot;我就是我&quot;
-    println(p.GetS())
+    <span style="color:#a6e22e">pointS</span> <span style="color:#f92672">:=</span> (<span style="color:#f92672">*</span><span style="color:#66d9ef">string</span>)(<span style="color:#a6e22e">add</span>(<span style="color:#a6e22e">unsafe</span>.<span style="color:#a6e22e">Pointer</span>(<span style="color:#a6e22e">p</span>), uintptr(<span style="color:#ae81ff">8</span>)))
+    <span style="color:#f92672">*</span><span style="color:#a6e22e">pointS</span> = <span style="color:#e6db74">&#34;我就是我&#34;</span>
+    println(<span style="color:#a6e22e">p</span>.<span style="color:#a6e22e">GetS</span>())
 }
-</code></pre>
+</code></pre></div>
             </article>
           </div>
           
@@ -419,7 +403,7 @@ title="github icon"></i>
         
 				</ul>	<div class="design-credit">
 		
-		<p>&copy; Nevermore | 2019</p>
+		<p>© Nevermore | 2019</p>
 		
     </div>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>

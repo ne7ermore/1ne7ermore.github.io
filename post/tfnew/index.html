@@ -176,79 +176,52 @@
           <div class="entry-content">
             <article>
               <p>TensorFlow入门</p>
-
 <p><a href="https://github.com/ne7ermore/deeping-flow/tree/master/lstm-cnn-classfication">代码</a></p>
-
 <p>”TensorFlow是目前最流行的深度学习框架，没有之一；背靠google这颗大树，Alpha狗光环加持，不得不是深度学习人员的首选。静态计算视图+数据流，灵活的底层API适合对深度神经网络有深刻认识的使用者，不过不够清晰的文档一直为人诟病，瑕不掩瑜。“</p>
-
 <p>本期主要介绍TensorFlow(下称tf)的一些特点</p>
-
 <ul>
 <li>熟悉的张量计算api：这是使用过numpy的朋友的福利，tf中对于张量的计算api和numpy非常类似，上手没有任何难度</li>
 <li>基础而灵活的神经网络api，举个例子：l2 regularization；tf中的使用，89、90和97行</li>
 </ul>
-
-<p><img src="/img/tfnew/img1.jpg" style="height: 200px" alt=""></p>
-
+<!-- raw HTML omitted -->
 <p>而Pytorch中的使用：</p>
-
-<p><img src="/img/tfnew/img2.jpg" style="height: 25px" alt=""></p>
-
+<!-- raw HTML omitted -->
 <p>仅仅一个参数weight_decay搞定，非常方便，但是过于方便，不利于使用者深入理解</p>
-
 <ul>
 <li>丰富的api：gan，seq2seq，crf等等流行的模型都有涵盖</li>
 <li>人性化的模型训练监控Supervisor</li>
 <li>结果可视化 - Tensorboard</li>
 </ul>
-
-<p><img src="/img/tfnew/img3.jpg" style="height: 400px" alt=""></p>
-
-<p><img src="/img/tfnew/img4.jpg" style="height: 240px" alt=""></p>
-
-<p><img src="/img/tfnew/img5.jpg" style="height: 245px" alt=""></p>
-
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
 <p>本期代码是以TensorFlow为框架用lstm+cnn实现文本分类，数据是TREC</p>
-
 <p>模型初始化：</p>
-
 <ul>
 <li>global_step - 模型全局的步骤</li>
 <li>l2_loss - L2 regularization</li>
 <li>uniform_init - 随机初始化</li>
 <li>train_op - 参数优化，本期使用Adam</li>
 </ul>
-
-<p><img src="/img/tfnew/img6.jpg" style="height: 300px" alt=""></p>
-
+<!-- raw HTML omitted -->
 <p>placeholder初始化</p>
-
 <ul>
 <li>input、label - 训练数据和标签</li>
 </ul>
-
-<p><img src="/img/tfnew/img7.jpg" style="height: 160px" alt=""></p>
-
+<!-- raw HTML omitted -->
 <p>计算视图初始化，lstm和cnn部分</p>
-
-<p><img src="/img/tfnew/img8.jpg" style="height: 700px" alt=""></p>
-
+<!-- raw HTML omitted -->
 <p>训练</p>
-
 <ul>
 <li>以sess(会话)为媒介控制训练，数据的流入和流出也是经过session</li>
 </ul>
-
-<p><img src="/img/tfnew/img9.jpg" style="height: 245px" alt=""></p>
-
+<!-- raw HTML omitted -->
 <p>训练和测试</p>
-
 <ul>
 <li>session定义 - 82行</li>
 <li>summary_writer - 上文中Tensorboard的数据来源</li>
 </ul>
-
-<p><img src="/img/tfnew/img10.jpg" style="height: 700px" alt=""></p>
+<!-- raw HTML omitted -->
             </article>
           </div>
           
@@ -399,7 +372,7 @@ title="github icon"></i>
         
 				</ul>	<div class="design-credit">
 		
-		<p>&copy; Nevermore | 2019</p>
+		<p>© Nevermore | 2019</p>
 		
     </div>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
