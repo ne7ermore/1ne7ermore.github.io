@@ -189,56 +189,56 @@
 <p>构造url</p>
 </blockquote>
 <p>url按照菜系码+页数组成，每个菜系最多50页</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#66d9ef">for</span> k, v <span style="color:#f92672">in</span> FOOD_C<span style="color:#f92672">.</span>items():
-    <span style="color:#66d9ef">print</span>(f<span style="color:#e6db74">&#34;爬{k}ing......&#34;</span>)
-    <span style="color:#66d9ef">for</span> num <span style="color:#f92672">in</span> range(<span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">51</span>):
-        url <span style="color:#f92672">=</span> f<span style="color:#e6db74">&#34;{CHENGDU}/{v}p{num}&#34;</span>
-        self<span style="color:#f92672">.</span>_page_parse(url, k, results)
-</code></pre></div><p>解析页面中需要的特征,包括：
+<pre><code>for k, v in FOOD_C.items():
+    print(f&quot;爬{k}ing......&quot;)
+    for num in range(1, 51):
+        url = f&quot;{CHENGDU}/{v}p{num}&quot;
+        self._page_parse(url, k, results)
+</code></pre><p>解析页面中需要的特征,包括：
 等级，价格，评论数，味道，环境，服务</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">_parse_infos</span>(self, shop, foodtype):
-    <span style="color:#66d9ef">if</span> <span style="color:#f92672">not</span> self<span style="color:#f92672">.</span>_is_spide(shop):
-        <span style="color:#66d9ef">return</span> None
+<pre><code>def _parse_infos(self, shop, foodtype):
+    if not self._is_spide(shop):
+        return None
 
-    name <span style="color:#f92672">=</span> shop<span style="color:#f92672">.</span>find(<span style="color:#e6db74">&#34;h4&#34;</span>)<span style="color:#f92672">.</span>renderContents()<span style="color:#f92672">.</span>decode()
-    info <span style="color:#f92672">=</span> shop<span style="color:#f92672">.</span>find(
-        <span style="color:#e6db74">&#34;a&#34;</span>, {<span style="color:#e6db74">&#34;data-click-name&#34;</span>: <span style="color:#e6db74">&#34;shop_title_click&#34;</span>})
+    name = shop.find(&quot;h4&quot;).renderContents().decode()
+    info = shop.find(
+        &quot;a&quot;, {&quot;data-click-name&quot;: &quot;shop_title_click&quot;})
 
-    _id <span style="color:#f92672">=</span> info[<span style="color:#e6db74">&#34;data-shopid&#34;</span>]
-    url <span style="color:#f92672">=</span> info[<span style="color:#e6db74">&#34;href&#34;</span>]
+    _id = info[&quot;data-shopid&quot;]
+    url = info[&quot;href&quot;]
 
-    price <span style="color:#f92672">=</span> shop<span style="color:#f92672">.</span>find(<span style="color:#e6db74">&#34;a&#34;</span>, {<span style="color:#e6db74">&#34;class&#34;</span>: <span style="color:#e6db74">&#34;mean-price&#34;</span>}
-                      )<span style="color:#f92672">.</span>renderContents()<span style="color:#f92672">.</span>decode()
-    price <span style="color:#f92672">=</span> re<span style="color:#f92672">.</span>search(<span style="color:#e6db74">&#39;￥(.+)&lt;&#39;</span>, price)
-    <span style="color:#66d9ef">if</span> price <span style="color:#f92672">is</span> None:
-        price <span style="color:#f92672">=</span> <span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>
-    <span style="color:#66d9ef">else</span>:
-        price <span style="color:#f92672">=</span> price<span style="color:#f92672">.</span>group(<span style="color:#ae81ff">1</span>)
+    price = shop.find(&quot;a&quot;, {&quot;class&quot;: &quot;mean-price&quot;}
+                      ).renderContents().decode()
+    price = re.search('￥(.+)&lt;', price)
+    if price is None:
+        price = -1
+    else:
+        price = price.group(1)
 
-    comment_list <span style="color:#f92672">=</span> shop<span style="color:#f92672">.</span>find(
-        <span style="color:#e6db74">&#34;span&#34;</span>, {<span style="color:#e6db74">&#34;class&#34;</span>: <span style="color:#e6db74">&#34;comment-list&#34;</span>})
+    comment_list = shop.find(
+        &quot;span&quot;, {&quot;class&quot;: &quot;comment-list&quot;})
 
-    comments <span style="color:#f92672">=</span> comment_list<span style="color:#f92672">.</span>find_all(<span style="color:#e6db74">&#34;b&#34;</span>)
-    comments <span style="color:#f92672">=</span> self<span style="color:#f92672">.</span>comments<span style="color:#f92672">.</span>_make(
-        [c<span style="color:#f92672">.</span>renderContents()<span style="color:#f92672">.</span>decode() <span style="color:#66d9ef">for</span> c <span style="color:#f92672">in</span> comments])
+    comments = comment_list.find_all(&quot;b&quot;)
+    comments = self.comments._make(
+        [c.renderContents().decode() for c in comments])
 
-    review <span style="color:#f92672">=</span> shop<span style="color:#f92672">.</span>find(<span style="color:#e6db74">&#34;a&#34;</span>, {<span style="color:#e6db74">&#34;class&#34;</span>: <span style="color:#e6db74">&#34;review-num&#34;</span>}
+    review = shop.find(&quot;a&quot;, {&quot;class&quot;: &quot;review-num&quot;}
                        )
-    <span style="color:#66d9ef">if</span> review <span style="color:#f92672">is</span> None:
-        review <span style="color:#f92672">=</span> <span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>
-    <span style="color:#66d9ef">else</span>:
-        review <span style="color:#f92672">=</span> review<span style="color:#f92672">.</span>b<span style="color:#f92672">.</span>renderContents()<span style="color:#f92672">.</span>decode()
+    if review is None:
+        review = -1
+    else:
+        review = review.b.renderContents().decode()
 
-    level <span style="color:#f92672">=</span> shop<span style="color:#f92672">.</span>find(<span style="color:#e6db74">&#34;span&#34;</span>, {<span style="color:#e6db74">&#34;class&#34;</span>: <span style="color:#e6db74">&#34;sml-rank-stars&#34;</span>})
-    <span style="color:#66d9ef">if</span> level <span style="color:#f92672">is</span> None:
-        level <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;无&#34;</span>
-    <span style="color:#66d9ef">else</span>:
-        level <span style="color:#f92672">=</span> level[<span style="color:#e6db74">&#34;title&#34;</span>]
+    level = shop.find(&quot;span&quot;, {&quot;class&quot;: &quot;sml-rank-stars&quot;})
+    if level is None:
+        level = &quot;无&quot;
+    else:
+        level = level[&quot;title&quot;]
 
-    result <span style="color:#f92672">=</span> self<span style="color:#f92672">.</span>shop_info<span style="color:#f92672">.</span>_make(
+    result = self.shop_info._make(
         [foodtype, name, _id, url, level, price, comments, review])
-    <span style="color:#66d9ef">return</span> result
-</code></pre></div><blockquote>
+    return result
+</code></pre><blockquote>
 <p>结果</p>
 </blockquote>
 <p>手动打个码 :)</p>
@@ -263,137 +263,137 @@
 </blockquote>
 <p>将dz的自有等级转换为float
 可能同一家餐厅出现在多个菜系中，所以根据id去重</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#66d9ef">def</span> __init__(self,
-             norml<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;mms&#34;</span>,
-             inf<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;../shops_info.csv&#34;</span>):
-    <span style="color:#e6db74">&#34;&#34;&#34;
-</span><span style="color:#e6db74">    参数：
-</span><span style="color:#e6db74">        columns - 排序列，类型：list 可以有多个成员
-</span><span style="color:#e6db74">        foodc - 菜系，默认为所有餐厅
-</span><span style="color:#e6db74">    &#34;&#34;&#34;</span>
+<pre><code>def __init__(self,
+             norml=&quot;mms&quot;,
+             inf=&quot;../shops_info.csv&quot;):
+    &quot;&quot;&quot;
+    参数：
+        columns - 排序列，类型：list 可以有多个成员
+        foodc - 菜系，默认为所有餐厅
+    &quot;&quot;&quot;
 
-    self<span style="color:#f92672">.</span>df <span style="color:#f92672">=</span> pd<span style="color:#f92672">.</span>read_csv(inf)
-    self<span style="color:#f92672">.</span>df[<span style="color:#e6db74">&#34;level&#34;</span>] <span style="color:#f92672">=</span> self<span style="color:#f92672">.</span>df[<span style="color:#e6db74">&#34;level&#34;</span>]<span style="color:#f92672">.</span>apply(<span style="color:#66d9ef">lambda</span> x: LEVEL[x])  <span style="color:#75715e"># 转换格式</span>
-    self<span style="color:#f92672">.</span>df <span style="color:#f92672">=</span> self<span style="color:#f92672">.</span>df<span style="color:#f92672">.</span>drop_duplicates([<span style="color:#e6db74">&#34;id&#34;</span>])  <span style="color:#75715e"># 去重</span>
+    self.df = pd.read_csv(inf)
+    self.df[&quot;level&quot;] = self.df[&quot;level&quot;].apply(lambda x: LEVEL[x])  # 转换格式
+    self.df = self.df.drop_duplicates([&quot;id&quot;])  # 去重
 
-    <span style="color:#66d9ef">if</span> norml <span style="color:#f92672">==</span> <span style="color:#e6db74">&#34;mms&#34;</span>:
-        self<span style="color:#f92672">.</span>_mm_normal()
-    <span style="color:#66d9ef">elif</span> norml <span style="color:#f92672">==</span> <span style="color:#e6db74">&#34;std&#34;</span>:
-        self<span style="color:#f92672">.</span>_std_normal()
-    <span style="color:#66d9ef">else</span>:
-        <span style="color:#66d9ef">raise</span> <span style="color:#a6e22e">Exception</span>(<span style="color:#e6db74">&#34;目前支持mms和std&#34;</span>)
-</code></pre></div><blockquote>
+    if norml == &quot;mms&quot;:
+        self._mm_normal()
+    elif norml == &quot;std&quot;:
+        self._std_normal()
+    else:
+        raise Exception(&quot;目前支持mms和std&quot;)
+</code></pre><blockquote>
 <p>归一化</p>
 </blockquote>
 <ul>
 <li>方式1：公式 (x - x_mean) / x_std</li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">_std_normal</span>(self):
-    <span style="color:#75715e"># 归一化</span>
-    <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">norml</span>(x):
-        std <span style="color:#f92672">=</span> x<span style="color:#f92672">.</span>std()
-        mean <span style="color:#f92672">=</span> x<span style="color:#f92672">.</span>mean()
-        <span style="color:#66d9ef">return</span> x<span style="color:#f92672">.</span>apply(<span style="color:#66d9ef">lambda</span> x: (x <span style="color:#f92672">-</span> mean) <span style="color:#f92672">/</span> std)
+<pre><code>def _std_normal(self):
+    # 归一化
+    def norml(x):
+        std = x.std()
+        mean = x.mean()
+        return x.apply(lambda x: (x - mean) / std)
 
-    self<span style="color:#f92672">.</span>df[<span style="color:#e6db74">&#34;level_std&#34;</span>] <span style="color:#f92672">=</span> norml(self<span style="color:#f92672">.</span>df[<span style="color:#e6db74">&#34;level&#34;</span>])
-    self<span style="color:#f92672">.</span>df[<span style="color:#e6db74">&#34;taste_std&#34;</span>] <span style="color:#f92672">=</span> norml(self<span style="color:#f92672">.</span>df[<span style="color:#e6db74">&#34;taste&#34;</span>])
-    self<span style="color:#f92672">.</span>df[<span style="color:#e6db74">&#34;envi_std&#34;</span>] <span style="color:#f92672">=</span> norml(self<span style="color:#f92672">.</span>df[<span style="color:#e6db74">&#34;envi&#34;</span>])
-    self<span style="color:#f92672">.</span>df[<span style="color:#e6db74">&#34;service_std&#34;</span>] <span style="color:#f92672">=</span> norml(self<span style="color:#f92672">.</span>df[<span style="color:#e6db74">&#34;service&#34;</span>])
-    self<span style="color:#f92672">.</span>df[<span style="color:#e6db74">&#34;review_std&#34;</span>] <span style="color:#f92672">=</span> norml(self<span style="color:#f92672">.</span>df[<span style="color:#e6db74">&#34;review&#34;</span>])
+    self.df[&quot;level_std&quot;] = norml(self.df[&quot;level&quot;])
+    self.df[&quot;taste_std&quot;] = norml(self.df[&quot;taste&quot;])
+    self.df[&quot;envi_std&quot;] = norml(self.df[&quot;envi&quot;])
+    self.df[&quot;service_std&quot;] = norml(self.df[&quot;service&quot;])
+    self.df[&quot;review_std&quot;] = norml(self.df[&quot;review&quot;])
 
-    <span style="color:#75715e"># 先乘以权重再累加</span>
-    self<span style="color:#f92672">.</span>df[<span style="color:#e6db74">&#34;sissi_std&#34;</span>] <span style="color:#f92672">=</span> self<span style="color:#f92672">.</span>df<span style="color:#f92672">.</span>apply(<span style="color:#66d9ef">lambda</span> x: sum(
-        [x[k <span style="color:#f92672">+</span> <span style="color:#e6db74">&#34;_std&#34;</span>] <span style="color:#f92672">*</span> v <span style="color:#66d9ef">for</span> k, v <span style="color:#f92672">in</span> SISSISTD<span style="color:#f92672">.</span>items()]), axis<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>)
-</code></pre></div><ul>
+    # 先乘以权重再累加
+    self.df[&quot;sissi_std&quot;] = self.df.apply(lambda x: sum(
+        [x[k + &quot;_std&quot;] * v for k, v in SISSISTD.items()]), axis=1)
+</code></pre><ul>
 <li>方式2：公式 (x - x.min) / (x.max - X.min)</li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">_mm_normal</span>(self):
-    filter_list <span style="color:#f92672">=</span> [<span style="color:#e6db74">&#34;level&#34;</span>, <span style="color:#e6db74">&#34;taste&#34;</span>, <span style="color:#e6db74">&#34;envi&#34;</span>, <span style="color:#e6db74">&#34;service&#34;</span>, <span style="color:#e6db74">&#34;review&#34;</span>]
-    df <span style="color:#f92672">=</span> self<span style="color:#f92672">.</span>df<span style="color:#f92672">.</span>filter(items<span style="color:#f92672">=</span>filter_list)
-    data <span style="color:#f92672">=</span> MinMaxScaler()<span style="color:#f92672">.</span>fit_transform(df)
+<pre><code>def _mm_normal(self):
+    filter_list = [&quot;level&quot;, &quot;taste&quot;, &quot;envi&quot;, &quot;service&quot;, &quot;review&quot;]
+    df = self.df.filter(items=filter_list)
+    data = MinMaxScaler().fit_transform(df)
 
-    df <span style="color:#f92672">=</span> pd<span style="color:#f92672">.</span>DataFrame(data, columns<span style="color:#f92672">=</span>filter_list)
+    df = pd.DataFrame(data, columns=filter_list)
 
-    self<span style="color:#f92672">.</span>df[<span style="color:#e6db74">&#34;sissi_std&#34;</span>] <span style="color:#f92672">=</span> df<span style="color:#f92672">.</span>apply(<span style="color:#66d9ef">lambda</span> x: sum(
-        [x[k] <span style="color:#f92672">*</span> v <span style="color:#66d9ef">for</span> k, v <span style="color:#f92672">in</span> SISSISTD<span style="color:#f92672">.</span>items()]), axis<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>)
-</code></pre></div><blockquote>
+    self.df[&quot;sissi_std&quot;] = df.apply(lambda x: sum(
+        [x[k] * v for k, v in SISSISTD.items()]), axis=1)
+</code></pre><blockquote>
 <p>预测</p>
 </blockquote>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">_rank_by_foodc</span>(self, columns, foodc):
-    <span style="color:#e6db74">&#34;&#34;&#34;
-</span><span style="color:#e6db74">    参数：
-</span><span style="color:#e6db74">        columns - 排序列，类型：list 可以有多个成员
-</span><span style="color:#e6db74">        foodc - 菜系，默认为所有餐厅
-</span><span style="color:#e6db74">    &#34;&#34;&#34;</span>
+<pre><code>def _rank_by_foodc(self, columns, foodc):
+    &quot;&quot;&quot;
+    参数：
+        columns - 排序列，类型：list 可以有多个成员
+        foodc - 菜系，默认为所有餐厅
+    &quot;&quot;&quot;
 
-    <span style="color:#66d9ef">if</span> foodc <span style="color:#f92672">==</span> <span style="color:#e6db74">&#34;all&#34;</span>:
-        temp <span style="color:#f92672">=</span> self<span style="color:#f92672">.</span>df
-    <span style="color:#66d9ef">elif</span> foodc <span style="color:#f92672">in</span> FOOD_C<span style="color:#f92672">.</span>keys():
-        temp <span style="color:#f92672">=</span> self<span style="color:#f92672">.</span>df[self<span style="color:#f92672">.</span>df[<span style="color:#e6db74">&#34;foodtype&#34;</span>] <span style="color:#f92672">==</span> foodc]
-    <span style="color:#66d9ef">else</span>:
-        <span style="color:#66d9ef">raise</span> <span style="color:#a6e22e">Exception</span>(f<span style="color:#e6db74">&#34;没有当前菜系 - {foodc}&#34;</span>)
+    if foodc == &quot;all&quot;:
+        temp = self.df
+    elif foodc in FOOD_C.keys():
+        temp = self.df[self.df[&quot;foodtype&quot;] == foodc]
+    else:
+        raise Exception(f&quot;没有当前菜系 - {foodc}&quot;)
 
-    <span style="color:#66d9ef">return</span> temp<span style="color:#f92672">.</span>sort_values(by<span style="color:#f92672">=</span>columns, ascending<span style="color:#f92672">=</span>False)
+    return temp.sort_values(by=columns, ascending=False)
 
-<span style="color:#66d9ef">def</span> <span style="color:#a6e22e">divine</span>(self, columns,
-           foodc<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;all&#34;</span>,
-           out_nums<span style="color:#f92672">=</span><span style="color:#ae81ff">40</span>,
-           show_names<span style="color:#f92672">=</span>True,
-           show_pic<span style="color:#f92672">=</span>False):
-    <span style="color:#e6db74">&#34;&#34;&#34;
-</span><span style="color:#e6db74">    按需展示排序结果,画图会出现中文乱码问题，解决办法请google :)
-</span><span style="color:#e6db74">    参数：
-</span><span style="color:#e6db74">        columns - 排序列，类型：list 可以有多个成员
-</span><span style="color:#e6db74">        foodc - 菜系
-</span><span style="color:#e6db74">        out_nums - 输出结果数
-</span><span style="color:#e6db74">        show_names - 为True时显示餐厅名字
-</span><span style="color:#e6db74">        show_pic - 为True时显示餐厅柱状图,仅仅在mac上可用，linux和windows不管
-</span><span style="color:#e6db74">    &#34;&#34;&#34;</span>
+def divine(self, columns,
+           foodc=&quot;all&quot;,
+           out_nums=40,
+           show_names=True,
+           show_pic=False):
+    &quot;&quot;&quot;
+    按需展示排序结果,画图会出现中文乱码问题，解决办法请google :)
+    参数：
+        columns - 排序列，类型：list 可以有多个成员
+        foodc - 菜系
+        out_nums - 输出结果数
+        show_names - 为True时显示餐厅名字
+        show_pic - 为True时显示餐厅柱状图,仅仅在mac上可用，linux和windows不管
+    &quot;&quot;&quot;
 
-    ranked <span style="color:#f92672">=</span> self<span style="color:#f92672">.</span>_rank_by_foodc(columns, foodc)<span style="color:#f92672">.</span>head(out_nums)
+    ranked = self._rank_by_foodc(columns, foodc).head(out_nums)
 
-    names <span style="color:#f92672">=</span> ranked[<span style="color:#e6db74">&#34;name&#34;</span>]
-    stds <span style="color:#f92672">=</span> ranked[<span style="color:#e6db74">&#34;sissi_std&#34;</span>]
-    tastes <span style="color:#f92672">=</span> ranked[<span style="color:#e6db74">&#34;taste&#34;</span>]
-    envis <span style="color:#f92672">=</span> ranked[<span style="color:#e6db74">&#34;envi&#34;</span>]
-    <span style="color:#75715e"># services = ranked[&#34;service&#34;]</span>
-    reviews <span style="color:#f92672">=</span> ranked[<span style="color:#e6db74">&#34;review&#34;</span>]
+    names = ranked[&quot;name&quot;]
+    stds = ranked[&quot;sissi_std&quot;]
+    tastes = ranked[&quot;taste&quot;]
+    envis = ranked[&quot;envi&quot;]
+    # services = ranked[&quot;service&quot;]
+    reviews = ranked[&quot;review&quot;]
 
-    <span style="color:#66d9ef">if</span> show_names:
-        <span style="color:#66d9ef">print</span>(f<span style="color:#e6db74">&#34;筛选得到餐厅：</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">{names}&#34;</span>)
+    if show_names:
+        print(f&quot;筛选得到餐厅：\n{names}&quot;)
 
-    <span style="color:#66d9ef">if</span> show_pic:
-        <span style="color:#f92672">import</span> matplotlib.pyplot <span style="color:#f92672">as</span> plt
-        plt<span style="color:#f92672">.</span>rcParams[<span style="color:#e6db74">&#39;font.sans-serif&#39;</span>] <span style="color:#f92672">=</span> [<span style="color:#e6db74">&#39;SimHei&#39;</span>]
-        plt<span style="color:#f92672">.</span>rcParams[<span style="color:#e6db74">&#39;axes.unicode_minus&#39;</span>] <span style="color:#f92672">=</span> False
+    if show_pic:
+        import matplotlib.pyplot as plt
+        plt.rcParams['font.sans-serif'] = ['SimHei']
+        plt.rcParams['axes.unicode_minus'] = False
 
-        fig, ax <span style="color:#f92672">=</span> plt<span style="color:#f92672">.</span>subplots()
-        n_groups <span style="color:#f92672">=</span> len(ranked)
-        index <span style="color:#f92672">=</span> np<span style="color:#f92672">.</span>arange(n_groups)
+        fig, ax = plt.subplots()
+        n_groups = len(ranked)
+        index = np.arange(n_groups)
 
-        bar_width <span style="color:#f92672">=</span> <span style="color:#ae81ff">0.1</span>
-        opacity <span style="color:#f92672">=</span> <span style="color:#ae81ff">0.4</span>
-        error_config <span style="color:#f92672">=</span> {<span style="color:#e6db74">&#39;ecolor&#39;</span>: <span style="color:#e6db74">&#39;0.3&#39;</span>}
+        bar_width = 0.1
+        opacity = 0.4
+        error_config = {'ecolor': '0.3'}
 
-        ax<span style="color:#f92672">.</span>bar(index, stds, bar_width, alpha<span style="color:#f92672">=</span>opacity,
-               color<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;b&#39;</span>, error_kw<span style="color:#f92672">=</span>error_config, label<span style="color:#f92672">=</span><span style="color:#e6db74">u</span><span style="color:#e6db74">&#39;标准&#39;</span>)
+        ax.bar(index, stds, bar_width, alpha=opacity,
+               color='b', error_kw=error_config, label=u'标准')
 
-        ax<span style="color:#f92672">.</span>bar(index <span style="color:#f92672">+</span> bar_width, tastes, bar_width, alpha<span style="color:#f92672">=</span>opacity,
-               color<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;r&#39;</span>, error_kw<span style="color:#f92672">=</span>error_config, label<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;口味&#39;</span>)
+        ax.bar(index + bar_width, tastes, bar_width, alpha=opacity,
+               color='r', error_kw=error_config, label='口味')
 
-        ax<span style="color:#f92672">.</span>bar(index <span style="color:#f92672">+</span> <span style="color:#ae81ff">2</span> <span style="color:#f92672">*</span> bar_width, envis, bar_width, alpha<span style="color:#f92672">=</span>opacity,
-               color<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;g&#39;</span>, error_kw<span style="color:#f92672">=</span>error_config, label<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;服务&#39;</span>)
+        ax.bar(index + 2 * bar_width, envis, bar_width, alpha=opacity,
+               color='g', error_kw=error_config, label='服务')
 
-        ax<span style="color:#f92672">.</span>set_xlabel(foodc)
-        ax<span style="color:#f92672">.</span>set_ylabel(<span style="color:#e6db74">&#39;Scores&#39;</span>)
-        ax<span style="color:#f92672">.</span>set_title(<span style="color:#e6db74">&#39;{}-top{}&#39;</span><span style="color:#f92672">.</span>format(foodc, n_groups))
-        ax<span style="color:#f92672">.</span>set_xticks(index <span style="color:#f92672">+</span> bar_width <span style="color:#f92672">/</span> <span style="color:#ae81ff">2</span>)
-        ax<span style="color:#f92672">.</span>set_xticklabels(names, fontsize<span style="color:#f92672">=</span><span style="color:#ae81ff">8</span>)
-        ax<span style="color:#f92672">.</span>legend()
+        ax.set_xlabel(foodc)
+        ax.set_ylabel('Scores')
+        ax.set_title('{}-top{}'.format(foodc, n_groups))
+        ax.set_xticks(index + bar_width / 2)
+        ax.set_xticklabels(names, fontsize=8)
+        ax.legend()
 
-        fig<span style="color:#f92672">.</span>tight_layout()
-        plt<span style="color:#f92672">.</span>show()
-</code></pre></div><blockquote>
+        fig.tight_layout()
+        plt.show()
+</code></pre><blockquote>
 <p>结果</p>
 </blockquote>
 <pre><code>筛选得到餐厅：

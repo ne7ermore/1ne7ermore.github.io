@@ -207,138 +207,138 @@
 <ul>
 <li>gelu和OpenAI GPT中有所不同</li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">GELU</span>(nn<span style="color:#f92672">.</span>Module):
-    <span style="color:#e6db74">&#34;&#34;&#34;
-</span><span style="color:#e6db74">    different from 0.5 * x * (1 + torch.tanh(math.sqrt(2 / math.pi) * (x + 0.044715 * torch.pow(x, 3))))
-</span><span style="color:#e6db74">    &#34;&#34;&#34;</span>
-    <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">forward</span>(self, x):
-        <span style="color:#66d9ef">return</span> x <span style="color:#f92672">*</span> <span style="color:#ae81ff">0.5</span> <span style="color:#f92672">*</span> (<span style="color:#ae81ff">1.0</span> <span style="color:#f92672">+</span> torch<span style="color:#f92672">.</span>erf(x <span style="color:#f92672">/</span> math<span style="color:#f92672">.</span>sqrt(<span style="color:#ae81ff">2.0</span>)))
-</code></pre></div><ul>
+<pre><code>class GELU(nn.Module):
+    &quot;&quot;&quot;
+    different from 0.5 * x * (1 + torch.tanh(math.sqrt(2 / math.pi) * (x + 0.044715 * torch.pow(x, 3))))
+    &quot;&quot;&quot;
+    def forward(self, x):
+        return x * 0.5 * (1.0 + torch.erf(x / math.sqrt(2.0)))
+</code></pre><ul>
 <li>参数</li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#f92672">--</span>steps <span style="color:#ae81ff">1000000</span>
-<span style="color:#f92672">--</span>batch_size <span style="color:#ae81ff">256</span>
-<span style="color:#f92672">--</span>lr <span style="color:#ae81ff">1e-4</span>
-<span style="color:#f92672">--</span>dropout <span style="color:#ae81ff">0.1</span>
-<span style="color:#f92672">--</span>d_model <span style="color:#ae81ff">768</span>
-<span style="color:#f92672">--</span>d_ff <span style="color:#ae81ff">3072</span>
-<span style="color:#f92672">--</span>n_head <span style="color:#ae81ff">12</span>
-<span style="color:#f92672">--</span>n_stack_layers <span style="color:#ae81ff">12</span>
-<span style="color:#f92672">--</span>n_warmup_steps <span style="color:#ae81ff">10000</span>
-<span style="color:#f92672">--</span>initializer_range <span style="color:#ae81ff">0.02</span>
-<span style="color:#f92672">--</span>beta1 <span style="color:#ae81ff">0.9</span>
-<span style="color:#f92672">--</span>beta2 <span style="color:#ae81ff">0.999</span>
-<span style="color:#f92672">--</span>l2 <span style="color:#ae81ff">0.01</span>
-</code></pre></div><ul>
+<pre><code>--steps 1000000
+--batch_size 256
+--lr 1e-4
+--dropout 0.1
+--d_model 768
+--d_ff 3072
+--n_head 12
+--n_stack_layers 12
+--n_warmup_steps 10000
+--initializer_range 0.02
+--beta1 0.9
+--beta2 0.999
+--l2 0.01
+</code></pre><ul>
 <li>在Next Sentence Prediction任务中增加了一层隐藏层</li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Pooler</span>(nn<span style="color:#f92672">.</span>Module):
-    <span style="color:#66d9ef">def</span> __init__(self, d_model):
-        super()<span style="color:#f92672">.</span>__init__()
+<pre><code>class Pooler(nn.Module):
+    def __init__(self, d_model):
+        super().__init__()
 
-        self<span style="color:#f92672">.</span>linear <span style="color:#f92672">=</span> nn<span style="color:#f92672">.</span>Linear(d_model, d_model)
-        self<span style="color:#f92672">.</span>linear<span style="color:#f92672">.</span>weight<span style="color:#f92672">.</span>data<span style="color:#f92672">.</span>normal_(INIT_RANGE)
-        self<span style="color:#f92672">.</span>linear<span style="color:#f92672">.</span>bias<span style="color:#f92672">.</span>data<span style="color:#f92672">.</span>zero_()
+        self.linear = nn.Linear(d_model, d_model)
+        self.linear.weight.data.normal_(INIT_RANGE)
+        self.linear.bias.data.zero_()
 
-    <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">forward</span>(self, x):
-        x <span style="color:#f92672">=</span> self<span style="color:#f92672">.</span>linear(x[:, <span style="color:#ae81ff">0</span>])
-        <span style="color:#66d9ef">return</span> F<span style="color:#f92672">.</span>tanh(x)
-</code></pre></div><ul>
+    def forward(self, x):
+        x = self.linear(x[:, 0])
+        return F.tanh(x)
+</code></pre><ul>
 <li>Masked LM任务中计算和评估word的loss和准确率时只关注**[mask]**的word</li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">WordCrossEntropy</span>(nn<span style="color:#f92672">.</span>Module):
-    <span style="color:#66d9ef">def</span> __init__(self):
-        super()<span style="color:#f92672">.</span>__init__()
+<pre><code>class WordCrossEntropy(nn.Module):
+    def __init__(self):
+        super().__init__()
 
-    <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">forward</span>(self, props, tgt):
-        tgt_props <span style="color:#f92672">=</span> props<span style="color:#f92672">.</span>gather(<span style="color:#ae81ff">2</span>, tgt<span style="color:#f92672">.</span>unsqueeze(<span style="color:#ae81ff">2</span>))<span style="color:#f92672">.</span>squeeze()
-        mask <span style="color:#f92672">=</span> (tgt <span style="color:#f92672">&gt;</span> <span style="color:#ae81ff">0</span>)<span style="color:#f92672">.</span>float()
-        tgt_sum <span style="color:#f92672">=</span> mask<span style="color:#f92672">.</span>sum()
-        loss <span style="color:#f92672">=</span> <span style="color:#f92672">-</span>(tgt_props <span style="color:#f92672">*</span> mask)<span style="color:#f92672">.</span>sum() <span style="color:#f92672">/</span> tgt_sum
+    def forward(self, props, tgt):
+        tgt_props = props.gather(2, tgt.unsqueeze(2)).squeeze()
+        mask = (tgt &gt; 0).float()
+        tgt_sum = mask.sum()
+        loss = -(tgt_props * mask).sum() / tgt_sum
 
-        props <span style="color:#f92672">=</span> F<span style="color:#f92672">.</span>softmax(props, dim<span style="color:#f92672">=-</span><span style="color:#ae81ff">1</span>)
-        _, index <span style="color:#f92672">=</span> torch<span style="color:#f92672">.</span>max(props, <span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>)
-        corrects <span style="color:#f92672">=</span> ((index<span style="color:#f92672">.</span>data <span style="color:#f92672">==</span> tgt)<span style="color:#f92672">.</span>float() <span style="color:#f92672">*</span> mask)<span style="color:#f92672">.</span>sum()
+        props = F.softmax(props, dim=-1)
+        _, index = torch.max(props, -1)
+        corrects = ((index.data == tgt).float() * mask).sum()
 
-        <span style="color:#66d9ef">return</span> loss, corrects, tgt_sum
-</code></pre></div><ul>
+        return loss, corrects, tgt_sum
+</code></pre><ul>
 <li>在Masked LM任务中增加了一层隐藏层，激活函数使用GELU，带上layernormal</li>
 <li>最后word预测全连接层的weights权重和word embedding共享</li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">self<span style="color:#f92672">.</span>word_predict<span style="color:#f92672">.</span>weight <span style="color:#f92672">=</span> self<span style="color:#f92672">.</span>enc_ebd<span style="color:#f92672">.</span>weight  <span style="color:#75715e"># share weights</span>
-</code></pre></div><ul>
+<pre><code>self.word_predict.weight = self.enc_ebd.weight  # share weights
+</code></pre><ul>
 <li>优化函数, 学习率线性衰减，参数梯度裁剪，非layer normal和偏移加入l2 reg</li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">get_lr</span>(group, step):
-    lr, warmup, train_steps <span style="color:#f92672">=</span> group[<span style="color:#e6db74">&#39;lr&#39;</span>], group[<span style="color:#e6db74">&#39;warmup&#39;</span>], group[<span style="color:#e6db74">&#39;train_steps&#39;</span>]
+<pre><code>def get_lr(group, step):
+    lr, warmup, train_steps = group['lr'], group['warmup'], group['train_steps']
 
-    <span style="color:#66d9ef">if</span> step <span style="color:#f92672">&lt;</span> warmup:
-        <span style="color:#66d9ef">return</span> lr <span style="color:#f92672">*</span> (train_steps <span style="color:#f92672">-</span> step) <span style="color:#f92672">/</span> train_steps
+    if step &lt; warmup:
+        return lr * (train_steps - step) / train_steps
 
-    <span style="color:#66d9ef">return</span> lr <span style="color:#f92672">*</span> step <span style="color:#f92672">/</span> warmup
+    return lr * step / warmup
 
 
-<span style="color:#66d9ef">class</span> <span style="color:#a6e22e">AdamWeightDecayOptimizer</span>(Optimizer):
-    <span style="color:#66d9ef">def</span> __init__(self, params, lr<span style="color:#f92672">=</span><span style="color:#ae81ff">5e-5</span>, warmup<span style="color:#f92672">=</span><span style="color:#ae81ff">10000</span>, train_steps<span style="color:#f92672">=</span><span style="color:#ae81ff">100000</span>, weight_decay<span style="color:#f92672">=</span><span style="color:#ae81ff">0.01</span>, clip<span style="color:#f92672">=</span><span style="color:#ae81ff">1.0</span>, betas<span style="color:#f92672">=</span>(<span style="color:#ae81ff">0.9</span>, <span style="color:#ae81ff">0.999</span>), eps<span style="color:#f92672">=</span><span style="color:#ae81ff">1e-6</span>):
+class AdamWeightDecayOptimizer(Optimizer):
+    def __init__(self, params, lr=5e-5, warmup=10000, train_steps=100000, weight_decay=0.01, clip=1.0, betas=(0.9, 0.999), eps=1e-6):
 
-        <span style="color:#66d9ef">if</span> <span style="color:#f92672">not</span> <span style="color:#ae81ff">0.0</span> <span style="color:#f92672">&lt;=</span> lr:
-            <span style="color:#66d9ef">raise</span> <span style="color:#a6e22e">ValueError</span>(f<span style="color:#e6db74">&#34;Invalid learning rate: {lr}&#34;</span>)
-        <span style="color:#66d9ef">if</span> <span style="color:#f92672">not</span> <span style="color:#ae81ff">0.0</span> <span style="color:#f92672">&lt;=</span> eps:
-            <span style="color:#66d9ef">raise</span> <span style="color:#a6e22e">ValueError</span>(f<span style="color:#e6db74">&#34;Invalid epsilon value: {eps}&#34;</span>)
-        <span style="color:#66d9ef">if</span> <span style="color:#f92672">not</span> <span style="color:#ae81ff">0.0</span> <span style="color:#f92672">&lt;=</span> betas[<span style="color:#ae81ff">0</span>] <span style="color:#f92672">&lt;</span> <span style="color:#ae81ff">1.0</span>:
-            <span style="color:#66d9ef">raise</span> <span style="color:#a6e22e">ValueError</span>(
-                f<span style="color:#e6db74">&#34;Invalid beta parameter at index 0: {betas[0]}&#34;</span>)
-        <span style="color:#66d9ef">if</span> <span style="color:#f92672">not</span> <span style="color:#ae81ff">0.0</span> <span style="color:#f92672">&lt;=</span> betas[<span style="color:#ae81ff">1</span>] <span style="color:#f92672">&lt;</span> <span style="color:#ae81ff">1.0</span>:
-            <span style="color:#66d9ef">raise</span> <span style="color:#a6e22e">ValueError</span>(
-                f<span style="color:#e6db74">&#34;Invalid beta parameter at index 1: {betas[1]}&#34;</span>)
-        defaults <span style="color:#f92672">=</span> dict(lr<span style="color:#f92672">=</span>lr, betas<span style="color:#f92672">=</span>betas, eps<span style="color:#f92672">=</span>eps, warmup<span style="color:#f92672">=</span>warmup,
-                        train_steps<span style="color:#f92672">=</span>train_steps, weight_decay<span style="color:#f92672">=</span>weight_decay, clip<span style="color:#f92672">=</span>clip)
-        super(AdamWeightDecayOptimizer, self)<span style="color:#f92672">.</span>__init__(params, defaults)
+        if not 0.0 &lt;= lr:
+            raise ValueError(f&quot;Invalid learning rate: {lr}&quot;)
+        if not 0.0 &lt;= eps:
+            raise ValueError(f&quot;Invalid epsilon value: {eps}&quot;)
+        if not 0.0 &lt;= betas[0] &lt; 1.0:
+            raise ValueError(
+                f&quot;Invalid beta parameter at index 0: {betas[0]}&quot;)
+        if not 0.0 &lt;= betas[1] &lt; 1.0:
+            raise ValueError(
+                f&quot;Invalid beta parameter at index 1: {betas[1]}&quot;)
+        defaults = dict(lr=lr, betas=betas, eps=eps, warmup=warmup,
+                        train_steps=train_steps, weight_decay=weight_decay, clip=clip)
+        super(AdamWeightDecayOptimizer, self).__init__(params, defaults)
 
-    <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">__setstate__</span>(self, state):
-        super(AdamWeightDecayOptimizer, self)<span style="color:#f92672">.</span>__setstate__(state)
+    def __setstate__(self, state):
+        super(AdamWeightDecayOptimizer, self).__setstate__(state)
 
-    <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">step</span>(self, closure<span style="color:#f92672">=</span>None):
-        loss <span style="color:#f92672">=</span> None
-        <span style="color:#66d9ef">if</span> closure <span style="color:#f92672">is</span> <span style="color:#f92672">not</span> None:
-            loss <span style="color:#f92672">=</span> closure()
+    def step(self, closure=None):
+        loss = None
+        if closure is not None:
+            loss = closure()
 
-        <span style="color:#66d9ef">for</span> group <span style="color:#f92672">in</span> self<span style="color:#f92672">.</span>param_groups:
-            <span style="color:#66d9ef">for</span> p <span style="color:#f92672">in</span> group[<span style="color:#e6db74">&#39;params&#39;</span>]:
-                <span style="color:#66d9ef">if</span> p<span style="color:#f92672">.</span>grad <span style="color:#f92672">is</span> None:
-                    <span style="color:#66d9ef">continue</span>
-                grad <span style="color:#f92672">=</span> p<span style="color:#f92672">.</span>grad<span style="color:#f92672">.</span>data
-                <span style="color:#66d9ef">if</span> grad<span style="color:#f92672">.</span>is_sparse:
-                    <span style="color:#66d9ef">raise</span> <span style="color:#a6e22e">RuntimeError</span>(
-                        <span style="color:#e6db74">&#39;Adam does not support sparse gradients, please consider SparseAdam instead&#39;</span>)
+        for group in self.param_groups:
+            for p in group['params']:
+                if p.grad is None:
+                    continue
+                grad = p.grad.data
+                if grad.is_sparse:
+                    raise RuntimeError(
+                        'Adam does not support sparse gradients, please consider SparseAdam instead')
 
-                state <span style="color:#f92672">=</span> self<span style="color:#f92672">.</span>state[p]
+                state = self.state[p]
 
-                <span style="color:#66d9ef">if</span> len(state) <span style="color:#f92672">==</span> <span style="color:#ae81ff">0</span>:
-                    state[<span style="color:#e6db74">&#39;step&#39;</span>] <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>
-                    state[<span style="color:#e6db74">&#39;exp_avg&#39;</span>] <span style="color:#f92672">=</span> torch<span style="color:#f92672">.</span>zeros_like(p<span style="color:#f92672">.</span>data)
-                    state[<span style="color:#e6db74">&#39;exp_avg_sq&#39;</span>] <span style="color:#f92672">=</span> torch<span style="color:#f92672">.</span>zeros_like(p<span style="color:#f92672">.</span>data)
+                if len(state) == 0:
+                    state['step'] = 0
+                    state['exp_avg'] = torch.zeros_like(p.data)
+                    state['exp_avg_sq'] = torch.zeros_like(p.data)
 
-                <span style="color:#66d9ef">if</span> group[<span style="color:#e6db74">&#39;clip&#39;</span>] <span style="color:#f92672">!=</span> <span style="color:#ae81ff">0.</span>:
-                    torch<span style="color:#f92672">.</span>nn<span style="color:#f92672">.</span>utils<span style="color:#f92672">.</span>clip_grad_norm_(p, group[<span style="color:#e6db74">&#39;clip&#39;</span>])
+                if group['clip'] != 0.:
+                    torch.nn.utils.clip_grad_norm_(p, group['clip'])
 
-                exp_avg, exp_avg_sq <span style="color:#f92672">=</span> state[<span style="color:#e6db74">&#39;exp_avg&#39;</span>], state[<span style="color:#e6db74">&#39;exp_avg_sq&#39;</span>]
-                beta1, beta2 <span style="color:#f92672">=</span> group[<span style="color:#e6db74">&#39;betas&#39;</span>]
+                exp_avg, exp_avg_sq = state['exp_avg'], state['exp_avg_sq']
+                beta1, beta2 = group['betas']
 
-                state[<span style="color:#e6db74">&#39;step&#39;</span>] <span style="color:#f92672">+=</span> <span style="color:#ae81ff">1</span>
+                state['step'] += 1
 
-                exp_avg<span style="color:#f92672">.</span>mul_(beta1)<span style="color:#f92672">.</span>add_(<span style="color:#ae81ff">1</span> <span style="color:#f92672">-</span> beta1, grad)
-                exp_avg_sq<span style="color:#f92672">.</span>mul_(beta2)<span style="color:#f92672">.</span>addcmul_(<span style="color:#ae81ff">1</span> <span style="color:#f92672">-</span> beta2, grad, grad)
-                update <span style="color:#f92672">=</span> exp_avg <span style="color:#f92672">/</span> (exp_avg_sq<span style="color:#f92672">.</span>sqrt() <span style="color:#f92672">+</span> group[<span style="color:#e6db74">&#39;eps&#39;</span>])
+                exp_avg.mul_(beta1).add_(1 - beta1, grad)
+                exp_avg_sq.mul_(beta2).addcmul_(1 - beta2, grad, grad)
+                update = exp_avg / (exp_avg_sq.sqrt() + group['eps'])
 
-                <span style="color:#66d9ef">if</span> group[<span style="color:#e6db74">&#39;weight_decay&#39;</span>] <span style="color:#f92672">!=</span> <span style="color:#ae81ff">0.</span>:
-                    update <span style="color:#f92672">+=</span> group[<span style="color:#e6db74">&#39;weight_decay&#39;</span>] <span style="color:#f92672">*</span> p<span style="color:#f92672">.</span>data
+                if group['weight_decay'] != 0.:
+                    update += group['weight_decay'] * p.data
 
-                update_with_lr <span style="color:#f92672">=</span> get_lr(group, state[<span style="color:#e6db74">&#39;step&#39;</span>]) <span style="color:#f92672">*</span> update
-                p<span style="color:#f92672">.</span>data<span style="color:#f92672">.</span>add_(<span style="color:#f92672">-</span>update_with_lr)
+                update_with_lr = get_lr(group, state['step']) * update
+                p.data.add_(-update_with_lr)
 
-        <span style="color:#66d9ef">return</span> loss
-</code></pre></div>
+        return loss
+</code></pre>
             </article>
           </div>
           

@@ -184,197 +184,197 @@ yolo是一种使用深度卷积神经网络学得的特征来检测对象的目�
 <p>在yolo中，使用的改进后的darknet，去掉全连接层，加入Route，上采样，并提取中间特征进行组合</p>
 <p>代码:</p>
 <p>卷积层(不带bias)+BatchNorm+LeakyReLU</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">BasicConv</span>(nn<span style="color:#f92672">.</span>Module):
-    <span style="color:#66d9ef">def</span> __init__(self, ind, outd, kr_size, stride, padding, lr<span style="color:#f92672">=</span><span style="color:#ae81ff">0.1</span>, bias<span style="color:#f92672">=</span>False):
-        super()<span style="color:#f92672">.</span>__init__()
+<pre><code>class BasicConv(nn.Module):
+    def __init__(self, ind, outd, kr_size, stride, padding, lr=0.1, bias=False):
+        super().__init__()
 
-        self<span style="color:#f92672">.</span>layers <span style="color:#f92672">=</span> nn<span style="color:#f92672">.</span>Sequential(
-            nn<span style="color:#f92672">.</span>Conv2d(ind, outd, kr_size, stride, padding, bias<span style="color:#f92672">=</span>bias),
-            nn<span style="color:#f92672">.</span>BatchNorm2d(outd),
-            nn<span style="color:#f92672">.</span>LeakyReLU(lr, inplace<span style="color:#f92672">=</span>True)
+        self.layers = nn.Sequential(
+            nn.Conv2d(ind, outd, kr_size, stride, padding, bias=bias),
+            nn.BatchNorm2d(outd),
+            nn.LeakyReLU(lr, inplace=True)
         )
 
-    <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">forward</span>(self, x):
-        <span style="color:#66d9ef">return</span> self<span style="color:#f92672">.</span>layers(x)
-</code></pre></div><p>网络中间循环层：1、2、8、8、4</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">BasicLayer</span>(nn<span style="color:#f92672">.</span>Module):
-    <span style="color:#66d9ef">def</span> __init__(self, conv_1, conv_2, times):
-        super()<span style="color:#f92672">.</span>__init__()
+    def forward(self, x):
+        return self.layers(x)
+</code></pre><p>网络中间循环层：1、2、8、8、4</p>
+<pre><code>class BasicLayer(nn.Module):
+    def __init__(self, conv_1, conv_2, times):
+        super().__init__()
 
-        self<span style="color:#f92672">.</span>layers <span style="color:#f92672">=</span> nn<span style="color:#f92672">.</span>ModuleList()
-        <span style="color:#66d9ef">for</span> _ <span style="color:#f92672">in</span> range(times):
-            self<span style="color:#f92672">.</span>layers<span style="color:#f92672">.</span>append(BasicConv(<span style="color:#f92672">*</span>conv_1))
-            self<span style="color:#f92672">.</span>layers<span style="color:#f92672">.</span>append(BasicConv(<span style="color:#f92672">*</span>conv_2))
+        self.layers = nn.ModuleList()
+        for _ in range(times):
+            self.layers.append(BasicConv(*conv_1))
+            self.layers.append(BasicConv(*conv_2))
 
-    <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">forward</span>(self, x):
-        residual <span style="color:#f92672">=</span> x
-        <span style="color:#66d9ef">for</span> index, layer <span style="color:#f92672">in</span> enumerate(self<span style="color:#f92672">.</span>layers):
-            x <span style="color:#f92672">=</span> layer(x)
-            <span style="color:#66d9ef">if</span> index <span style="color:#f92672">%</span> <span style="color:#ae81ff">2</span> <span style="color:#f92672">==</span> <span style="color:#ae81ff">1</span>:
-                x <span style="color:#f92672">+=</span> residual
-                residual <span style="color:#f92672">=</span> x
+    def forward(self, x):
+        residual = x
+        for index, layer in enumerate(self.layers):
+            x = layer(x)
+            if index % 2 == 1:
+                x += residual
+                residual = x
 
-        <span style="color:#66d9ef">return</span> x
-</code></pre></div><p>预测层</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">BasicPred</span>(nn<span style="color:#f92672">.</span>Module):
-    <span style="color:#66d9ef">def</span> __init__(self,
+        return x
+</code></pre><p>预测层</p>
+<pre><code>class BasicPred(nn.Module):
+    def __init__(self,
                  structs,
                  use_cuda,
                  anchors,
-                 classes<span style="color:#f92672">=</span><span style="color:#ae81ff">80</span>,
-                 height<span style="color:#f92672">=</span><span style="color:#ae81ff">416</span>,
-                 route_index<span style="color:#f92672">=</span><span style="color:#ae81ff">0</span>):
-        super()<span style="color:#f92672">.</span>__init__()
+                 classes=80,
+                 height=416,
+                 route_index=0):
+        super().__init__()
 
-        self<span style="color:#f92672">.</span>ri <span style="color:#f92672">=</span> route_index
-        self<span style="color:#f92672">.</span>classes <span style="color:#f92672">=</span> classes
-        self<span style="color:#f92672">.</span>height <span style="color:#f92672">=</span> height
-        self<span style="color:#f92672">.</span>anchors <span style="color:#f92672">=</span> anchors
-        self<span style="color:#f92672">.</span>torch <span style="color:#f92672">=</span> torch<span style="color:#f92672">.</span>cuda <span style="color:#66d9ef">if</span> use_cuda <span style="color:#66d9ef">else</span> torch
+        self.ri = route_index
+        self.classes = classes
+        self.height = height
+        self.anchors = anchors
+        self.torch = torch.cuda if use_cuda else torch
 
-        in_dim <span style="color:#f92672">=</span> structs[<span style="color:#ae81ff">0</span>]
-        self<span style="color:#f92672">.</span>layers <span style="color:#f92672">=</span> nn<span style="color:#f92672">.</span>ModuleList()
-        <span style="color:#66d9ef">for</span> s <span style="color:#f92672">in</span> structs[<span style="color:#ae81ff">1</span>:]:
-            <span style="color:#66d9ef">if</span> len(s) <span style="color:#f92672">==</span> <span style="color:#ae81ff">4</span>:
-                out_dim, kr_size, stride, padding <span style="color:#f92672">=</span> s
-                layer <span style="color:#f92672">=</span> BasicConv(in_dim, out_dim, kr_size, stride, padding)
-            <span style="color:#66d9ef">else</span>:
-                out_dim, kr_size, stride, padding, _ <span style="color:#f92672">=</span> s
-                layer <span style="color:#f92672">=</span> nn<span style="color:#f92672">.</span>Conv2d(in_dim, out_dim, kr_size, stride, padding)
+        in_dim = structs[0]
+        self.layers = nn.ModuleList()
+        for s in structs[1:]:
+            if len(s) == 4:
+                out_dim, kr_size, stride, padding = s
+                layer = BasicConv(in_dim, out_dim, kr_size, stride, padding)
+            else:
+                out_dim, kr_size, stride, padding, _ = s
+                layer = nn.Conv2d(in_dim, out_dim, kr_size, stride, padding)
 
-            in_dim <span style="color:#f92672">=</span> out_dim
-            self<span style="color:#f92672">.</span>layers<span style="color:#f92672">.</span>append(layer)
+            in_dim = out_dim
+            self.layers.append(layer)
 
-    <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">forward</span>(self, x):
-        <span style="color:#66d9ef">for</span> index, layer <span style="color:#f92672">in</span> enumerate(self<span style="color:#f92672">.</span>layers):
-            x <span style="color:#f92672">=</span> layer(x)
-            <span style="color:#66d9ef">if</span> self<span style="color:#f92672">.</span>ri <span style="color:#f92672">!=</span> <span style="color:#ae81ff">0</span> <span style="color:#f92672">and</span> index <span style="color:#f92672">==</span> self<span style="color:#f92672">.</span>ri:
-                output <span style="color:#f92672">=</span> x
+    def forward(self, x):
+        for index, layer in enumerate(self.layers):
+            x = layer(x)
+            if self.ri != 0 and index == self.ri:
+                output = x
 
-        detections <span style="color:#f92672">=</span> self<span style="color:#f92672">.</span>predict_transform(x<span style="color:#f92672">.</span>data)
+        detections = self.predict_transform(x.data)
 
-        <span style="color:#66d9ef">if</span> self<span style="color:#f92672">.</span>ri <span style="color:#f92672">!=</span> <span style="color:#ae81ff">0</span>:
-            <span style="color:#66d9ef">return</span> detections, output
-        <span style="color:#66d9ef">else</span>:
-            <span style="color:#66d9ef">return</span> detections
-</code></pre></div><p>5组循环层</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">LayerOne</span>(BasicLayer):
-    <span style="color:#66d9ef">def</span> __init__(self):
-        super()<span style="color:#f92672">.</span>__init__((<span style="color:#ae81ff">64</span>, <span style="color:#ae81ff">32</span>, <span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">0</span>),
-                         (<span style="color:#ae81ff">32</span>, <span style="color:#ae81ff">64</span>, <span style="color:#ae81ff">3</span>, <span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">1</span>), <span style="color:#ae81ff">1</span>)
-
-
-<span style="color:#66d9ef">class</span> <span style="color:#a6e22e">LayerTwo</span>(BasicLayer):
-    <span style="color:#66d9ef">def</span> __init__(self):
-        super()<span style="color:#f92672">.</span>__init__((<span style="color:#ae81ff">128</span>, <span style="color:#ae81ff">64</span>, <span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">0</span>),
-                         (<span style="color:#ae81ff">64</span>, <span style="color:#ae81ff">128</span>, <span style="color:#ae81ff">3</span>, <span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">1</span>), <span style="color:#ae81ff">2</span>)
+        if self.ri != 0:
+            return detections, output
+        else:
+            return detections
+</code></pre><p>5组循环层</p>
+<pre><code>class LayerOne(BasicLayer):
+    def __init__(self):
+        super().__init__((64, 32, 1, 1, 0),
+                         (32, 64, 3, 1, 1), 1)
 
 
-<span style="color:#66d9ef">class</span> <span style="color:#a6e22e">LayerThree</span>(BasicLayer):
-    <span style="color:#66d9ef">def</span> __init__(self):
-        super()<span style="color:#f92672">.</span>__init__((<span style="color:#ae81ff">256</span>, <span style="color:#ae81ff">128</span>, <span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">0</span>),
-                         (<span style="color:#ae81ff">128</span>, <span style="color:#ae81ff">256</span>, <span style="color:#ae81ff">3</span>, <span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">1</span>), <span style="color:#ae81ff">8</span>)
+class LayerTwo(BasicLayer):
+    def __init__(self):
+        super().__init__((128, 64, 1, 1, 0),
+                         (64, 128, 3, 1, 1), 2)
 
 
-<span style="color:#66d9ef">class</span> <span style="color:#a6e22e">LayerFour</span>(BasicLayer):
-    <span style="color:#66d9ef">def</span> __init__(self):
-        super()<span style="color:#f92672">.</span>__init__((<span style="color:#ae81ff">512</span>, <span style="color:#ae81ff">256</span>, <span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">0</span>),
-                         (<span style="color:#ae81ff">256</span>, <span style="color:#ae81ff">512</span>, <span style="color:#ae81ff">3</span>, <span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">1</span>), <span style="color:#ae81ff">8</span>)
+class LayerThree(BasicLayer):
+    def __init__(self):
+        super().__init__((256, 128, 1, 1, 0),
+                         (128, 256, 3, 1, 1), 8)
 
 
-<span style="color:#66d9ef">class</span> <span style="color:#a6e22e">LayerFive</span>(BasicLayer):
-    <span style="color:#66d9ef">def</span> __init__(self):
-        super()<span style="color:#f92672">.</span>__init__((<span style="color:#ae81ff">1024</span>, <span style="color:#ae81ff">512</span>, <span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">0</span>),
-                         (<span style="color:#ae81ff">512</span>, <span style="color:#ae81ff">1024</span>, <span style="color:#ae81ff">3</span>, <span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">1</span>), <span style="color:#ae81ff">4</span>)
-</code></pre></div><p>预测层结构和实现</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">DETECT_DICT <span style="color:#f92672">=</span> {
-    <span style="color:#e6db74">&#39;first&#39;</span>: [<span style="color:#ae81ff">1024</span>, (<span style="color:#ae81ff">512</span>, <span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">0</span>), (<span style="color:#ae81ff">1024</span>, <span style="color:#ae81ff">3</span>, <span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">1</span>), (<span style="color:#ae81ff">512</span>, <span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">0</span>), (<span style="color:#ae81ff">1024</span>, <span style="color:#ae81ff">3</span>, <span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">1</span>), (<span style="color:#ae81ff">512</span>, <span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">0</span>), (<span style="color:#ae81ff">1024</span>, <span style="color:#ae81ff">3</span>, <span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">1</span>), (<span style="color:#ae81ff">255</span>, <span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">0</span>)],
-    <span style="color:#e6db74">&#39;second&#39;</span>: [<span style="color:#ae81ff">768</span>, (<span style="color:#ae81ff">256</span>, <span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">0</span>), (<span style="color:#ae81ff">512</span>, <span style="color:#ae81ff">3</span>, <span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">1</span>), (<span style="color:#ae81ff">256</span>, <span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">0</span>), (<span style="color:#ae81ff">512</span>, <span style="color:#ae81ff">3</span>, <span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">1</span>), (<span style="color:#ae81ff">256</span>, <span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">0</span>), (<span style="color:#ae81ff">512</span>, <span style="color:#ae81ff">3</span>, <span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">1</span>), (<span style="color:#ae81ff">255</span>, <span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">0</span>)],
-    <span style="color:#e6db74">&#39;third&#39;</span>: [<span style="color:#ae81ff">384</span>, (<span style="color:#ae81ff">128</span>, <span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">0</span>), (<span style="color:#ae81ff">256</span>, <span style="color:#ae81ff">3</span>, <span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">1</span>), (<span style="color:#ae81ff">128</span>, <span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">0</span>), (<span style="color:#ae81ff">256</span>, <span style="color:#ae81ff">3</span>, <span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">1</span>), (<span style="color:#ae81ff">128</span>, <span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">0</span>), (<span style="color:#ae81ff">256</span>, <span style="color:#ae81ff">3</span>, <span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">1</span>), (<span style="color:#ae81ff">255</span>, <span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">0</span>)],
+class LayerFour(BasicLayer):
+    def __init__(self):
+        super().__init__((512, 256, 1, 1, 0),
+                         (256, 512, 3, 1, 1), 8)
+
+
+class LayerFive(BasicLayer):
+    def __init__(self):
+        super().__init__((1024, 512, 1, 1, 0),
+                         (512, 1024, 3, 1, 1), 4)
+</code></pre><p>预测层结构和实现</p>
+<pre><code>DETECT_DICT = {
+    'first': [1024, (512, 1, 1, 0), (1024, 3, 1, 1), (512, 1, 1, 0), (1024, 3, 1, 1), (512, 1, 1, 0), (1024, 3, 1, 1), (255, 1, 1, 0, 0)],
+    'second': [768, (256, 1, 1, 0), (512, 3, 1, 1), (256, 1, 1, 0), (512, 3, 1, 1), (256, 1, 1, 0), (512, 3, 1, 1), (255, 1, 1, 0, 0)],
+    'third': [384, (128, 1, 1, 0), (256, 3, 1, 1), (128, 1, 1, 0), (256, 3, 1, 1), (128, 1, 1, 0), (256, 3, 1, 1), (255, 1, 1, 0, 0)],
 }
 
 
-<span style="color:#66d9ef">class</span> <span style="color:#a6e22e">FirstPred</span>(BasicPred):
-    <span style="color:#66d9ef">def</span> __init__(self,
+class FirstPred(BasicPred):
+    def __init__(self,
                  structs,
                  use_cuda,
-                 route_index<span style="color:#f92672">=</span><span style="color:#ae81ff">4</span>,
-                 anchors<span style="color:#f92672">=</span>[(<span style="color:#ae81ff">116</span>, <span style="color:#ae81ff">90</span>), (<span style="color:#ae81ff">156</span>, <span style="color:#ae81ff">198</span>), (<span style="color:#ae81ff">373</span>, <span style="color:#ae81ff">326</span>)]):
-        super()<span style="color:#f92672">.</span>__init__(structs, use_cuda, anchors, route_index<span style="color:#f92672">=</span>route_index)
+                 route_index=4,
+                 anchors=[(116, 90), (156, 198), (373, 326)]):
+        super().__init__(structs, use_cuda, anchors, route_index=route_index)
 
 
-<span style="color:#66d9ef">class</span> <span style="color:#a6e22e">SecondPred</span>(BasicPred):
-    <span style="color:#66d9ef">def</span> __init__(self,
+class SecondPred(BasicPred):
+    def __init__(self,
                  structs,
                  use_cuda,
-                 route_index<span style="color:#f92672">=</span><span style="color:#ae81ff">4</span>,
-                 anchors<span style="color:#f92672">=</span>[(<span style="color:#ae81ff">30</span>, <span style="color:#ae81ff">61</span>), (<span style="color:#ae81ff">62</span>, <span style="color:#ae81ff">45</span>), (<span style="color:#ae81ff">59</span>, <span style="color:#ae81ff">119</span>)]):
-        super()<span style="color:#f92672">.</span>__init__(structs, use_cuda, anchors, route_index<span style="color:#f92672">=</span>route_index)
+                 route_index=4,
+                 anchors=[(30, 61), (62, 45), (59, 119)]):
+        super().__init__(structs, use_cuda, anchors, route_index=route_index)
 
 
-<span style="color:#66d9ef">class</span> <span style="color:#a6e22e">ThirdPred</span>(BasicPred):
-    <span style="color:#66d9ef">def</span> __init__(self,
+class ThirdPred(BasicPred):
+    def __init__(self,
                  structs,
                  use_cuda,
-                 classes<span style="color:#f92672">=</span><span style="color:#ae81ff">80</span>,
-                 height<span style="color:#f92672">=</span><span style="color:#ae81ff">416</span>,
-                 anchors<span style="color:#f92672">=</span>[(<span style="color:#ae81ff">10</span>, <span style="color:#ae81ff">13</span>), (<span style="color:#ae81ff">16</span>, <span style="color:#ae81ff">30</span>), (<span style="color:#ae81ff">33</span>, <span style="color:#ae81ff">23</span>)]):
-        super()<span style="color:#f92672">.</span>__init__(structs, use_cuda, anchors)
-</code></pre></div><p>整个网络结构实现，可以结合darknet图阅读代码</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">DarkNet</span>(nn<span style="color:#f92672">.</span>Module):
-    <span style="color:#66d9ef">def</span> __init__(self, use_cuda):
-        super()<span style="color:#f92672">.</span>__init__()
+                 classes=80,
+                 height=416,
+                 anchors=[(10, 13), (16, 30), (33, 23)]):
+        super().__init__(structs, use_cuda, anchors)
+</code></pre><p>整个网络结构实现，可以结合darknet图阅读代码</p>
+<pre><code>class DarkNet(nn.Module):
+    def __init__(self, use_cuda):
+        super().__init__()
 
-        self<span style="color:#f92672">.</span>conv_1 <span style="color:#f92672">=</span> BasicConv(<span style="color:#ae81ff">256</span>, <span style="color:#ae81ff">512</span>, <span style="color:#ae81ff">3</span>, <span style="color:#ae81ff">2</span>, <span style="color:#ae81ff">1</span>)
+        self.conv_1 = BasicConv(256, 512, 3, 2, 1)
 
-        self<span style="color:#f92672">.</span>seq_1 <span style="color:#f92672">=</span> nn<span style="color:#f92672">.</span>Sequential(
-            BasicConv(<span style="color:#ae81ff">3</span>, <span style="color:#ae81ff">32</span>, <span style="color:#ae81ff">3</span>, <span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">1</span>),
-            BasicConv(<span style="color:#ae81ff">32</span>, <span style="color:#ae81ff">64</span>, <span style="color:#ae81ff">3</span>, <span style="color:#ae81ff">2</span>, <span style="color:#ae81ff">1</span>),
+        self.seq_1 = nn.Sequential(
+            BasicConv(3, 32, 3, 1, 1),
+            BasicConv(32, 64, 3, 2, 1),
             LayerOne(),
-            BasicConv(<span style="color:#ae81ff">64</span>, <span style="color:#ae81ff">128</span>, <span style="color:#ae81ff">3</span>, <span style="color:#ae81ff">2</span>, <span style="color:#ae81ff">1</span>),
+            BasicConv(64, 128, 3, 2, 1),
             LayerTwo(),
-            BasicConv(<span style="color:#ae81ff">128</span>, <span style="color:#ae81ff">256</span>, <span style="color:#ae81ff">3</span>, <span style="color:#ae81ff">2</span>, <span style="color:#ae81ff">1</span>),
+            BasicConv(128, 256, 3, 2, 1),
             LayerThree(),
         )
-        self<span style="color:#f92672">.</span>seq_2 <span style="color:#f92672">=</span> nn<span style="color:#f92672">.</span>Sequential(
-            BasicConv(<span style="color:#ae81ff">512</span>, <span style="color:#ae81ff">1024</span>, <span style="color:#ae81ff">3</span>, <span style="color:#ae81ff">2</span>, <span style="color:#ae81ff">1</span>),
+        self.seq_2 = nn.Sequential(
+            BasicConv(512, 1024, 3, 2, 1),
             LayerFive(),
-            FirstPred(DETECT_DICT[<span style="color:#e6db74">&#34;first&#34;</span>], use_cuda)
+            FirstPred(DETECT_DICT[&quot;first&quot;], use_cuda)
         )
 
-        self<span style="color:#f92672">.</span>layer_4 <span style="color:#f92672">=</span> LayerFour()
+        self.layer_4 = LayerFour()
 
-        self<span style="color:#f92672">.</span>uns_1 <span style="color:#f92672">=</span> nn<span style="color:#f92672">.</span>Sequential(
-            BasicConv(<span style="color:#ae81ff">512</span>, <span style="color:#ae81ff">256</span>, <span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">0</span>),
-            nn<span style="color:#f92672">.</span>Upsample(scale_factor<span style="color:#f92672">=</span><span style="color:#ae81ff">2</span>, mode<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;bilinear&#34;</span>)
+        self.uns_1 = nn.Sequential(
+            BasicConv(512, 256, 1, 1, 0),
+            nn.Upsample(scale_factor=2, mode=&quot;bilinear&quot;)
         )
-        self<span style="color:#f92672">.</span>uns_2 <span style="color:#f92672">=</span> nn<span style="color:#f92672">.</span>Sequential(
-            BasicConv(<span style="color:#ae81ff">256</span>, <span style="color:#ae81ff">128</span>, <span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">0</span>),
-            nn<span style="color:#f92672">.</span>Upsample(scale_factor<span style="color:#f92672">=</span><span style="color:#ae81ff">2</span>, mode<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;bilinear&#34;</span>)
+        self.uns_2 = nn.Sequential(
+            BasicConv(256, 128, 1, 1, 0),
+            nn.Upsample(scale_factor=2, mode=&quot;bilinear&quot;)
         )
 
-        self<span style="color:#f92672">.</span>pred_2 <span style="color:#f92672">=</span> SecondPred(DETECT_DICT[<span style="color:#e6db74">&#34;second&#34;</span>], use_cuda)
-        self<span style="color:#f92672">.</span>pred_3 <span style="color:#f92672">=</span> ThirdPred(DETECT_DICT[<span style="color:#e6db74">&#34;third&#34;</span>], use_cuda)
+        self.pred_2 = SecondPred(DETECT_DICT[&quot;second&quot;], use_cuda)
+        self.pred_3 = ThirdPred(DETECT_DICT[&quot;third&quot;], use_cuda)
 
-    <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">forward</span>(self, x):
-        x <span style="color:#f92672">=</span> self<span style="color:#f92672">.</span>seq_1(x)
-        r_0 <span style="color:#f92672">=</span> x
+    def forward(self, x):
+        x = self.seq_1(x)
+        r_0 = x
 
-        x <span style="color:#f92672">=</span> self<span style="color:#f92672">.</span>layer_4(self<span style="color:#f92672">.</span>conv_1(x))
-        r_1 <span style="color:#f92672">=</span> x
+        x = self.layer_4(self.conv_1(x))
+        r_1 = x
 
-        det_1, x <span style="color:#f92672">=</span> self<span style="color:#f92672">.</span>seq_2(x)
+        det_1, x = self.seq_2(x)
 
-        x <span style="color:#f92672">=</span> self<span style="color:#f92672">.</span>uns_1(x)
-        x <span style="color:#f92672">=</span> torch<span style="color:#f92672">.</span>cat((x, r_1), <span style="color:#ae81ff">1</span>)
-        det_2, x <span style="color:#f92672">=</span> self<span style="color:#f92672">.</span>pred_2(x)
+        x = self.uns_1(x)
+        x = torch.cat((x, r_1), 1)
+        det_2, x = self.pred_2(x)
 
-        x <span style="color:#f92672">=</span> self<span style="color:#f92672">.</span>uns_2(x)
-        x <span style="color:#f92672">=</span> torch<span style="color:#f92672">.</span>cat((x, r_0), <span style="color:#ae81ff">1</span>)
-        det_3 <span style="color:#f92672">=</span> self<span style="color:#f92672">.</span>pred_3(x)
+        x = self.uns_2(x)
+        x = torch.cat((x, r_0), 1)
+        det_3 = self.pred_3(x)
 
-        <span style="color:#66d9ef">return</span> torch<span style="color:#f92672">.</span>cat((det_1, det_2, det_3), <span style="color:#ae81ff">1</span>)
-</code></pre></div><p>网络结构介绍完毕，接下来介绍不同维度特征映射到同一空间和物体预测的原理</p>
+        return torch.cat((det_1, det_2, det_3), 1)
+</code></pre><p>网络结构介绍完毕，接下来介绍不同维度特征映射到同一空间和物体预测的原理</p>
 <p>网络会在预测1、2、3分别输出特征，结构分别是(假设图片裁剪为416X416): [b, 255, 13, 13], [b, 255, 26, 26], [b, 255, 52, 52], 其中b为batch-size</p>
 <p>注：按论文中给出，针对coco数据集的锚点 (10×13), (16×30), (33×23), (30×61), (62×45), (59× 119), (116 × 90), (156 × 198), (373 × 326)</p>
 <blockquote>
@@ -388,181 +388,181 @@ yolo是一种使用深度卷积神经网络学得的特征来检测对象的目�
 <li>最后，使用sigmoid对Objectness和Classes confidence进行sigmoid得到0~1的概率，之所以用sigmoid取代之前版本的softmax，原因是softmax会扩大最大类别概率值而抑制其他类别概率值</li>
 </ul>
 <p><img src="/img/yolo/transform2.png" alt="pic"></p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">predict_transform</span>(self, prediction):
-    <span style="color:#e6db74">&#34;&#34;&#34; borrowed from https://github.com/ayooshkathuria/YOLO_v3_tutorial_from_scratch/blob/master/util.py#L47
-</span><span style="color:#e6db74">    &#34;&#34;&#34;</span>
-    batch_size <span style="color:#f92672">=</span> prediction<span style="color:#f92672">.</span>size(<span style="color:#ae81ff">0</span>)
-    stride <span style="color:#f92672">=</span> self<span style="color:#f92672">.</span>height <span style="color:#f92672">//</span> prediction<span style="color:#f92672">.</span>size(<span style="color:#ae81ff">2</span>)
-    grid_size <span style="color:#f92672">=</span> self<span style="color:#f92672">.</span>height <span style="color:#f92672">//</span> stride
-    bbox_attrs <span style="color:#f92672">=</span> <span style="color:#ae81ff">5</span> <span style="color:#f92672">+</span> self<span style="color:#f92672">.</span>classes
-    num_anchors <span style="color:#f92672">=</span> len(self<span style="color:#f92672">.</span>anchors)
+<pre><code>def predict_transform(self, prediction):
+    &quot;&quot;&quot; borrowed from https://github.com/ayooshkathuria/YOLO_v3_tutorial_from_scratch/blob/master/util.py#L47
+    &quot;&quot;&quot;
+    batch_size = prediction.size(0)
+    stride = self.height // prediction.size(2)
+    grid_size = self.height // stride
+    bbox_attrs = 5 + self.classes
+    num_anchors = len(self.anchors)
 
-    prediction <span style="color:#f92672">=</span> prediction<span style="color:#f92672">.</span>view(
-        batch_size, bbox_attrs <span style="color:#f92672">*</span> num_anchors, grid_size <span style="color:#f92672">*</span> grid_size)
-    prediction <span style="color:#f92672">=</span> prediction<span style="color:#f92672">.</span>transpose(<span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">2</span>)<span style="color:#f92672">.</span>contiguous()
-    prediction <span style="color:#f92672">=</span> prediction<span style="color:#f92672">.</span>view(
-        batch_size, grid_size <span style="color:#f92672">*</span> grid_size <span style="color:#f92672">*</span> num_anchors, bbox_attrs)
+    prediction = prediction.view(
+        batch_size, bbox_attrs * num_anchors, grid_size * grid_size)
+    prediction = prediction.transpose(1, 2).contiguous()
+    prediction = prediction.view(
+        batch_size, grid_size * grid_size * num_anchors, bbox_attrs)
 
-    anchors <span style="color:#f92672">=</span> [(a[<span style="color:#ae81ff">0</span>] <span style="color:#f92672">/</span> stride, a[<span style="color:#ae81ff">1</span>] <span style="color:#f92672">/</span> stride) <span style="color:#66d9ef">for</span> a <span style="color:#f92672">in</span> self<span style="color:#f92672">.</span>anchors]
+    anchors = [(a[0] / stride, a[1] / stride) for a in self.anchors]
 
-    prediction[:, :, <span style="color:#ae81ff">0</span>] <span style="color:#f92672">=</span> torch<span style="color:#f92672">.</span>sigmoid(prediction[:, :, <span style="color:#ae81ff">0</span>])
-    prediction[:, :, <span style="color:#ae81ff">1</span>] <span style="color:#f92672">=</span> torch<span style="color:#f92672">.</span>sigmoid(prediction[:, :, <span style="color:#ae81ff">1</span>])
+    prediction[:, :, 0] = torch.sigmoid(prediction[:, :, 0])
+    prediction[:, :, 1] = torch.sigmoid(prediction[:, :, 1])
 
-    grid <span style="color:#f92672">=</span> np<span style="color:#f92672">.</span>arange(grid_size)
-    a, b <span style="color:#f92672">=</span> np<span style="color:#f92672">.</span>meshgrid(grid, grid)
+    grid = np.arange(grid_size)
+    a, b = np.meshgrid(grid, grid)
 
-    x_offset <span style="color:#f92672">=</span> self<span style="color:#f92672">.</span>torch<span style="color:#f92672">.</span>FloatTensor(a)<span style="color:#f92672">.</span>view(<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">1</span>)
-    y_offset <span style="color:#f92672">=</span> self<span style="color:#f92672">.</span>torch<span style="color:#f92672">.</span>FloatTensor(b)<span style="color:#f92672">.</span>view(<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">1</span>)
+    x_offset = self.torch.FloatTensor(a).view(-1, 1)
+    y_offset = self.torch.FloatTensor(b).view(-1, 1)
 
-    x_y_offset <span style="color:#f92672">=</span> torch<span style="color:#f92672">.</span>cat((x_offset, y_offset), <span style="color:#ae81ff">1</span>)<span style="color:#f92672">.</span>repeat(
-        <span style="color:#ae81ff">1</span>, num_anchors)<span style="color:#f92672">.</span>view(<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">2</span>)<span style="color:#f92672">.</span>unsqueeze(<span style="color:#ae81ff">0</span>)
+    x_y_offset = torch.cat((x_offset, y_offset), 1).repeat(
+        1, num_anchors).view(-1, 2).unsqueeze(0)
 
-    prediction[:, :, :<span style="color:#ae81ff">2</span>] <span style="color:#f92672">+=</span> x_y_offset
+    prediction[:, :, :2] += x_y_offset
 
-    anchors <span style="color:#f92672">=</span> self<span style="color:#f92672">.</span>torch<span style="color:#f92672">.</span>FloatTensor(anchors)
+    anchors = self.torch.FloatTensor(anchors)
 
-    anchors <span style="color:#f92672">=</span> anchors<span style="color:#f92672">.</span>repeat(grid_size <span style="color:#f92672">*</span> grid_size, <span style="color:#ae81ff">1</span>)<span style="color:#f92672">.</span>unsqueeze(<span style="color:#ae81ff">0</span>)
-    prediction[:, :, <span style="color:#ae81ff">2</span>:<span style="color:#ae81ff">4</span>] <span style="color:#f92672">=</span> torch<span style="color:#f92672">.</span>exp(prediction[:, :, <span style="color:#ae81ff">2</span>:<span style="color:#ae81ff">4</span>]) <span style="color:#f92672">*</span> anchors
-    prediction[:, :, :<span style="color:#ae81ff">4</span>] <span style="color:#f92672">*=</span> stride
+    anchors = anchors.repeat(grid_size * grid_size, 1).unsqueeze(0)
+    prediction[:, :, 2:4] = torch.exp(prediction[:, :, 2:4]) * anchors
+    prediction[:, :, :4] *= stride
 
-    <span style="color:#75715e"># sigmoid Objectness and classes confidence</span>
-    prediction[:, :, <span style="color:#ae81ff">4</span>:] <span style="color:#f92672">=</span> torch<span style="color:#f92672">.</span>sigmoid(prediction[:, :, <span style="color:#ae81ff">4</span>:])
+    # sigmoid Objectness and classes confidence
+    prediction[:, :, 4:] = torch.sigmoid(prediction[:, :, 4:])
 
-    <span style="color:#66d9ef">return</span> prediction
-</code></pre></div><p>预测</p>
+    return prediction
+</code></pre><p>预测</p>
 <ul>
 <li>将x,y,h,w -&gt; 对角坐标, 这样可以方便后面计算iou和构图。</li>
 <li>过滤掉Objectness小于confidence(论文中给的0.5)向量</li>
 <li>筛选出所有类别中最大分数和index，对同一类别的的向量计算iou，过滤掉大于阈值的向量</li>
 </ul>
 <p>iou原理：(图a 交 图b) / (图a 并 图b)</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">iou</span>(box1, box2):
-    x1, y1 <span style="color:#f92672">=</span> box1[:, <span style="color:#ae81ff">0</span>], box1[:, <span style="color:#ae81ff">1</span>]
-    b1_w, b1_h <span style="color:#f92672">=</span> box1[:, <span style="color:#ae81ff">2</span>] <span style="color:#f92672">-</span> x1 <span style="color:#f92672">+</span> <span style="color:#f92672">.</span><span style="color:#ae81ff">1</span>, box1[:, <span style="color:#ae81ff">3</span>] <span style="color:#f92672">-</span> y1 <span style="color:#f92672">+</span> <span style="color:#f92672">.</span><span style="color:#ae81ff">1</span>
+<pre><code>def iou(box1, box2):
+    x1, y1 = box1[:, 0], box1[:, 1]
+    b1_w, b1_h = box1[:, 2] - x1 + .1, box1[:, 3] - y1 + .1
 
-    x2, y2, <span style="color:#f92672">=</span> box2[:, <span style="color:#ae81ff">0</span>], box2[:, <span style="color:#ae81ff">1</span>]
-    b2_w, b2_h <span style="color:#f92672">=</span> box2[:, <span style="color:#ae81ff">2</span>] <span style="color:#f92672">-</span> x2 <span style="color:#f92672">+</span> <span style="color:#f92672">.</span><span style="color:#ae81ff">1</span>, box2[:, <span style="color:#ae81ff">3</span>] <span style="color:#f92672">-</span> y2 <span style="color:#f92672">+</span> <span style="color:#f92672">.</span><span style="color:#ae81ff">1</span>
+    x2, y2, = box2[:, 0], box2[:, 1]
+    b2_w, b2_h = box2[:, 2] - x2 + .1, box2[:, 3] - y2 + .1
 
-    end_x <span style="color:#f92672">=</span> torch<span style="color:#f92672">.</span>min(x1 <span style="color:#f92672">+</span> b1_w, x2 <span style="color:#f92672">+</span> b2_w)
-    start_x <span style="color:#f92672">=</span> torch<span style="color:#f92672">.</span>max(x1, x2)
+    end_x = torch.min(x1 + b1_w, x2 + b2_w)
+    start_x = torch.max(x1, x2)
 
-    end_y <span style="color:#f92672">=</span> torch<span style="color:#f92672">.</span>min(y1 <span style="color:#f92672">+</span> b1_h, y2 <span style="color:#f92672">+</span> b2_h)
-    start_y <span style="color:#f92672">=</span> torch<span style="color:#f92672">.</span>max(y1, y2)
+    end_y = torch.min(y1 + b1_h, y2 + b2_h)
+    start_y = torch.max(y1, y2)
 
-    a <span style="color:#f92672">=</span> (end_x <span style="color:#f92672">-</span> start_x) <span style="color:#f92672">*</span> (end_y <span style="color:#f92672">-</span> start_y)
+    a = (end_x - start_x) * (end_y - start_y)
 
-    <span style="color:#66d9ef">return</span> a <span style="color:#f92672">/</span> (b1_w <span style="color:#f92672">*</span> b1_h <span style="color:#f92672">+</span> b2_w <span style="color:#f92672">*</span> b2_h <span style="color:#f92672">-</span> a)
-</code></pre></div><p>预测代码</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">predict</span>(self, prediction, nms_conf<span style="color:#f92672">=</span><span style="color:#ae81ff">0.4</span>):
-    <span style="color:#e6db74">&#34;&#34;&#34;
-</span><span style="color:#e6db74">    prediction:
-</span><span style="color:#e6db74">        0:3 - x, y, h, w
-</span><span style="color:#e6db74">        4 - confidence
-</span><span style="color:#e6db74">        5: - class score
-</span><span style="color:#e6db74">    &#34;&#34;&#34;</span>
+    return a / (b1_w * b1_h + b2_w * b2_h - a)
+</code></pre><p>预测代码</p>
+<pre><code>def predict(self, prediction, nms_conf=0.4):
+    &quot;&quot;&quot;
+    prediction:
+        0:3 - x, y, h, w
+        4 - confidence
+        5: - class score
+    &quot;&quot;&quot;
 
-    <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">iou</span>(box1, box2):
-        x1, y1 <span style="color:#f92672">=</span> box1[:, <span style="color:#ae81ff">0</span>], box1[:, <span style="color:#ae81ff">1</span>]
-        b1_w, b1_h <span style="color:#f92672">=</span> box1[:, <span style="color:#ae81ff">2</span>] <span style="color:#f92672">-</span> x1 <span style="color:#f92672">+</span> <span style="color:#f92672">.</span><span style="color:#ae81ff">1</span>, box1[:, <span style="color:#ae81ff">3</span>] <span style="color:#f92672">-</span> y1 <span style="color:#f92672">+</span> <span style="color:#f92672">.</span><span style="color:#ae81ff">1</span>
+    def iou(box1, box2):
+        x1, y1 = box1[:, 0], box1[:, 1]
+        b1_w, b1_h = box1[:, 2] - x1 + .1, box1[:, 3] - y1 + .1
 
-        x2, y2, <span style="color:#f92672">=</span> box2[:, <span style="color:#ae81ff">0</span>], box2[:, <span style="color:#ae81ff">1</span>]
-        b2_w, b2_h <span style="color:#f92672">=</span> box2[:, <span style="color:#ae81ff">2</span>] <span style="color:#f92672">-</span> x2 <span style="color:#f92672">+</span> <span style="color:#f92672">.</span><span style="color:#ae81ff">1</span>, box2[:, <span style="color:#ae81ff">3</span>] <span style="color:#f92672">-</span> y2 <span style="color:#f92672">+</span> <span style="color:#f92672">.</span><span style="color:#ae81ff">1</span>
+        x2, y2, = box2[:, 0], box2[:, 1]
+        b2_w, b2_h = box2[:, 2] - x2 + .1, box2[:, 3] - y2 + .1
 
-        end_x <span style="color:#f92672">=</span> torch<span style="color:#f92672">.</span>min(x1 <span style="color:#f92672">+</span> b1_w, x2 <span style="color:#f92672">+</span> b2_w)
-        start_x <span style="color:#f92672">=</span> torch<span style="color:#f92672">.</span>max(x1, x2)
+        end_x = torch.min(x1 + b1_w, x2 + b2_w)
+        start_x = torch.max(x1, x2)
 
-        end_y <span style="color:#f92672">=</span> torch<span style="color:#f92672">.</span>min(y1 <span style="color:#f92672">+</span> b1_h, y2 <span style="color:#f92672">+</span> b2_h)
-        start_y <span style="color:#f92672">=</span> torch<span style="color:#f92672">.</span>max(y1, y2)
+        end_y = torch.min(y1 + b1_h, y2 + b2_h)
+        start_y = torch.max(y1, y2)
 
-        a <span style="color:#f92672">=</span> (end_x <span style="color:#f92672">-</span> start_x) <span style="color:#f92672">*</span> (end_y <span style="color:#f92672">-</span> start_y)
+        a = (end_x - start_x) * (end_y - start_y)
 
-        <span style="color:#66d9ef">return</span> a <span style="color:#f92672">/</span> (b1_w <span style="color:#f92672">*</span> b1_h <span style="color:#f92672">+</span> b2_w <span style="color:#f92672">*</span> b2_h <span style="color:#f92672">-</span> a)
+        return a / (b1_w * b1_h + b2_w * b2_h - a)
 
-    conf_mask <span style="color:#f92672">=</span> (prediction[:, :, <span style="color:#ae81ff">4</span>] <span style="color:#f92672">&gt;</span>
-                 self<span style="color:#f92672">.</span>confidence)<span style="color:#f92672">.</span>float()<span style="color:#f92672">.</span>unsqueeze(<span style="color:#ae81ff">2</span>)
-    prediction <span style="color:#f92672">=</span> prediction <span style="color:#f92672">*</span> conf_mask
+    conf_mask = (prediction[:, :, 4] &gt;
+                 self.confidence).float().unsqueeze(2)
+    prediction = prediction * conf_mask
 
-    box_corner <span style="color:#f92672">=</span> prediction<span style="color:#f92672">.</span>new(<span style="color:#f92672">*</span>prediction<span style="color:#f92672">.</span>size())
-    box_corner[:, :, <span style="color:#ae81ff">0</span>] <span style="color:#f92672">=</span> (prediction[:, :, <span style="color:#ae81ff">0</span>] <span style="color:#f92672">-</span> prediction[:, :, <span style="color:#ae81ff">2</span>] <span style="color:#f92672">/</span> <span style="color:#ae81ff">2</span>)
-    box_corner[:, :, <span style="color:#ae81ff">1</span>] <span style="color:#f92672">=</span> (prediction[:, :, <span style="color:#ae81ff">1</span>] <span style="color:#f92672">-</span> prediction[:, :, <span style="color:#ae81ff">3</span>] <span style="color:#f92672">/</span> <span style="color:#ae81ff">2</span>)
-    box_corner[:, :, <span style="color:#ae81ff">2</span>] <span style="color:#f92672">=</span> (prediction[:, :, <span style="color:#ae81ff">0</span>] <span style="color:#f92672">+</span> prediction[:, :, <span style="color:#ae81ff">2</span>] <span style="color:#f92672">/</span> <span style="color:#ae81ff">2</span>)
-    box_corner[:, :, <span style="color:#ae81ff">3</span>] <span style="color:#f92672">=</span> (prediction[:, :, <span style="color:#ae81ff">1</span>] <span style="color:#f92672">+</span> prediction[:, :, <span style="color:#ae81ff">3</span>] <span style="color:#f92672">/</span> <span style="color:#ae81ff">2</span>)
-    prediction[:, :, :<span style="color:#ae81ff">4</span>] <span style="color:#f92672">=</span> box_corner[:, :, :<span style="color:#ae81ff">4</span>]
+    box_corner = prediction.new(*prediction.size())
+    box_corner[:, :, 0] = (prediction[:, :, 0] - prediction[:, :, 2] / 2)
+    box_corner[:, :, 1] = (prediction[:, :, 1] - prediction[:, :, 3] / 2)
+    box_corner[:, :, 2] = (prediction[:, :, 0] + prediction[:, :, 2] / 2)
+    box_corner[:, :, 3] = (prediction[:, :, 1] + prediction[:, :, 3] / 2)
+    prediction[:, :, :4] = box_corner[:, :, :4]
 
-    outputs <span style="color:#f92672">=</span> []
+    outputs = []
 
-    <span style="color:#66d9ef">for</span> index <span style="color:#f92672">in</span> range(prediction<span style="color:#f92672">.</span>size(<span style="color:#ae81ff">0</span>)):
-        image_pred <span style="color:#f92672">=</span> prediction[index]  <span style="color:#75715e"># [10647, 85]</span>
+    for index in range(prediction.size(0)):
+        image_pred = prediction[index]  # [10647, 85]
 
-        max_score, max_index <span style="color:#f92672">=</span> torch<span style="color:#f92672">.</span>max(
-            image_pred[:, <span style="color:#ae81ff">5</span>:], <span style="color:#ae81ff">1</span>, keepdim<span style="color:#f92672">=</span>True)
-        image_pred <span style="color:#f92672">=</span> torch<span style="color:#f92672">.</span>cat(
-            (image_pred[:, :<span style="color:#ae81ff">5</span>], max_score, max_index<span style="color:#f92672">.</span>float()), <span style="color:#ae81ff">1</span>)  <span style="color:#75715e"># [10647, 7]</span>
+        max_score, max_index = torch.max(
+            image_pred[:, 5:], 1, keepdim=True)
+        image_pred = torch.cat(
+            (image_pred[:, :5], max_score, max_index.float()), 1)  # [10647, 7]
 
-        non_zero_ind <span style="color:#f92672">=</span> (torch<span style="color:#f92672">.</span>nonzero(image_pred[:, <span style="color:#ae81ff">4</span>]))<span style="color:#f92672">.</span>view(<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>)
+        non_zero_ind = (torch.nonzero(image_pred[:, 4])).view(-1)
 
-        <span style="color:#66d9ef">if</span> non_zero_ind<span style="color:#f92672">.</span>size(<span style="color:#ae81ff">0</span>) <span style="color:#f92672">==</span> <span style="color:#ae81ff">0</span>:
-            <span style="color:#66d9ef">continue</span>
+        if non_zero_ind.size(0) == 0:
+            continue
 
-        image_pred_ <span style="color:#f92672">=</span> image_pred[non_zero_ind, :]
-        img_classes <span style="color:#f92672">=</span> torch<span style="color:#f92672">.</span>unique(image_pred_[:, <span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>])
+        image_pred_ = image_pred[non_zero_ind, :]
+        img_classes = torch.unique(image_pred_[:, -1])
 
-        objects, img_preds <span style="color:#f92672">=</span> [], []
-        name <span style="color:#f92672">=</span> self<span style="color:#f92672">.</span>this_img_names[index]<span style="color:#f92672">.</span>split(<span style="color:#e6db74">&#34;/&#34;</span>)[<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>]
+        objects, img_preds = [], []
+        name = self.this_img_names[index].split(&quot;/&quot;)[-1]
 
-        <span style="color:#66d9ef">for</span> c <span style="color:#f92672">in</span> img_classes:
-            c_mask <span style="color:#f92672">=</span> image_pred_ <span style="color:#f92672">*</span> \
-                (image_pred_[:, <span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>] <span style="color:#f92672">==</span> c)<span style="color:#f92672">.</span>float()<span style="color:#f92672">.</span>unsqueeze(<span style="color:#ae81ff">1</span>)
-            class_mask_ind <span style="color:#f92672">=</span> torch<span style="color:#f92672">.</span>nonzero(c_mask[:, <span style="color:#f92672">-</span><span style="color:#ae81ff">2</span>])<span style="color:#f92672">.</span>squeeze()
-            image_pred_class <span style="color:#f92672">=</span> image_pred_[class_mask_ind]<span style="color:#f92672">.</span>view(<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">7</span>)
+        for c in img_classes:
+            c_mask = image_pred_ * \
+                (image_pred_[:, -1] == c).float().unsqueeze(1)
+            class_mask_ind = torch.nonzero(c_mask[:, -2]).squeeze()
+            image_pred_class = image_pred_[class_mask_ind].view(-1, 7)
 
-            _, conf_sort_index <span style="color:#f92672">=</span> torch<span style="color:#f92672">.</span>sort(
-                image_pred_class[:, <span style="color:#ae81ff">4</span>], descending<span style="color:#f92672">=</span>True)
-            image_pred_class <span style="color:#f92672">=</span> image_pred_class[conf_sort_index]
+            _, conf_sort_index = torch.sort(
+                image_pred_class[:, 4], descending=True)
+            image_pred_class = image_pred_class[conf_sort_index]
 
-            <span style="color:#66d9ef">for</span> i <span style="color:#f92672">in</span> range(image_pred_class<span style="color:#f92672">.</span>size(<span style="color:#ae81ff">0</span>) <span style="color:#f92672">-</span> <span style="color:#ae81ff">1</span>):
-                <span style="color:#66d9ef">try</span>:
-                    ious <span style="color:#f92672">=</span> iou(image_pred_class[i]<span style="color:#f92672">.</span>unsqueeze(
-                        <span style="color:#ae81ff">0</span>), image_pred_class[i <span style="color:#f92672">+</span> <span style="color:#ae81ff">1</span>:])
-                <span style="color:#66d9ef">except</span> <span style="color:#a6e22e">IndexError</span>:
-                    <span style="color:#66d9ef">break</span>
+            for i in range(image_pred_class.size(0) - 1):
+                try:
+                    ious = iou(image_pred_class[i].unsqueeze(
+                        0), image_pred_class[i + 1:])
+                except IndexError:
+                    break
 
-                iou_mask <span style="color:#f92672">=</span> (ious <span style="color:#f92672">&lt;</span> nms_conf)<span style="color:#f92672">.</span>float()<span style="color:#f92672">.</span>unsqueeze(<span style="color:#ae81ff">1</span>)
-                image_pred_class[i <span style="color:#f92672">+</span> <span style="color:#ae81ff">1</span>:] <span style="color:#f92672">*=</span> iou_mask
+                iou_mask = (ious &lt; nms_conf).float().unsqueeze(1)
+                image_pred_class[i + 1:] *= iou_mask
 
-                non_zero_ind <span style="color:#f92672">=</span> torch<span style="color:#f92672">.</span>nonzero(
-                    image_pred_class[:, <span style="color:#ae81ff">4</span>])<span style="color:#f92672">.</span>squeeze()
-                image_pred_class <span style="color:#f92672">=</span> image_pred_class[non_zero_ind]<span style="color:#f92672">.</span>view(
-                    <span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">7</span>)
+                non_zero_ind = torch.nonzero(
+                    image_pred_class[:, 4]).squeeze()
+                image_pred_class = image_pred_class[non_zero_ind].view(
+                    -1, 7)
 
-            img_preds<span style="color:#f92672">.</span>append(image_pred_class)
-            objects <span style="color:#f92672">+=</span> [self<span style="color:#f92672">.</span>classes[int(x[<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>])] <span style="color:#66d9ef">for</span> x <span style="color:#f92672">in</span> image_pred_class]
+            img_preds.append(image_pred_class)
+            objects += [self.classes[int(x[-1])] for x in image_pred_class]
 
-        outputs<span style="color:#f92672">.</span>append((name, objects))
-        img_preds <span style="color:#f92672">=</span> torch<span style="color:#f92672">.</span>cat(img_preds, dim<span style="color:#f92672">=</span><span style="color:#ae81ff">0</span>)
+        outputs.append((name, objects))
+        img_preds = torch.cat(img_preds, dim=0)
 
-        <span style="color:#66d9ef">if</span> self<span style="color:#f92672">.</span>rebuild:
-            self<span style="color:#f92672">.</span>tensor2img(img_preds, index, name)
+        if self.rebuild:
+            self.tensor2img(img_preds, index, name)
 
-    <span style="color:#66d9ef">return</span> outputs
-</code></pre></div><p>绘图代码</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">tensor2img</span>(self, tensor, index, name):
-    imgs_dim <span style="color:#f92672">=</span> self<span style="color:#f92672">.</span>imgs_dim[index] <span style="color:#f92672">/</span> self<span style="color:#f92672">.</span>img_size
-    img <span style="color:#f92672">=</span> self<span style="color:#f92672">.</span>imgs[index]
-    draw <span style="color:#f92672">=</span> ImageDraw<span style="color:#f92672">.</span>Draw(img)
+    return outputs
+</code></pre><p>绘图代码</p>
+<pre><code>def tensor2img(self, tensor, index, name):
+    imgs_dim = self.imgs_dim[index] / self.img_size
+    img = self.imgs[index]
+    draw = ImageDraw.Draw(img)
 
-    tensor[:, :<span style="color:#ae81ff">4</span>] <span style="color:#f92672">=</span> tensor[:, :<span style="color:#ae81ff">4</span>]<span style="color:#f92672">.</span>clamp_(<span style="color:#ae81ff">0</span>, self<span style="color:#f92672">.</span>img_size) <span style="color:#f92672">*</span> imgs_dim
-    <span style="color:#66d9ef">for</span> t <span style="color:#f92672">in</span> tensor:
-        s_x, s_y, e_x, e_y <span style="color:#f92672">=</span> list(map(int, t[:<span style="color:#ae81ff">4</span>]))
-        label <span style="color:#f92672">=</span> self<span style="color:#f92672">.</span>classes[int(t[<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>])]
-        color <span style="color:#f92672">=</span> random<span style="color:#f92672">.</span>choice(self<span style="color:#f92672">.</span>colors)
-        draw<span style="color:#f92672">.</span>rectangle([s_x, s_y, e_x, e_y], outline<span style="color:#f92672">=</span>color)
-        draw<span style="color:#f92672">.</span>text([s_x, s_y], label, fill<span style="color:#f92672">=</span>color, font<span style="color:#f92672">=</span>self<span style="color:#f92672">.</span>font)
+    tensor[:, :4] = tensor[:, :4].clamp_(0, self.img_size) * imgs_dim
+    for t in tensor:
+        s_x, s_y, e_x, e_y = list(map(int, t[:4]))
+        label = self.classes[int(t[-1])]
+        color = random.choice(self.colors)
+        draw.rectangle([s_x, s_y, e_x, e_y], outline=color)
+        draw.text([s_x, s_y], label, fill=color, font=self.font)
 
-    <span style="color:#66d9ef">del</span> draw
+    del draw
 
-    img<span style="color:#f92672">.</span>save(os<span style="color:#f92672">.</span>path<span style="color:#f92672">.</span>join(self<span style="color:#f92672">.</span>result, <span style="color:#e6db74">&#34;res_{}&#34;</span><span style="color:#f92672">.</span>format(name)))
-</code></pre></div><p>预测结果</p>
+    img.save(os.path.join(self.result, &quot;res_{}&quot;.format(name)))
+</code></pre><p>预测结果</p>
 <!-- raw HTML omitted -->
 <p>参考文献</p>
 <ul>

@@ -181,83 +181,83 @@
 </ul>
 <p>判斷是否為回文，eg：[1, 1, 2, 3, 2, 1, 1]</p>
 <p>思路：將每個字符的index按字典的k和v存儲起來，然後遍歷所有字符的index,最多只有一個字符index是單數，然後字符index以中間位置，左右兩邊一一對應，相加和為長度-1</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">is_palindrome_dict</span>(list):
-    <span style="color:#66d9ef">if</span> len(list) <span style="color:#f92672">&lt;</span> <span style="color:#ae81ff">2</span>:
-        <span style="color:#66d9ef">return</span> True
+<pre><code>def is_palindrome_dict(list):
+    if len(list) &lt; 2:
+        return True
 
-    d <span style="color:#f92672">=</span> {}
-    <span style="color:#66d9ef">for</span> index, num <span style="color:#f92672">in</span> enumerate(list):
-        <span style="color:#66d9ef">if</span> num <span style="color:#f92672">in</span> d:
-            d[num]<span style="color:#f92672">.</span>append(index)
-        <span style="color:#66d9ef">else</span>:
-            d[num] <span style="color:#f92672">=</span> [index]
+    d = {}
+    for index, num in enumerate(list):
+        if num in d:
+            d[num].append(index)
+        else:
+            d[num] = [index]
 
-    checksum <span style="color:#f92672">=</span> index
-    middle <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>
-    <span style="color:#66d9ef">for</span> v <span style="color:#f92672">in</span> d<span style="color:#f92672">.</span>values():
-        <span style="color:#66d9ef">if</span> len(v) <span style="color:#f92672">%</span> <span style="color:#ae81ff">2</span> <span style="color:#f92672">!=</span> <span style="color:#ae81ff">0</span>:
-            middle <span style="color:#f92672">+=</span> <span style="color:#ae81ff">1</span>
+    checksum = index
+    middle = 0
+    for v in d.values():
+        if len(v) % 2 != 0:
+            middle += 1
 
-        <span style="color:#66d9ef">else</span>:
-            <span style="color:#66d9ef">for</span> index <span style="color:#f92672">in</span> range(len(v) <span style="color:#f92672">//</span> <span style="color:#ae81ff">2</span>):
-                <span style="color:#66d9ef">if</span> v[index] <span style="color:#f92672">+</span> v[len(v) <span style="color:#f92672">-</span> <span style="color:#ae81ff">1</span> <span style="color:#f92672">-</span> index] <span style="color:#f92672">!=</span> checksum:
-                    <span style="color:#66d9ef">return</span> False
+        else:
+            for index in range(len(v) // 2):
+                if v[index] + v[len(v) - 1 - index] != checksum:
+                    return False
 
-        <span style="color:#66d9ef">if</span> middle <span style="color:#f92672">&gt;</span> <span style="color:#ae81ff">1</span>:
-            <span style="color:#66d9ef">return</span> False
+        if middle &gt; 1:
+            return False
 
-    <span style="color:#66d9ef">return</span> True
+    return True
 
 
-<span style="color:#66d9ef">if</span> __name__ <span style="color:#f92672">==</span> <span style="color:#e6db74">&#34;__main__&#34;</span>:
-    list <span style="color:#f92672">=</span> [<span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">2</span>, <span style="color:#ae81ff">3</span>, <span style="color:#ae81ff">2</span>, <span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">1</span>]
-    <span style="color:#66d9ef">assert</span> is_palindrome_dict(list)
-</code></pre></div><ul>
+if __name__ == &quot;__main__&quot;:
+    list = [1, 1, 2, 3, 2, 1, 1]
+    assert is_palindrome_dict(list)
+</code></pre><ul>
 <li>鏈錶反向</li>
 </ul>
 <p>思路：常駐鏈錶上一個成員，將下一個成員的next屬性指向上一個成員</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Node</span>():
-    <span style="color:#66d9ef">def</span> __init__(self, val<span style="color:#f92672">=</span>None):
-        self<span style="color:#f92672">.</span>val <span style="color:#f92672">=</span> val
-        self<span style="color:#f92672">.</span>next <span style="color:#f92672">=</span> None
+<pre><code>class Node():
+    def __init__(self, val=None):
+        self.val = val
+        self.next = None
 
 
-<span style="color:#66d9ef">def</span> <span style="color:#a6e22e">arr2linked</span>(arr):
-    res <span style="color:#f92672">=</span> cur <span style="color:#f92672">=</span> Node(arr[<span style="color:#ae81ff">0</span>])
-    <span style="color:#66d9ef">for</span> a <span style="color:#f92672">in</span> arr[<span style="color:#ae81ff">1</span>:]:
-        cur<span style="color:#f92672">.</span>next <span style="color:#f92672">=</span> Node(a)
-        cur <span style="color:#f92672">=</span> cur<span style="color:#f92672">.</span>next
+def arr2linked(arr):
+    res = cur = Node(arr[0])
+    for a in arr[1:]:
+        cur.next = Node(a)
+        cur = cur.next
 
-    <span style="color:#66d9ef">return</span> res
-
-
-<span style="color:#66d9ef">def</span> <span style="color:#a6e22e">link2arr</span>(link):
-    list <span style="color:#f92672">=</span> []
-    <span style="color:#66d9ef">while</span> link:
-        list<span style="color:#f92672">.</span>append(link<span style="color:#f92672">.</span>val)
-        link <span style="color:#f92672">=</span> link<span style="color:#f92672">.</span>next
-
-    <span style="color:#66d9ef">return</span> list
+    return res
 
 
-<span style="color:#66d9ef">def</span> <span style="color:#a6e22e">reverse</span>(head):
-    prev <span style="color:#f92672">=</span> None
-    <span style="color:#66d9ef">while</span> head:
-        cur <span style="color:#f92672">=</span> head
-        head <span style="color:#f92672">=</span> head<span style="color:#f92672">.</span>next
-        cur<span style="color:#f92672">.</span>next <span style="color:#f92672">=</span> prev
-        prev <span style="color:#f92672">=</span> cur
+def link2arr(link):
+    list = []
+    while link:
+        list.append(link.val)
+        link = link.next
 
-    <span style="color:#66d9ef">return</span> prev
+    return list
 
 
-<span style="color:#66d9ef">if</span> __name__ <span style="color:#f92672">==</span> <span style="color:#e6db74">&#34;__main__&#34;</span>:
-    list <span style="color:#f92672">=</span> [<span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">2</span>, <span style="color:#ae81ff">3</span>, <span style="color:#ae81ff">4</span>, <span style="color:#ae81ff">5</span>, <span style="color:#ae81ff">6</span>]
-    head <span style="color:#f92672">=</span> arr2linked(list)
-    head <span style="color:#f92672">=</span> reverse(head)
+def reverse(head):
+    prev = None
+    while head:
+        cur = head
+        head = head.next
+        cur.next = prev
+        prev = cur
 
-    <span style="color:#66d9ef">assert</span> link2arr(head) <span style="color:#f92672">==</span> [<span style="color:#ae81ff">6</span>, <span style="color:#ae81ff">5</span>, <span style="color:#ae81ff">4</span>, <span style="color:#ae81ff">3</span>, <span style="color:#ae81ff">2</span>, <span style="color:#ae81ff">1</span>]
-</code></pre></div>
+    return prev
+
+
+if __name__ == &quot;__main__&quot;:
+    list = [1, 2, 3, 4, 5, 6]
+    head = arr2linked(list)
+    head = reverse(head)
+
+    assert link2arr(head) == [6, 5, 4, 3, 2, 1]
+</code></pre>
             </article>
           </div>
           

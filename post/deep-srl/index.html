@@ -219,66 +219,66 @@
 <li>Recurrent dropout使用伯努利分布</li>
 <li>每一层lstm的输出reverse作为下一层的输入</li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">HwLSTMCell</span>(nn<span style="color:#f92672">.</span>Module):
-    <span style="color:#66d9ef">def</span> __init__(self, isz, hsz, dropout_prob, is_cuda):
-        super()<span style="color:#f92672">.</span>__init__()
+<pre><code>class HwLSTMCell(nn.Module):
+    def __init__(self, isz, hsz, dropout_prob, is_cuda):
+        super().__init__()
 
-        self<span style="color:#f92672">.</span>hsz <span style="color:#f92672">=</span> hsz
+        self.hsz = hsz
 
-        self<span style="color:#f92672">.</span>w_ih <span style="color:#f92672">=</span> nn<span style="color:#f92672">.</span>Parameter(torch<span style="color:#f92672">.</span>Tensor(<span style="color:#ae81ff">6</span> <span style="color:#f92672">*</span> hsz, isz))
-        self<span style="color:#f92672">.</span>w_hh <span style="color:#f92672">=</span> nn<span style="color:#f92672">.</span>Parameter(torch<span style="color:#f92672">.</span>Tensor(<span style="color:#ae81ff">5</span> <span style="color:#f92672">*</span> hsz, hsz))
-        self<span style="color:#f92672">.</span>b_ih <span style="color:#f92672">=</span> nn<span style="color:#f92672">.</span>Parameter(torch<span style="color:#f92672">.</span>Tensor(<span style="color:#ae81ff">6</span> <span style="color:#f92672">*</span> hsz))
+        self.w_ih = nn.Parameter(torch.Tensor(6 * hsz, isz))
+        self.w_hh = nn.Parameter(torch.Tensor(5 * hsz, hsz))
+        self.b_ih = nn.Parameter(torch.Tensor(6 * hsz))
 
-        self<span style="color:#f92672">.</span>rdropout <span style="color:#f92672">=</span> RnnDropout(dropout_prob, hsz, is_cuda)
+        self.rdropout = RnnDropout(dropout_prob, hsz, is_cuda)
 
-        self<span style="color:#f92672">.</span>reset_parameters()
+        self.reset_parameters()
 
-    <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">reset_parameters</span>(self):
-        stdv <span style="color:#f92672">=</span> <span style="color:#ae81ff">1.0</span> <span style="color:#f92672">/</span> math<span style="color:#f92672">.</span>sqrt(self<span style="color:#f92672">.</span>hsz)
-        <span style="color:#66d9ef">for</span> weight <span style="color:#f92672">in</span> self<span style="color:#f92672">.</span>parameters():
-            nn<span style="color:#f92672">.</span>init<span style="color:#f92672">.</span>uniform_(weight, <span style="color:#f92672">-</span>stdv, stdv)
+    def reset_parameters(self):
+        stdv = 1.0 / math.sqrt(self.hsz)
+        for weight in self.parameters():
+            nn.init.uniform_(weight, -stdv, stdv)
 
-    <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">forward</span>(self, input, hidden<span style="color:#f92672">=</span>None):
-        <span style="color:#66d9ef">if</span> hidden <span style="color:#f92672">is</span> None:
-            hidden <span style="color:#f92672">=</span> input<span style="color:#f92672">.</span>new_zeros(input<span style="color:#f92672">.</span>size(<span style="color:#ae81ff">0</span>), self<span style="color:#f92672">.</span>hsz)
-            hidden <span style="color:#f92672">=</span> (hidden, hidden)
+    def forward(self, input, hidden=None):
+        if hidden is None:
+            hidden = input.new_zeros(input.size(0), self.hsz)
+            hidden = (hidden, hidden)
 
-        hx, cx <span style="color:#f92672">=</span> hidden
+        hx, cx = hidden
 
-        input <span style="color:#f92672">=</span> F<span style="color:#f92672">.</span>linear(input, self<span style="color:#f92672">.</span>w_ih, self<span style="color:#f92672">.</span>b_ih)
-        gates <span style="color:#f92672">=</span> F<span style="color:#f92672">.</span>linear(hx, self<span style="color:#f92672">.</span>w_hh) <span style="color:#f92672">+</span> input[<span style="color:#f92672">...</span>, :<span style="color:#f92672">-</span>self<span style="color:#f92672">.</span>hsz]
+        input = F.linear(input, self.w_ih, self.b_ih)
+        gates = F.linear(hx, self.w_hh) + input[..., :-self.hsz]
 
-        in_gate, forget_gate, cell_gate, out_gate, r_gate <span style="color:#f92672">=</span> gates<span style="color:#f92672">.</span>chunk(<span style="color:#ae81ff">5</span>, <span style="color:#ae81ff">1</span>)
-        in_gate, forget_gate, out_gate, r_gate <span style="color:#f92672">=</span> map(
-            torch<span style="color:#f92672">.</span>sigmoid, [in_gate, forget_gate, out_gate, r_gate])
-        cell_gate <span style="color:#f92672">=</span> torch<span style="color:#f92672">.</span>tanh(cell_gate)
-        k <span style="color:#f92672">=</span> input[<span style="color:#f92672">...</span>, <span style="color:#f92672">-</span>self<span style="color:#f92672">.</span>hsz:]
+        in_gate, forget_gate, cell_gate, out_gate, r_gate = gates.chunk(5, 1)
+        in_gate, forget_gate, out_gate, r_gate = map(
+            torch.sigmoid, [in_gate, forget_gate, out_gate, r_gate])
+        cell_gate = torch.tanh(cell_gate)
+        k = input[..., -self.hsz:]
 
-        cy <span style="color:#f92672">=</span> forget_gate <span style="color:#f92672">*</span> cx <span style="color:#f92672">+</span> in_gate <span style="color:#f92672">*</span> cell_gate
-        hy <span style="color:#f92672">=</span> r_gate <span style="color:#f92672">*</span> out_gate <span style="color:#f92672">*</span> F<span style="color:#f92672">.</span>tanh(cy) <span style="color:#f92672">+</span> (<span style="color:#ae81ff">1.</span> <span style="color:#f92672">-</span> r_gate) <span style="color:#f92672">*</span> k
+        cy = forget_gate * cx + in_gate * cell_gate
+        hy = r_gate * out_gate * F.tanh(cy) + (1. - r_gate) * k
 
-        <span style="color:#66d9ef">if</span> self<span style="color:#f92672">.</span>training:
-            hy <span style="color:#f92672">=</span> self<span style="color:#f92672">.</span>rdropout(hy)
+        if self.training:
+            hy = self.rdropout(hy)
 
-        <span style="color:#66d9ef">return</span> hy, cy
+        return hy, cy
 
-<span style="color:#66d9ef">class</span> <span style="color:#a6e22e">HwLSTMlayer</span>(nn<span style="color:#f92672">.</span>Module):
-    <span style="color:#66d9ef">def</span> __init__(self, isz, hsz, dropout_prob, is_cuda):
-        super()<span style="color:#f92672">.</span>__init__()
+class HwLSTMlayer(nn.Module):
+    def __init__(self, isz, hsz, dropout_prob, is_cuda):
+        super().__init__()
 
-        self<span style="color:#f92672">.</span>cell <span style="color:#f92672">=</span> HwLSTMCell(isz, hsz, dropout_prob, is_cuda)
+        self.cell = HwLSTMCell(isz, hsz, dropout_prob, is_cuda)
 
-    <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">forward</span>(self, input, reverse<span style="color:#f92672">=</span>True):
-        output, hidden <span style="color:#f92672">=</span> [], None
-        <span style="color:#66d9ef">for</span> i <span style="color:#f92672">in</span> range(len(input)):
-            hidden <span style="color:#f92672">=</span> self<span style="color:#f92672">.</span>cell(input[i], hidden)
-            output<span style="color:#f92672">.</span>append(hidden[<span style="color:#ae81ff">0</span>])
+    def forward(self, input, reverse=True):
+        output, hidden = [], None
+        for i in range(len(input)):
+            hidden = self.cell(input[i], hidden)
+            output.append(hidden[0])
 
-        <span style="color:#66d9ef">if</span> reverse:
-            output<span style="color:#f92672">.</span>reverse()
+        if reverse:
+            output.reverse()
 
-        <span style="color:#66d9ef">return</span> torch<span style="color:#f92672">.</span>stack(output)
-</code></pre></div>
+        return torch.stack(output)
+</code></pre>
             </article>
           </div>
           

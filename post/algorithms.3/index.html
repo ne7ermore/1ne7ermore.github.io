@@ -180,12 +180,12 @@
 <li>爬梯子</li>
 </ul>
 <p>思路：n阶楼梯最后一步要么是从n-1阶走一步，要么是从n-2阶走两步，所以n阶走的方式等于n-1加上n-2方式总和 &ndash; 斐波拉契数</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">climb_stairs</span>(n):
-    a <span style="color:#f92672">=</span> b <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span>
-    <span style="color:#66d9ef">for</span> _ <span style="color:#f92672">in</span> range(n):
-        a, b <span style="color:#f92672">=</span> b, a <span style="color:#f92672">+</span> b
-    <span style="color:#66d9ef">return</span> a
-</code></pre></div><ul>
+<pre><code>def climb_stairs(n):
+    a = b = 1
+    for _ in range(n):
+        a, b = b, a + b
+    return a
+</code></pre><ul>
 <li>Num decodings</li>
 </ul>
 <p>&lsquo;A&rsquo; -&gt; 1
@@ -197,82 +197,82 @@ Given encoded message &ldquo;12&rdquo;,
 it could be decoded as &ldquo;AB&rdquo; (1 2) or &ldquo;L&rdquo; (12)
 The number of ways decoding &ldquo;12&rdquo; is 2</p>
 <p>思路：和爬梯子解法一致，只是多了一个条件，两步时，必须小于27</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">num_decodings</span>(s):
-    <span style="color:#66d9ef">if</span> <span style="color:#f92672">not</span> s <span style="color:#f92672">or</span> s[<span style="color:#ae81ff">0</span>] <span style="color:#f92672">==</span> <span style="color:#e6db74">&#34;0&#34;</span>:
-        <span style="color:#66d9ef">return</span> <span style="color:#ae81ff">0</span>
-    wo_last, wo_last_two <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">1</span>
-    <span style="color:#66d9ef">for</span> i <span style="color:#f92672">in</span> range(<span style="color:#ae81ff">1</span>, len(s)):
-        x <span style="color:#f92672">=</span> wo_last <span style="color:#66d9ef">if</span> s[i] <span style="color:#f92672">!=</span> <span style="color:#e6db74">&#34;0&#34;</span> <span style="color:#66d9ef">else</span> <span style="color:#ae81ff">0</span>
-        y <span style="color:#f92672">=</span> wo_last_two <span style="color:#66d9ef">if</span> int(s[i <span style="color:#f92672">-</span> <span style="color:#ae81ff">1</span>:i <span style="color:#f92672">+</span> <span style="color:#ae81ff">1</span>]) <span style="color:#f92672">&lt;</span> <span style="color:#ae81ff">27</span> <span style="color:#f92672">and</span> s[i <span style="color:#f92672">-</span> <span style="color:#ae81ff">1</span>] <span style="color:#f92672">!=</span> <span style="color:#e6db74">&#34;0&#34;</span> <span style="color:#66d9ef">else</span> <span style="color:#ae81ff">0</span>
-        wo_last_two, wo_last <span style="color:#f92672">=</span> wo_last, x <span style="color:#f92672">+</span> y
-    <span style="color:#66d9ef">return</span> wo_last
+<pre><code>def num_decodings(s):
+    if not s or s[0] == &quot;0&quot;:
+        return 0
+    wo_last, wo_last_two = 1, 1
+    for i in range(1, len(s)):
+        x = wo_last if s[i] != &quot;0&quot; else 0
+        y = wo_last_two if int(s[i - 1:i + 1]) &lt; 27 and s[i - 1] != &quot;0&quot; else 0
+        wo_last_two, wo_last = wo_last, x + y
+    return wo_last
 
-s <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;121212&#34;</span>
-<span style="color:#66d9ef">assert</span> num_decodings(s) <span style="color:#f92672">==</span> <span style="color:#ae81ff">13</span>
-</code></pre></div><ul>
+s = &quot;121212&quot;
+assert num_decodings(s) == 13
+</code></pre><ul>
 <li>House robber</li>
 </ul>
 <p>题目：抢劫沿街的房屋。每间房都藏有一定的现金，阻止你抢劫他们的唯一的制约因素就是相邻的房屋有保安系统连接，如果两间相邻的房屋在同一晚上被闯入，它会自动联系警方。</p>
 <p>思路：判断当前房子抢劫与否，依赖于上一个房子和上上一个房子是否抢劫，上上个房屋最优解加上当前房屋现金和上个房屋最优解比较大小选择</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">robber</span>(houses):
-    last, now <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">0</span>
-    <span style="color:#66d9ef">for</span> h <span style="color:#f92672">in</span> houses:
-        tmp <span style="color:#f92672">=</span> now
-        now <span style="color:#f92672">=</span> max(now, last <span style="color:#f92672">+</span> h)
-        last <span style="color:#f92672">=</span> tmp
+<pre><code>def robber(houses):
+    last, now = 0, 0
+    for h in houses:
+        tmp = now
+        now = max(now, last + h)
+        last = tmp
 
-    <span style="color:#66d9ef">return</span> now
+    return now
 
-houses <span style="color:#f92672">=</span> [<span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">2</span>, <span style="color:#ae81ff">16</span>, <span style="color:#ae81ff">3</span>, <span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">15</span>, <span style="color:#ae81ff">3</span>, <span style="color:#ae81ff">12</span>, <span style="color:#ae81ff">1</span>]
-<span style="color:#66d9ef">assert</span> robber(houses) <span style="color:#f92672">==</span> <span style="color:#ae81ff">44</span>
-</code></pre></div><ul>
+houses = [1, 2, 16, 3, 1, 15, 3, 12, 1]
+assert robber(houses) == 44
+</code></pre><ul>
 <li>背包问题</li>
 </ul>
 <p>题目：窃贼偷窃一家有n件物品的商店，第i件物品价值为vi元，重量为wi，假设vi和wi都为整数。他希望带走的东西越值钱越好，但他的背包中之多只能装下W磅的东西，W为一整数。应该带走哪几样东西？</p>
 <p>思路：当选择是否要放入第i个物品时，主要考虑放入i物品的价值和不放入i物品的价值</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Item</span>(object):
-    <span style="color:#66d9ef">def</span> __init__(self, weight, value):
-        self<span style="color:#f92672">.</span>v <span style="color:#f92672">=</span> value
-        self<span style="color:#f92672">.</span>w <span style="color:#f92672">=</span> weight
+<pre><code>class Item(object):
+    def __init__(self, weight, value):
+        self.v = value
+        self.w = weight
 
 
-<span style="color:#66d9ef">def</span> <span style="color:#a6e22e">max_value</span>(items, knapsack):
-    dp <span style="color:#f92672">=</span> [[<span style="color:#ae81ff">0</span>] <span style="color:#f92672">*</span> len(items) <span style="color:#66d9ef">for</span> _ <span style="color:#f92672">in</span> range(knapsack <span style="color:#f92672">+</span> <span style="color:#ae81ff">1</span>)]
-    <span style="color:#66d9ef">for</span> c <span style="color:#f92672">in</span> range(<span style="color:#ae81ff">1</span>, knapsack <span style="color:#f92672">+</span> <span style="color:#ae81ff">1</span>):
-        <span style="color:#66d9ef">if</span> items[<span style="color:#ae81ff">0</span>]<span style="color:#f92672">.</span>w <span style="color:#f92672">&lt;=</span> c:
-            dp[c][<span style="color:#ae81ff">0</span>] <span style="color:#f92672">=</span> items[<span style="color:#ae81ff">0</span>]<span style="color:#f92672">.</span>v
+def max_value(items, knapsack):
+    dp = [[0] * len(items) for _ in range(knapsack + 1)]
+    for c in range(1, knapsack + 1):
+        if items[0].w &lt;= c:
+            dp[c][0] = items[0].v
 
-        <span style="color:#66d9ef">for</span> index <span style="color:#f92672">in</span> range(<span style="color:#ae81ff">1</span>, len(items)):
-            <span style="color:#66d9ef">if</span> items[index]<span style="color:#f92672">.</span>w <span style="color:#f92672">&lt;=</span> c:
-                dp[c][index] <span style="color:#f92672">=</span> max(
-                    items[index]<span style="color:#f92672">.</span>v <span style="color:#f92672">+</span> dp[c <span style="color:#f92672">-</span> items[index]<span style="color:#f92672">.</span>w][index <span style="color:#f92672">-</span> <span style="color:#ae81ff">1</span>], dp[c][index <span style="color:#f92672">-</span> <span style="color:#ae81ff">1</span>])
-            <span style="color:#66d9ef">else</span>:
-                dp[c][index] <span style="color:#f92672">=</span> dp[c][index <span style="color:#f92672">-</span> <span style="color:#ae81ff">1</span>]
-    <span style="color:#66d9ef">return</span> dp[<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>][<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>]
+        for index in range(1, len(items)):
+            if items[index].w &lt;= c:
+                dp[c][index] = max(
+                    items[index].v + dp[c - items[index].w][index - 1], dp[c][index - 1])
+            else:
+                dp[c][index] = dp[c][index - 1]
+    return dp[-1][-1]
 
 
-items <span style="color:#f92672">=</span> [Item(<span style="color:#ae81ff">5</span>, <span style="color:#ae81ff">12</span>), Item(<span style="color:#ae81ff">4</span>, <span style="color:#ae81ff">3</span>), Item(<span style="color:#ae81ff">7</span>, <span style="color:#ae81ff">10</span>), Item(<span style="color:#ae81ff">2</span>, <span style="color:#ae81ff">3</span>), Item(<span style="color:#ae81ff">6</span>, <span style="color:#ae81ff">6</span>)]
-<span style="color:#66d9ef">assert</span> max_value(items, <span style="color:#ae81ff">15</span>) <span style="color:#f92672">==</span> <span style="color:#ae81ff">25</span>
-</code></pre></div><ul>
+items = [Item(5, 12), Item(4, 3), Item(7, 10), Item(2, 3), Item(6, 6)]
+assert max_value(items, 15) == 25
+</code></pre><ul>
 <li>单词分割</li>
 </ul>
 <p>思路：对每一个字符建索引，然后搜索子字符串是否在字典中</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">word_break</span>(s, word_dict):
-    dp <span style="color:#f92672">=</span> [False] <span style="color:#f92672">*</span> (len(s) <span style="color:#f92672">+</span> <span style="color:#ae81ff">1</span>)
-    dp[<span style="color:#ae81ff">0</span>] <span style="color:#f92672">=</span> True
-    <span style="color:#66d9ef">for</span> i <span style="color:#f92672">in</span> range(<span style="color:#ae81ff">1</span>, len(s) <span style="color:#f92672">+</span> <span style="color:#ae81ff">1</span>):
-        <span style="color:#66d9ef">for</span> j <span style="color:#f92672">in</span> range(<span style="color:#ae81ff">0</span>, i):
-            <span style="color:#66d9ef">if</span> dp[j] <span style="color:#f92672">and</span> s[j:i] <span style="color:#f92672">in</span> word_dict:
-                dp[i] <span style="color:#f92672">=</span> True
-                <span style="color:#66d9ef">break</span>
-    <span style="color:#66d9ef">return</span> dp[<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>]
+<pre><code>def word_break(s, word_dict):
+    dp = [False] * (len(s) + 1)
+    dp[0] = True
+    for i in range(1, len(s) + 1):
+        for j in range(0, i):
+            if dp[j] and s[j:i] in word_dict:
+                dp[i] = True
+                break
+    return dp[-1]
 
 
-s <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;nevertaomore&#34;</span>
-dic <span style="color:#f92672">=</span> [<span style="color:#e6db74">&#34;never&#34;</span>, <span style="color:#e6db74">&#34;more&#34;</span>, <span style="color:#e6db74">&#34;tao&#34;</span>, <span style="color:#e6db74">&#34;nev&#34;</span>]
+s = &quot;nevertaomore&quot;
+dic = [&quot;never&quot;, &quot;more&quot;, &quot;tao&quot;, &quot;nev&quot;]
 
-<span style="color:#66d9ef">assert</span> word_break(s, dic) <span style="color:#f92672">==</span> True
-</code></pre></div>
+assert word_break(s, dic) == True
+</code></pre>
             </article>
           </div>
           

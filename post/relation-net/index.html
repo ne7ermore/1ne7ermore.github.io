@@ -192,132 +192,132 @@
 <p>数据集 - bAbI</p>
 <p>bAbI为纯文本数据集(数据在代码中&rsquo;data'文件中)，分别有20个任务</p>
 <p>代码</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">RelationNet</span>(nn<span style="color:#f92672">.</span>Module):
-    <span style="color:#66d9ef">def</span> __init__(self, word_size, answer_size,
+<pre><code>class RelationNet(nn.Module):
+    def __init__(self, word_size, answer_size,
                  max_s_len, max_q_len, use_cuda,
-                 story_len<span style="color:#f92672">=</span><span style="color:#ae81ff">20</span>,
-                 emb_dim<span style="color:#f92672">=</span><span style="color:#ae81ff">32</span>,
-                 story_hsz<span style="color:#f92672">=</span><span style="color:#ae81ff">32</span>,
-                 story_layers<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>,
-                 question_hsz<span style="color:#f92672">=</span><span style="color:#ae81ff">32</span>,
-                 question_layers<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>):
+                 story_len=20,
+                 emb_dim=32,
+                 story_hsz=32,
+                 story_layers=1,
+                 question_hsz=32,
+                 question_layers=1):
 
-        super()<span style="color:#f92672">.</span>__init__()
+        super().__init__()
 
-        self<span style="color:#f92672">.</span>use_cuda <span style="color:#f92672">=</span> use_cuda
+        self.use_cuda = use_cuda
 
-        self<span style="color:#f92672">.</span>max_s_len <span style="color:#f92672">=</span> max_s_len
-        self<span style="color:#f92672">.</span>max_q_len <span style="color:#f92672">=</span> max_q_len
+        self.max_s_len = max_s_len
+        self.max_q_len = max_q_len
 
-        self<span style="color:#f92672">.</span>story_len <span style="color:#f92672">=</span> story_len
+        self.story_len = story_len
 
-        self<span style="color:#f92672">.</span>emb_dim <span style="color:#f92672">=</span> emb_dim
-        self<span style="color:#f92672">.</span>story_hsz <span style="color:#f92672">=</span> story_hsz
+        self.emb_dim = emb_dim
+        self.story_hsz = story_hsz
 
-        self<span style="color:#f92672">.</span>emb <span style="color:#f92672">=</span> nn<span style="color:#f92672">.</span>Embedding(word_size, emb_dim)
+        self.emb = nn.Embedding(word_size, emb_dim)
 
-        <span style="color:#75715e"># 故事和问题都使用lstm提取上层特征</span>
-        self<span style="color:#f92672">.</span>story_rnn <span style="color:#f92672">=</span> torch<span style="color:#f92672">.</span>nn<span style="color:#f92672">.</span>LSTM(input_size<span style="color:#f92672">=</span>emb_dim,
-                                       hidden_size<span style="color:#f92672">=</span>story_hsz,
-                                       num_layers<span style="color:#f92672">=</span>story_layers,
-                                       batch_first<span style="color:#f92672">=</span>True)
-        self<span style="color:#f92672">.</span>question_rnn <span style="color:#f92672">=</span> torch<span style="color:#f92672">.</span>nn<span style="color:#f92672">.</span>LSTM(input_size<span style="color:#f92672">=</span>emb_dim,
-                                          hidden_size<span style="color:#f92672">=</span>question_hsz,
-                                          num_layers<span style="color:#f92672">=</span>question_layers,
-                                          batch_first<span style="color:#f92672">=</span>True)
+        # 故事和问题都使用lstm提取上层特征
+        self.story_rnn = torch.nn.LSTM(input_size=emb_dim,
+                                       hidden_size=story_hsz,
+                                       num_layers=story_layers,
+                                       batch_first=True)
+        self.question_rnn = torch.nn.LSTM(input_size=emb_dim,
+                                          hidden_size=question_hsz,
+                                          num_layers=question_layers,
+                                          batch_first=True)
 
-        <span style="color:#75715e"># 样本关系mlp</span>
-        self<span style="color:#f92672">.</span>g1 <span style="color:#f92672">=</span> nn<span style="color:#f92672">.</span>Linear((<span style="color:#ae81ff">2</span><span style="color:#f92672">*</span>story_len)<span style="color:#f92672">+</span>(<span style="color:#ae81ff">2</span><span style="color:#f92672">*</span>story_hsz)<span style="color:#f92672">+</span>question_hsz, <span style="color:#ae81ff">256</span>)
-        self<span style="color:#f92672">.</span>g2 <span style="color:#f92672">=</span> nn<span style="color:#f92672">.</span>Linear(<span style="color:#ae81ff">256</span>, <span style="color:#ae81ff">256</span>)
-        self<span style="color:#f92672">.</span>g3 <span style="color:#f92672">=</span> nn<span style="color:#f92672">.</span>Linear(<span style="color:#ae81ff">256</span>, <span style="color:#ae81ff">256</span>)
-        self<span style="color:#f92672">.</span>g4 <span style="color:#f92672">=</span> nn<span style="color:#f92672">.</span>Linear(<span style="color:#ae81ff">256</span>, <span style="color:#ae81ff">256</span>)
+        # 样本关系mlp
+        self.g1 = nn.Linear((2*story_len)+(2*story_hsz)+question_hsz, 256)
+        self.g2 = nn.Linear(256, 256)
+        self.g3 = nn.Linear(256, 256)
+        self.g4 = nn.Linear(256, 256)
 
-        self<span style="color:#f92672">.</span>f1 <span style="color:#f92672">=</span> nn<span style="color:#f92672">.</span>Linear(<span style="color:#ae81ff">256</span>, <span style="color:#ae81ff">256</span>)
-        self<span style="color:#f92672">.</span>f2 <span style="color:#f92672">=</span> nn<span style="color:#f92672">.</span>Linear(<span style="color:#ae81ff">256</span>, <span style="color:#ae81ff">512</span>)
-        self<span style="color:#f92672">.</span>f3 <span style="color:#f92672">=</span> nn<span style="color:#f92672">.</span>Linear(<span style="color:#ae81ff">512</span>, answer_size)
+        self.f1 = nn.Linear(256, 256)
+        self.f2 = nn.Linear(256, 512)
+        self.f3 = nn.Linear(512, answer_size)
 
-        self<span style="color:#f92672">.</span>_reset_parameters()
+        self._reset_parameters()
 
-    <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">_reset_parameters</span>(self, stddev<span style="color:#f92672">=</span><span style="color:#ae81ff">0.1</span>):
-        <span style="color:#75715e"># 参数初始化</span>
+    def _reset_parameters(self, stddev=0.1):
+        # 参数初始化
 
-        self<span style="color:#f92672">.</span>emb<span style="color:#f92672">.</span>weight<span style="color:#f92672">.</span>data<span style="color:#f92672">.</span>normal_(std<span style="color:#f92672">=</span>stddev)
+        self.emb.weight.data.normal_(std=stddev)
 
-        self<span style="color:#f92672">.</span>g1<span style="color:#f92672">.</span>weight<span style="color:#f92672">.</span>data<span style="color:#f92672">.</span>normal_(std<span style="color:#f92672">=</span>stddev)
-        self<span style="color:#f92672">.</span>g1<span style="color:#f92672">.</span>bias<span style="color:#f92672">.</span>data<span style="color:#f92672">.</span>fill_(<span style="color:#ae81ff">0</span>)
+        self.g1.weight.data.normal_(std=stddev)
+        self.g1.bias.data.fill_(0)
 
-        self<span style="color:#f92672">.</span>g2<span style="color:#f92672">.</span>weight<span style="color:#f92672">.</span>data<span style="color:#f92672">.</span>normal_(std<span style="color:#f92672">=</span>stddev)
-        self<span style="color:#f92672">.</span>g2<span style="color:#f92672">.</span>bias<span style="color:#f92672">.</span>data<span style="color:#f92672">.</span>fill_(<span style="color:#ae81ff">0</span>)
+        self.g2.weight.data.normal_(std=stddev)
+        self.g2.bias.data.fill_(0)
 
-        self<span style="color:#f92672">.</span>g3<span style="color:#f92672">.</span>weight<span style="color:#f92672">.</span>data<span style="color:#f92672">.</span>normal_(std<span style="color:#f92672">=</span>stddev)
-        self<span style="color:#f92672">.</span>g3<span style="color:#f92672">.</span>bias<span style="color:#f92672">.</span>data<span style="color:#f92672">.</span>fill_(<span style="color:#ae81ff">0</span>)
+        self.g3.weight.data.normal_(std=stddev)
+        self.g3.bias.data.fill_(0)
 
-        self<span style="color:#f92672">.</span>g4<span style="color:#f92672">.</span>weight<span style="color:#f92672">.</span>data<span style="color:#f92672">.</span>normal_(std<span style="color:#f92672">=</span>stddev)
-        self<span style="color:#f92672">.</span>g4<span style="color:#f92672">.</span>bias<span style="color:#f92672">.</span>data<span style="color:#f92672">.</span>fill_(<span style="color:#ae81ff">0</span>)
+        self.g4.weight.data.normal_(std=stddev)
+        self.g4.bias.data.fill_(0)
 
-        self<span style="color:#f92672">.</span>f1<span style="color:#f92672">.</span>weight<span style="color:#f92672">.</span>data<span style="color:#f92672">.</span>normal_(std<span style="color:#f92672">=</span>stddev)
-        self<span style="color:#f92672">.</span>f1<span style="color:#f92672">.</span>bias<span style="color:#f92672">.</span>data<span style="color:#f92672">.</span>fill_(<span style="color:#ae81ff">0</span>)
+        self.f1.weight.data.normal_(std=stddev)
+        self.f1.bias.data.fill_(0)
 
-        self<span style="color:#f92672">.</span>f2<span style="color:#f92672">.</span>weight<span style="color:#f92672">.</span>data<span style="color:#f92672">.</span>normal_(std<span style="color:#f92672">=</span>stddev)
-        self<span style="color:#f92672">.</span>f2<span style="color:#f92672">.</span>bias<span style="color:#f92672">.</span>data<span style="color:#f92672">.</span>fill_(<span style="color:#ae81ff">0</span>)
+        self.f2.weight.data.normal_(std=stddev)
+        self.f2.bias.data.fill_(0)
 
-        self<span style="color:#f92672">.</span>f3<span style="color:#f92672">.</span>weight<span style="color:#f92672">.</span>data<span style="color:#f92672">.</span>normal_(std<span style="color:#f92672">=</span>stddev)
-        self<span style="color:#f92672">.</span>f3<span style="color:#f92672">.</span>bias<span style="color:#f92672">.</span>data<span style="color:#f92672">.</span>fill_(<span style="color:#ae81ff">0</span>)
+        self.f3.weight.data.normal_(std=stddev)
+        self.f3.bias.data.fill_(0)
 
-    <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">g_theta</span>(self, x):
-        <span style="color:#75715e"># 关系mlp中石油relu作为激活函数</span>
+    def g_theta(self, x):
+        # 关系mlp中石油relu作为激活函数
 
-        x <span style="color:#f92672">=</span> F<span style="color:#f92672">.</span>relu_(self<span style="color:#f92672">.</span>g1(x))
-        x <span style="color:#f92672">=</span> F<span style="color:#f92672">.</span>relu_(self<span style="color:#f92672">.</span>g2(x))
-        x <span style="color:#f92672">=</span> F<span style="color:#f92672">.</span>relu_(self<span style="color:#f92672">.</span>g3(x))
-        x <span style="color:#f92672">=</span> F<span style="color:#f92672">.</span>relu_(self<span style="color:#f92672">.</span>g4(x))
-        <span style="color:#66d9ef">return</span> x
+        x = F.relu_(self.g1(x))
+        x = F.relu_(self.g2(x))
+        x = F.relu_(self.g3(x))
+        x = F.relu_(self.g4(x))
+        return x
 
-    <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">init_tags</span>(self):
-        <span style="color:#75715e"># 加入样本位置特征</span>
+    def init_tags(self):
+        # 加入样本位置特征
         
-        tags <span style="color:#f92672">=</span> torch<span style="color:#f92672">.</span>zeros((self<span style="color:#f92672">.</span>story_len, self<span style="color:#f92672">.</span>story_len))
-        <span style="color:#66d9ef">if</span> self<span style="color:#f92672">.</span>use_cuda:
-            tags <span style="color:#f92672">=</span> tags<span style="color:#f92672">.</span>cuda()
-        <span style="color:#66d9ef">for</span> i <span style="color:#f92672">in</span> range(self<span style="color:#f92672">.</span>story_len):
-            tags[i, i]<span style="color:#f92672">.</span>fill_(<span style="color:#ae81ff">1</span>)
-        <span style="color:#66d9ef">return</span> tags
+        tags = torch.zeros((self.story_len, self.story_len))
+        if self.use_cuda:
+            tags = tags.cuda()
+        for i in range(self.story_len):
+            tags[i, i].fill_(1)
+        return tags
 
-    <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">forward</span>(self, story, question):
-        tags <span style="color:#f92672">=</span> self<span style="color:#f92672">.</span>init_tags()
-        bsz <span style="color:#f92672">=</span> story<span style="color:#f92672">.</span>shape[<span style="color:#ae81ff">0</span>]
+    def forward(self, story, question):
+        tags = self.init_tags()
+        bsz = story.shape[0]
 
-        s_emb <span style="color:#f92672">=</span> self<span style="color:#f92672">.</span>emb(story)
-        s_emb <span style="color:#f92672">=</span> s_emb<span style="color:#f92672">.</span>view(<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>, self<span style="color:#f92672">.</span>max_s_len, self<span style="color:#f92672">.</span>emb_dim)
+        s_emb = self.emb(story)
+        s_emb = s_emb.view(-1, self.max_s_len, self.emb_dim)
 
-        _, (s_state, _) <span style="color:#f92672">=</span> self<span style="color:#f92672">.</span>story_rnn(s_emb)
-        s_state <span style="color:#f92672">=</span> s_state[<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>, :, :]
-        s_state <span style="color:#f92672">=</span> s_state<span style="color:#f92672">.</span>view(<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>, self<span style="color:#f92672">.</span>story_len, self<span style="color:#f92672">.</span>story_hsz)
+        _, (s_state, _) = self.story_rnn(s_emb)
+        s_state = s_state[-1, :, :]
+        s_state = s_state.view(-1, self.story_len, self.story_hsz)
 
-        s_tags <span style="color:#f92672">=</span> tags<span style="color:#f92672">.</span>unsqueeze(<span style="color:#ae81ff">0</span>)
-        s_tags <span style="color:#f92672">=</span> s_tags<span style="color:#f92672">.</span>repeat((bsz, <span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">1</span>))
+        s_tags = tags.unsqueeze(0)
+        s_tags = s_tags.repeat((bsz, 1, 1))
 
-        story_objects <span style="color:#f92672">=</span> torch<span style="color:#f92672">.</span>cat((s_state, s_tags), dim<span style="color:#f92672">=</span><span style="color:#ae81ff">2</span>)
+        story_objects = torch.cat((s_state, s_tags), dim=2)
 
-        q_emb <span style="color:#f92672">=</span> self<span style="color:#f92672">.</span>emb(question)
-        _, (q_state, _) <span style="color:#f92672">=</span> self<span style="color:#f92672">.</span>question_rnn(q_emb)
-        q_state <span style="color:#f92672">=</span> q_state[<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>, :, :]
+        q_emb = self.emb(question)
+        _, (q_state, _) = self.question_rnn(q_emb)
+        q_state = q_state[-1, :, :]
 
-        sum_g_theta <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>
-        <span style="color:#66d9ef">for</span> i <span style="color:#f92672">in</span> range(self<span style="color:#f92672">.</span>story_len):
-            this_tensor <span style="color:#f92672">=</span> story_objects[:, i, :]
-            <span style="color:#66d9ef">for</span> j <span style="color:#f92672">in</span> range(self<span style="color:#f92672">.</span>story_len):
-                u <span style="color:#f92672">=</span> torch<span style="color:#f92672">.</span>cat(
-                    (this_tensor, story_objects[:, j, :], q_state), dim<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>)
-                g <span style="color:#f92672">=</span> self<span style="color:#f92672">.</span>g_theta(u)
-                sum_g_theta <span style="color:#f92672">=</span> torch<span style="color:#f92672">.</span>add(sum_g_theta, g)
+        sum_g_theta = 0
+        for i in range(self.story_len):
+            this_tensor = story_objects[:, i, :]
+            for j in range(self.story_len):
+                u = torch.cat(
+                    (this_tensor, story_objects[:, j, :], q_state), dim=1)
+                g = self.g_theta(u)
+                sum_g_theta = torch.add(sum_g_theta, g)
 
-        out <span style="color:#f92672">=</span> F<span style="color:#f92672">.</span>relu(self<span style="color:#f92672">.</span>f1(sum_g_theta))
-        out <span style="color:#f92672">=</span> F<span style="color:#f92672">.</span>relu(self<span style="color:#f92672">.</span>f2(out))
-        out <span style="color:#f92672">=</span> self<span style="color:#f92672">.</span>f3(out)
+        out = F.relu(self.f1(sum_g_theta))
+        out = F.relu(self.f2(out))
+        out = self.f3(out)
 
-        <span style="color:#66d9ef">return</span> out
-</code></pre></div><p>结果</p>
+        return out
+</code></pre><p>结果</p>
 <!-- raw HTML omitted -->
 <!-- raw HTML omitted -->
 <!-- raw HTML omitted -->

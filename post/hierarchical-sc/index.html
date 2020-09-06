@@ -200,151 +200,151 @@
 <p>数据预处理就不多说了，具体可以参见项目的readme</p>
 <p>以下是pytorch代码，tensorflow请移步github</p>
 <p>模型视图</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Model</span>(nn<span style="color:#f92672">.</span>Module):
-    <span style="color:#66d9ef">def</span> __init__(self, args, use_cuda):
+<pre><code>class Model(nn.Module):
+    def __init__(self, args, use_cuda):
 
-        super()<span style="color:#f92672">.</span>__init__()
+        super().__init__()
 
-        <span style="color:#66d9ef">for</span> k, v <span style="color:#f92672">in</span> args<span style="color:#f92672">.</span>__dict__<span style="color:#f92672">.</span>items():
-            self<span style="color:#f92672">.</span>__setattr__(k, v)
+        for k, v in args.__dict__.items():
+            self.__setattr__(k, v)
 
-        self<span style="color:#f92672">.</span>torch <span style="color:#f92672">=</span> torch<span style="color:#f92672">.</span>cuda <span style="color:#66d9ef">if</span> use_cuda <span style="color:#66d9ef">else</span> torch
+        self.torch = torch.cuda if use_cuda else torch
 
-        self<span style="color:#f92672">.</span>emb <span style="color:#f92672">=</span> nn<span style="color:#f92672">.</span>Embedding(self<span style="color:#f92672">.</span>dict_size, self<span style="color:#f92672">.</span>emb_dim)
-        self<span style="color:#f92672">.</span>encode <span style="color:#f92672">=</span> torch<span style="color:#f92672">.</span>nn<span style="color:#f92672">.</span>LSTM(input_size<span style="color:#f92672">=</span>self<span style="color:#f92672">.</span>emb_dim,
-                                    hidden_size<span style="color:#f92672">=</span>self<span style="color:#f92672">.</span>rnn_hsz,
-                                    num_layers<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>,
-                                    bidirectional<span style="color:#f92672">=</span>True)
-        self<span style="color:#f92672">.</span>decode <span style="color:#f92672">=</span> torch<span style="color:#f92672">.</span>nn<span style="color:#f92672">.</span>LSTM(input_size<span style="color:#f92672">=</span>self<span style="color:#f92672">.</span>rnn_hsz,
-                                    hidden_size<span style="color:#f92672">=</span>self<span style="color:#f92672">.</span>rnn_hsz,
-                                    num_layers<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>)
-        self<span style="color:#f92672">.</span>summ_att_w <span style="color:#f92672">=</span> nn<span style="color:#f92672">.</span>Linear(self<span style="color:#f92672">.</span>rnn_hsz,
-                                    self<span style="color:#f92672">.</span>rnn_hsz,
-                                    bias<span style="color:#f92672">=</span>False)
-        self<span style="color:#f92672">.</span>cls_att_w <span style="color:#f92672">=</span> nn<span style="color:#f92672">.</span>Linear(self<span style="color:#f92672">.</span>rnn_hsz,
-                                   self<span style="color:#f92672">.</span>rnn_hsz,
-                                   bias<span style="color:#f92672">=</span>False)
-        self<span style="color:#f92672">.</span>summ_gen <span style="color:#f92672">=</span> nn<span style="color:#f92672">.</span>Linear(self<span style="color:#f92672">.</span>rnn_hsz, self<span style="color:#f92672">.</span>dict_size)
-        self<span style="color:#f92672">.</span>cls_pred <span style="color:#f92672">=</span> nn<span style="color:#f92672">.</span>Linear(
-            (self<span style="color:#f92672">.</span>max_ori_len <span style="color:#f92672">+</span> self<span style="color:#f92672">.</span>max_sum_len) <span style="color:#f92672">*</span> self<span style="color:#f92672">.</span>rnn_hsz, self<span style="color:#f92672">.</span>label_size)
+        self.emb = nn.Embedding(self.dict_size, self.emb_dim)
+        self.encode = torch.nn.LSTM(input_size=self.emb_dim,
+                                    hidden_size=self.rnn_hsz,
+                                    num_layers=1,
+                                    bidirectional=True)
+        self.decode = torch.nn.LSTM(input_size=self.rnn_hsz,
+                                    hidden_size=self.rnn_hsz,
+                                    num_layers=1)
+        self.summ_att_w = nn.Linear(self.rnn_hsz,
+                                    self.rnn_hsz,
+                                    bias=False)
+        self.cls_att_w = nn.Linear(self.rnn_hsz,
+                                   self.rnn_hsz,
+                                   bias=False)
+        self.summ_gen = nn.Linear(self.rnn_hsz, self.dict_size)
+        self.cls_pred = nn.Linear(
+            (self.max_ori_len + self.max_sum_len) * self.rnn_hsz, self.label_size)
 
-        self<span style="color:#f92672">.</span>dropout <span style="color:#f92672">=</span> nn<span style="color:#f92672">.</span>Dropout(self<span style="color:#f92672">.</span>dropout)
+        self.dropout = nn.Dropout(self.dropout)
 
-        self<span style="color:#f92672">.</span>_reset_parameters()
+        self._reset_parameters()
 
-    <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">_reset_parameters</span>(self):
-        stdv <span style="color:#f92672">=</span> <span style="color:#ae81ff">1.</span> <span style="color:#f92672">/</span> math<span style="color:#f92672">.</span>sqrt(self<span style="color:#f92672">.</span>emb_dim)
+    def _reset_parameters(self):
+        stdv = 1. / math.sqrt(self.emb_dim)
 
-        self<span style="color:#f92672">.</span>emb<span style="color:#f92672">.</span>weight<span style="color:#f92672">.</span>data<span style="color:#f92672">.</span>uniform_(<span style="color:#f92672">-</span>stdv, stdv)
+        self.emb.weight.data.uniform_(-stdv, stdv)
 
-        self<span style="color:#f92672">.</span>summ_att_w<span style="color:#f92672">.</span>weight<span style="color:#f92672">.</span>data<span style="color:#f92672">.</span>uniform_(<span style="color:#f92672">-</span>stdv, stdv)
+        self.summ_att_w.weight.data.uniform_(-stdv, stdv)
 
-        self<span style="color:#f92672">.</span>cls_att_w<span style="color:#f92672">.</span>weight<span style="color:#f92672">.</span>data<span style="color:#f92672">.</span>uniform_(<span style="color:#f92672">-</span>stdv, stdv)
+        self.cls_att_w.weight.data.uniform_(-stdv, stdv)
 
-        self<span style="color:#f92672">.</span>summ_gen<span style="color:#f92672">.</span>weight<span style="color:#f92672">.</span>data<span style="color:#f92672">.</span>uniform_(<span style="color:#f92672">-</span>stdv, stdv)
-        self<span style="color:#f92672">.</span>summ_gen<span style="color:#f92672">.</span>bias<span style="color:#f92672">.</span>data<span style="color:#f92672">.</span>fill_(<span style="color:#ae81ff">0</span>)
+        self.summ_gen.weight.data.uniform_(-stdv, stdv)
+        self.summ_gen.bias.data.fill_(0)
 
-        self<span style="color:#f92672">.</span>cls_pred<span style="color:#f92672">.</span>weight<span style="color:#f92672">.</span>data<span style="color:#f92672">.</span>uniform_(<span style="color:#f92672">-</span>stdv, stdv)
-        self<span style="color:#f92672">.</span>cls_pred<span style="color:#f92672">.</span>bias<span style="color:#f92672">.</span>data<span style="color:#f92672">.</span>fill_(<span style="color:#ae81ff">0</span>)
+        self.cls_pred.weight.data.uniform_(-stdv, stdv)
+        self.cls_pred.bias.data.fill_(0)
 
-    <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">forward</span>(self, original):
-        bsz <span style="color:#f92672">=</span> original<span style="color:#f92672">.</span>size(<span style="color:#ae81ff">0</span>)
+    def forward(self, original):
+        bsz = original.size(0)
 
-        ori_emb <span style="color:#f92672">=</span> self<span style="color:#f92672">.</span>emb(original)
-        ori_emb_t <span style="color:#f92672">=</span> ori_emb<span style="color:#f92672">.</span>transpose(<span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">1</span>)
+        ori_emb = self.emb(original)
+        ori_emb_t = ori_emb.transpose(0, 1)
 
-        encodes, (h, _) <span style="color:#f92672">=</span> self<span style="color:#f92672">.</span>encode(ori_emb_t)
-        ori_memory <span style="color:#f92672">=</span> encodes[:, :, :self<span style="color:#f92672">.</span>rnn_hsz] <span style="color:#f92672">+</span> \
-            encodes[:, :, self<span style="color:#f92672">.</span>rnn_hsz:]
+        encodes, (h, _) = self.encode(ori_emb_t)
+        ori_memory = encodes[:, :, :self.rnn_hsz] + \
+            encodes[:, :, self.rnn_hsz:]
 
-        ori_hidden <span style="color:#f92672">=</span> (h[<span style="color:#ae81ff">0</span>] <span style="color:#f92672">+</span> h[<span style="color:#ae81ff">1</span>])<span style="color:#f92672">.</span>unsqueeze(<span style="color:#ae81ff">0</span>)
-        c <span style="color:#f92672">=</span> Variable(next(self<span style="color:#f92672">.</span>parameters())<span style="color:#f92672">.</span>data<span style="color:#f92672">.</span>new(
-            <span style="color:#ae81ff">1</span>, bsz, self<span style="color:#f92672">.</span>rnn_hsz)<span style="color:#f92672">.</span>zero_())
+        ori_hidden = (h[0] + h[1]).unsqueeze(0)
+        c = Variable(next(self.parameters()).data.new(
+            1, bsz, self.rnn_hsz).zero_())
 
-        ori_memory <span style="color:#f92672">=</span> self<span style="color:#f92672">.</span>dropout(ori_memory)
-        ori_hidden <span style="color:#f92672">=</span> self<span style="color:#f92672">.</span>dropout(ori_hidden)
+        ori_memory = self.dropout(ori_memory)
+        ori_hidden = self.dropout(ori_hidden)
 
-        dec_hidden <span style="color:#f92672">=</span> (ori_hidden, c)
+        dec_hidden = (ori_hidden, c)
 
-        word <span style="color:#f92672">=</span> Variable(self<span style="color:#f92672">.</span>torch<span style="color:#f92672">.</span>LongTensor([[BOS]] <span style="color:#f92672">*</span> bsz))
-        v_ts, summ_props <span style="color:#f92672">=</span> [], []
-        <span style="color:#66d9ef">for</span> _ <span style="color:#f92672">in</span> range(self<span style="color:#f92672">.</span>max_sum_len):
-            summ_emb <span style="color:#f92672">=</span> self<span style="color:#f92672">.</span>emb(word)<span style="color:#f92672">.</span>transpose(<span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">1</span>)
-            _, dec_hidden <span style="color:#f92672">=</span> self<span style="color:#f92672">.</span>decode(summ_emb, dec_hidden)
-            h_state <span style="color:#f92672">=</span> self<span style="color:#f92672">.</span>dropout(dec_hidden[<span style="color:#ae81ff">0</span>])
+        word = Variable(self.torch.LongTensor([[BOS]] * bsz))
+        v_ts, summ_props = [], []
+        for _ in range(self.max_sum_len):
+            summ_emb = self.emb(word).transpose(0, 1)
+            _, dec_hidden = self.decode(summ_emb, dec_hidden)
+            h_state = self.dropout(dec_hidden[0])
 
-            v_c <span style="color:#f92672">=</span> multi_view_att(ori_memory,
-                                 self<span style="color:#f92672">.</span>summ_att_w,
+            v_c = multi_view_att(ori_memory,
+                                 self.summ_att_w,
                                  h_state, bsz,
-                                 self<span style="color:#f92672">.</span>max_ori_len,
-                                 self<span style="color:#f92672">.</span>rnn_hsz)
-            v_t <span style="color:#f92672">=</span> multi_view_att(ori_memory,
-                                 self<span style="color:#f92672">.</span>cls_att_w,
+                                 self.max_ori_len,
+                                 self.rnn_hsz)
+            v_t = multi_view_att(ori_memory,
+                                 self.cls_att_w,
                                  h_state, bsz,
-                                 self<span style="color:#f92672">.</span>max_ori_len,
-                                 self<span style="color:#f92672">.</span>rnn_hsz)
+                                 self.max_ori_len,
+                                 self.rnn_hsz)
 
-            props <span style="color:#f92672">=</span> F<span style="color:#f92672">.</span>log_softmax(self<span style="color:#f92672">.</span>summ_gen(v_c), <span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>)
-            _, word <span style="color:#f92672">=</span> torch<span style="color:#f92672">.</span>max(props, <span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>, keepdim<span style="color:#f92672">=</span>True)
+            props = F.log_softmax(self.summ_gen(v_c), -1)
+            _, word = torch.max(props, -1, keepdim=True)
 
-            v_ts<span style="color:#f92672">.</span>append(v_t<span style="color:#f92672">.</span>unsqueeze(<span style="color:#ae81ff">1</span>))
-            summ_props<span style="color:#f92672">.</span>append(props<span style="color:#f92672">.</span>unsqueeze(<span style="color:#ae81ff">1</span>))
+            v_ts.append(v_t.unsqueeze(1))
+            summ_props.append(props.unsqueeze(1))
 
-        summ_props <span style="color:#f92672">=</span> torch<span style="color:#f92672">.</span>cat(summ_props, <span style="color:#ae81ff">1</span>)
-        v_ts <span style="color:#f92672">=</span> self<span style="color:#f92672">.</span>dropout(torch<span style="color:#f92672">.</span>cat(v_ts, <span style="color:#ae81ff">1</span>))
-        r <span style="color:#f92672">=</span> torch<span style="color:#f92672">.</span>cat([v_ts, ori_memory<span style="color:#f92672">.</span>transpose(<span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">1</span>)], <span style="color:#ae81ff">1</span>)
-        l_props <span style="color:#f92672">=</span> self<span style="color:#f92672">.</span>cls_pred(r<span style="color:#f92672">.</span>view(bsz, <span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>))
+        summ_props = torch.cat(summ_props, 1)
+        v_ts = self.dropout(torch.cat(v_ts, 1))
+        r = torch.cat([v_ts, ori_memory.transpose(0, 1)], 1)
+        l_props = self.cls_pred(r.view(bsz, -1))
 
-        <span style="color:#66d9ef">return</span> summ_props, l_props
-</code></pre></div><p>attention代码</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">multi_view_att</span>(ori_memory, att_w, dec_hidden, <span style="color:#f92672">*</span>args):
-    bsz, max_len, rnn_hsz <span style="color:#f92672">=</span> args
+        return summ_props, l_props
+</code></pre><p>attention代码</p>
+<pre><code>def multi_view_att(ori_memory, att_w, dec_hidden, *args):
+    bsz, max_len, rnn_hsz = args
 
-    dec_hidden <span style="color:#f92672">=</span> att_w(dec_hidden<span style="color:#f92672">.</span>squeeze())
-    ori_memory_t <span style="color:#f92672">=</span> ori_memory<span style="color:#f92672">.</span>transpose(<span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">2</span>)
+    dec_hidden = att_w(dec_hidden.squeeze())
+    ori_memory_t = ori_memory.transpose(1, 2)
 
-    beta_is <span style="color:#f92672">=</span> torch<span style="color:#f92672">.</span>exp(torch<span style="color:#f92672">.</span>tanh(torch<span style="color:#f92672">.</span>matmul(dec_hidden, ori_memory_t)))
-    beta_i_sum <span style="color:#f92672">=</span> torch<span style="color:#f92672">.</span>sum(beta_is, <span style="color:#ae81ff">0</span>, keepdim<span style="color:#f92672">=</span>True)
-    beta_is <span style="color:#f92672">=</span> torch<span style="color:#f92672">.</span>div(beta_is, beta_i_sum)
+    beta_is = torch.exp(torch.tanh(torch.matmul(dec_hidden, ori_memory_t)))
+    beta_i_sum = torch.sum(beta_is, 0, keepdim=True)
+    beta_is = torch.div(beta_is, beta_i_sum)
 
-    <span style="color:#66d9ef">return</span> torch<span style="color:#f92672">.</span>sum(torch<span style="color:#f92672">.</span>matmul(beta_is, ori_memory), dim<span style="color:#f92672">=</span><span style="color:#ae81ff">0</span>)
-</code></pre></div><p>阅读理解算loss时，需要去除pad，所以交叉熵的api CrossEntropyLoss就不实用</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">NlpCrossEntropy</span>(nn<span style="color:#f92672">.</span>Module):
-    <span style="color:#66d9ef">def</span> __init__(self):
-        super()<span style="color:#f92672">.</span>__init__()
+    return torch.sum(torch.matmul(beta_is, ori_memory), dim=0)
+</code></pre><p>阅读理解算loss时，需要去除pad，所以交叉熵的api CrossEntropyLoss就不实用</p>
+<pre><code>class NlpCrossEntropy(nn.Module):
+    def __init__(self):
+        super().__init__()
 
-    <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">forward</span>(self, props, tgt):
-        tgt_props <span style="color:#f92672">=</span> props<span style="color:#f92672">.</span>gather(<span style="color:#ae81ff">2</span>, tgt<span style="color:#f92672">.</span>unsqueeze(<span style="color:#ae81ff">2</span>))<span style="color:#f92672">.</span>squeeze()
-        mask <span style="color:#f92672">=</span> (tgt <span style="color:#f92672">&gt;</span> <span style="color:#ae81ff">0</span>)<span style="color:#f92672">.</span>float()
-        <span style="color:#66d9ef">return</span> <span style="color:#f92672">-</span>(tgt_props <span style="color:#f92672">*</span> mask)<span style="color:#f92672">.</span>sum() <span style="color:#f92672">/</span> mask<span style="color:#f92672">.</span>sum()
-</code></pre></div><p>优化函数需要定制</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">ScheduledOptim</span>(object):
-    <span style="color:#66d9ef">def</span> __init__(self, optimizer, parameters, lr, clip):
-        self<span style="color:#f92672">.</span>optimizer <span style="color:#f92672">=</span> optimizer
-        self<span style="color:#f92672">.</span>parameters <span style="color:#f92672">=</span> parameters
-        self<span style="color:#f92672">.</span>n_current_epochs <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>
-        self<span style="color:#f92672">.</span>lr <span style="color:#f92672">=</span> lr
-        self<span style="color:#f92672">.</span>clip <span style="color:#f92672">=</span> clip
+    def forward(self, props, tgt):
+        tgt_props = props.gather(2, tgt.unsqueeze(2)).squeeze()
+        mask = (tgt &gt; 0).float()
+        return -(tgt_props * mask).sum() / mask.sum()
+</code></pre><p>优化函数需要定制</p>
+<pre><code>class ScheduledOptim(object):
+    def __init__(self, optimizer, parameters, lr, clip):
+        self.optimizer = optimizer
+        self.parameters = parameters
+        self.n_current_epochs = 0
+        self.lr = lr
+        self.clip = clip
 
-    <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">step</span>(self):
-        self<span style="color:#f92672">.</span>optimizer<span style="color:#f92672">.</span>step()
+    def step(self):
+        self.optimizer.step()
 
-    <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">zero_grad</span>(self):
-        self<span style="color:#f92672">.</span>optimizer<span style="color:#f92672">.</span>zero_grad()
+    def zero_grad(self):
+        self.optimizer.zero_grad()
 
-    <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">clip_grad_norm</span>(self):
-        torch<span style="color:#f92672">.</span>nn<span style="color:#f92672">.</span>utils<span style="color:#f92672">.</span>clip_grad_norm_(self<span style="color:#f92672">.</span>parameters, self<span style="color:#f92672">.</span>clip)
+    def clip_grad_norm(self):
+        torch.nn.utils.clip_grad_norm_(self.parameters, self.clip)
 
-    <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">update_learning_rate</span>(self):
-        self<span style="color:#f92672">.</span>n_current_epochs <span style="color:#f92672">+=</span> <span style="color:#ae81ff">1</span>
+    def update_learning_rate(self):
+        self.n_current_epochs += 1
 
-        <span style="color:#66d9ef">if</span> self<span style="color:#f92672">.</span>n_current_epochs <span style="color:#f92672">&gt;</span> <span style="color:#ae81ff">4</span>:
-            self<span style="color:#f92672">.</span>lr <span style="color:#f92672">=</span> self<span style="color:#f92672">.</span>lr <span style="color:#f92672">/</span> <span style="color:#ae81ff">2</span>
-            <span style="color:#66d9ef">print</span>(<span style="color:#e6db74">&#34;| learning rate updated - {}&#34;</span><span style="color:#f92672">.</span>format(self<span style="color:#f92672">.</span>lr))
-            <span style="color:#66d9ef">print</span>(<span style="color:#e6db74">&#39;-&#39;</span> <span style="color:#f92672">*</span> <span style="color:#ae81ff">90</span>)
-            <span style="color:#66d9ef">for</span> param_group <span style="color:#f92672">in</span> self<span style="color:#f92672">.</span>optimizer<span style="color:#f92672">.</span>param_groups:
-                param_group[<span style="color:#e6db74">&#39;lr&#39;</span>] <span style="color:#f92672">=</span> self<span style="color:#f92672">.</span>lr
-</code></pre></div>
+        if self.n_current_epochs &gt; 4:
+            self.lr = self.lr / 2
+            print(&quot;| learning rate updated - {}&quot;.format(self.lr))
+            print('-' * 90)
+            for param_group in self.optimizer.param_groups:
+                param_group['lr'] = self.lr
+</code></pre>
             </article>
           </div>
           

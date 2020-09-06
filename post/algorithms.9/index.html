@@ -179,329 +179,329 @@
 <ul>
 <li>双调排序</li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">bitonic_sort</span>(arr, reverse):
-    <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">compare</span>(arr, reverse):
-        n <span style="color:#f92672">=</span> len(arr) <span style="color:#f92672">//</span> <span style="color:#ae81ff">2</span>
-        <span style="color:#66d9ef">for</span> i <span style="color:#f92672">in</span> range(n):
-            <span style="color:#66d9ef">if</span> reverse <span style="color:#f92672">!=</span> (arr[i] <span style="color:#f92672">&gt;</span> arr[i<span style="color:#f92672">+</span>n]):
-                arr[i], arr[i<span style="color:#f92672">+</span>n] <span style="color:#f92672">=</span> arr[i<span style="color:#f92672">+</span>n], arr[i]
+<pre><code>def bitonic_sort(arr, reverse):
+    def compare(arr, reverse):
+        n = len(arr) // 2
+        for i in range(n):
+            if reverse != (arr[i] &gt; arr[i+n]):
+                arr[i], arr[i+n] = arr[i+n], arr[i]
 
-        <span style="color:#66d9ef">return</span> arr
+        return arr
 
-    <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">bitonic_merge</span>(arr, reverse):
-        n <span style="color:#f92672">=</span> len(arr)
+    def bitonic_merge(arr, reverse):
+        n = len(arr)
 
-        <span style="color:#66d9ef">if</span> n <span style="color:#f92672">&lt;=</span> <span style="color:#ae81ff">1</span>:
-            <span style="color:#66d9ef">return</span> arr
+        if n &lt;= 1:
+            return arr
 
-        arr <span style="color:#f92672">=</span> compare(arr, reverse)
-        left <span style="color:#f92672">=</span> bitonic_merge(arr[:n <span style="color:#f92672">//</span> <span style="color:#ae81ff">2</span>], reverse)
-        right <span style="color:#f92672">=</span> bitonic_merge(arr[n <span style="color:#f92672">//</span> <span style="color:#ae81ff">2</span>:], reverse)
-        <span style="color:#66d9ef">return</span> left <span style="color:#f92672">+</span> right
+        arr = compare(arr, reverse)
+        left = bitonic_merge(arr[:n // 2], reverse)
+        right = bitonic_merge(arr[n // 2:], reverse)
+        return left + right
 
-    n <span style="color:#f92672">=</span> len(arr)
+    n = len(arr)
 
-    <span style="color:#66d9ef">if</span> n <span style="color:#f92672">&lt;=</span> <span style="color:#ae81ff">1</span>:
-        <span style="color:#66d9ef">return</span> arr
+    if n &lt;= 1:
+        return arr
 
-    <span style="color:#66d9ef">assert</span> n <span style="color:#f92672">&amp;</span> n<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span> <span style="color:#f92672">==</span> <span style="color:#ae81ff">0</span>
+    assert n &amp; n-1 == 0
 
-    left <span style="color:#f92672">=</span> bitonic_sort(arr[:n <span style="color:#f92672">//</span> <span style="color:#ae81ff">2</span>], True)
-    right <span style="color:#f92672">=</span> bitonic_sort(arr[n <span style="color:#f92672">//</span> <span style="color:#ae81ff">2</span>:], False)
+    left = bitonic_sort(arr[:n // 2], True)
+    right = bitonic_sort(arr[n // 2:], False)
 
-    arr <span style="color:#f92672">=</span> bitonic_merge(left <span style="color:#f92672">+</span> right, reverse)
+    arr = bitonic_merge(left + right, reverse)
 
-    <span style="color:#66d9ef">return</span> arr
+    return arr
 
 
-<span style="color:#66d9ef">if</span> __name__ <span style="color:#f92672">==</span> <span style="color:#e6db74">&#34;__main__&#34;</span>:
-    arr <span style="color:#f92672">=</span> [<span style="color:#ae81ff">10</span>, <span style="color:#ae81ff">20</span>, <span style="color:#ae81ff">5</span>, <span style="color:#ae81ff">9</span>, <span style="color:#ae81ff">3</span>, <span style="color:#ae81ff">8</span>, <span style="color:#ae81ff">12</span>, <span style="color:#ae81ff">14</span>, <span style="color:#ae81ff">90</span>, <span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">60</span>, <span style="color:#ae81ff">40</span>, <span style="color:#ae81ff">23</span>, <span style="color:#ae81ff">35</span>, <span style="color:#ae81ff">95</span>, <span style="color:#ae81ff">18</span>]
+if __name__ == &quot;__main__&quot;:
+    arr = [10, 20, 5, 9, 3, 8, 12, 14, 90, 0, 60, 40, 23, 35, 95, 18]
 
-    <span style="color:#66d9ef">assert</span> bitonic_sort(arr, False) <span style="color:#f92672">==</span> [
-        <span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">3</span>, <span style="color:#ae81ff">5</span>, <span style="color:#ae81ff">8</span>, <span style="color:#ae81ff">9</span>, <span style="color:#ae81ff">10</span>, <span style="color:#ae81ff">12</span>, <span style="color:#ae81ff">14</span>, <span style="color:#ae81ff">18</span>, <span style="color:#ae81ff">20</span>, <span style="color:#ae81ff">23</span>, <span style="color:#ae81ff">35</span>, <span style="color:#ae81ff">40</span>, <span style="color:#ae81ff">60</span>, <span style="color:#ae81ff">90</span>, <span style="color:#ae81ff">95</span>]
-</code></pre></div><ul>
+    assert bitonic_sort(arr, False) == [
+        0, 3, 5, 8, 9, 10, 12, 14, 18, 20, 23, 35, 40, 60, 90, 95]
+</code></pre><ul>
 <li>冒泡排序</li>
 </ul>
 <p>时间复杂度：O(n^2)
 思路：找出最大的放在最后</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">bubble_sort</span>(arr):
-    <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">swap</span>(i, j):
-        arr[i], arr[j] <span style="color:#f92672">=</span> arr[j], arr[i]
+<pre><code>def bubble_sort(arr):
+    def swap(i, j):
+        arr[i], arr[j] = arr[j], arr[i]
 
-    n <span style="color:#f92672">=</span> len(arr)
-    last <span style="color:#f92672">=</span> n
-    <span style="color:#66d9ef">while</span> last <span style="color:#f92672">&gt;</span> <span style="color:#ae81ff">1</span>:
-        <span style="color:#66d9ef">for</span> index <span style="color:#f92672">in</span> range(last<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>):
-            <span style="color:#66d9ef">if</span> arr[index] <span style="color:#f92672">&gt;</span> arr[index<span style="color:#f92672">+</span><span style="color:#ae81ff">1</span>]:
-                swap(index, index<span style="color:#f92672">+</span><span style="color:#ae81ff">1</span>)
-        last <span style="color:#f92672">-=</span> <span style="color:#ae81ff">1</span>
+    n = len(arr)
+    last = n
+    while last &gt; 1:
+        for index in range(last-1):
+            if arr[index] &gt; arr[index+1]:
+                swap(index, index+1)
+        last -= 1
 
-    <span style="color:#66d9ef">return</span> arr
+    return arr
 
 
-<span style="color:#66d9ef">if</span> __name__ <span style="color:#f92672">==</span> <span style="color:#e6db74">&#34;__main__&#34;</span>:
-    arr <span style="color:#f92672">=</span> [<span style="color:#ae81ff">10</span>, <span style="color:#ae81ff">20</span>, <span style="color:#ae81ff">5</span>, <span style="color:#ae81ff">9</span>, <span style="color:#ae81ff">3</span>, <span style="color:#ae81ff">8</span>, <span style="color:#ae81ff">12</span>, <span style="color:#ae81ff">14</span>, <span style="color:#ae81ff">90</span>, <span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">60</span>, <span style="color:#ae81ff">40</span>, <span style="color:#ae81ff">23</span>, <span style="color:#ae81ff">35</span>, <span style="color:#ae81ff">95</span>, <span style="color:#ae81ff">18</span>]
-    <span style="color:#66d9ef">assert</span> bubble_sort(arr) <span style="color:#f92672">==</span> [<span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">3</span>, <span style="color:#ae81ff">5</span>, <span style="color:#ae81ff">8</span>, <span style="color:#ae81ff">9</span>, <span style="color:#ae81ff">10</span>,
-                                <span style="color:#ae81ff">12</span>, <span style="color:#ae81ff">14</span>, <span style="color:#ae81ff">18</span>, <span style="color:#ae81ff">20</span>, <span style="color:#ae81ff">23</span>, <span style="color:#ae81ff">35</span>, <span style="color:#ae81ff">40</span>, <span style="color:#ae81ff">60</span>, <span style="color:#ae81ff">90</span>, <span style="color:#ae81ff">95</span>]
-</code></pre></div><ul>
+if __name__ == &quot;__main__&quot;:
+    arr = [10, 20, 5, 9, 3, 8, 12, 14, 90, 0, 60, 40, 23, 35, 95, 18]
+    assert bubble_sort(arr) == [0, 3, 5, 8, 9, 10,
+                                12, 14, 18, 20, 23, 35, 40, 60, 90, 95]
+</code></pre><ul>
 <li>桶排序</li>
 </ul>
 <p>时间复杂度：O(n)
 思路：按索引放成员</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">bucket_sort</span>(arr):
-    max_num <span style="color:#f92672">=</span> max(arr)
-    min_num <span style="color:#f92672">=</span> min(arr)
-    bucket <span style="color:#f92672">=</span> [None]<span style="color:#f92672">*</span>(max_num<span style="color:#f92672">+</span><span style="color:#ae81ff">1</span><span style="color:#f92672">-</span>min_num)
+<pre><code>def bucket_sort(arr):
+    max_num = max(arr)
+    min_num = min(arr)
+    bucket = [None]*(max_num+1-min_num)
 
-    <span style="color:#66d9ef">for</span> v <span style="color:#f92672">in</span> arr:
-        bucket[v <span style="color:#f92672">-</span> min_num] <span style="color:#f92672">=</span> v
+    for v in arr:
+        bucket[v - min_num] = v
 
-    list <span style="color:#f92672">=</span> []
-    <span style="color:#66d9ef">for</span> v <span style="color:#f92672">in</span> bucket:
-        <span style="color:#66d9ef">if</span> v <span style="color:#f92672">is</span> <span style="color:#f92672">not</span> None:
-            list<span style="color:#f92672">.</span>append(v)
+    list = []
+    for v in bucket:
+        if v is not None:
+            list.append(v)
 
-    <span style="color:#66d9ef">return</span> list
+    return list
 
 
-<span style="color:#66d9ef">if</span> __name__ <span style="color:#f92672">==</span> <span style="color:#e6db74">&#34;__main__&#34;</span>:
-    arr <span style="color:#f92672">=</span> [<span style="color:#ae81ff">10</span>, <span style="color:#ae81ff">20</span>, <span style="color:#ae81ff">5</span>, <span style="color:#ae81ff">9</span>, <span style="color:#ae81ff">3</span>, <span style="color:#ae81ff">8</span>, <span style="color:#ae81ff">12</span>, <span style="color:#ae81ff">14</span>, <span style="color:#ae81ff">90</span>, <span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">60</span>, <span style="color:#ae81ff">40</span>, <span style="color:#ae81ff">23</span>, <span style="color:#ae81ff">35</span>, <span style="color:#ae81ff">95</span>, <span style="color:#ae81ff">18</span>]
-    <span style="color:#66d9ef">assert</span> bucket_sort(arr) <span style="color:#f92672">==</span> [<span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">3</span>, <span style="color:#ae81ff">5</span>, <span style="color:#ae81ff">8</span>, <span style="color:#ae81ff">9</span>, <span style="color:#ae81ff">10</span>,
-                                <span style="color:#ae81ff">12</span>, <span style="color:#ae81ff">14</span>, <span style="color:#ae81ff">18</span>, <span style="color:#ae81ff">20</span>, <span style="color:#ae81ff">23</span>, <span style="color:#ae81ff">35</span>, <span style="color:#ae81ff">40</span>, <span style="color:#ae81ff">60</span>, <span style="color:#ae81ff">90</span>, <span style="color:#ae81ff">95</span>]
-</code></pre></div><ul>
+if __name__ == &quot;__main__&quot;:
+    arr = [10, 20, 5, 9, 3, 8, 12, 14, 90, 0, 60, 40, 23, 35, 95, 18]
+    assert bucket_sort(arr) == [0, 3, 5, 8, 9, 10,
+                                12, 14, 18, 20, 23, 35, 40, 60, 90, 95]
+</code></pre><ul>
 <li>圈排序</li>
 </ul>
 <p>时间复杂度：O(n^2)
 思路：首先按索引找出目标成员，然后按大小顺讯排列，完成替换后，在将被替换的成员放置正确的位置</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">cycle_sort</span>(arr):
-    len_arr <span style="color:#f92672">=</span> len(arr)
-    <span style="color:#66d9ef">for</span> cur <span style="color:#f92672">in</span> range(len_arr<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>):
-        item <span style="color:#f92672">=</span> arr[cur]
-        index <span style="color:#f92672">=</span> cur
+<pre><code>def cycle_sort(arr):
+    len_arr = len(arr)
+    for cur in range(len_arr-1):
+        item = arr[cur]
+        index = cur
 
-        <span style="color:#66d9ef">for</span> i <span style="color:#f92672">in</span> range(cur<span style="color:#f92672">+</span><span style="color:#ae81ff">1</span>, len_arr):
-            <span style="color:#66d9ef">if</span> item <span style="color:#f92672">&gt;</span> arr[i]:
-                index <span style="color:#f92672">+=</span> <span style="color:#ae81ff">1</span>
+        for i in range(cur+1, len_arr):
+            if item &gt; arr[i]:
+                index += 1
 
-        arr[index], item <span style="color:#f92672">=</span> item, arr[index]
+        arr[index], item = item, arr[index]
 
-        <span style="color:#66d9ef">while</span> index <span style="color:#f92672">!=</span> cur:
-            index <span style="color:#f92672">=</span> cur
-            <span style="color:#66d9ef">for</span> i <span style="color:#f92672">in</span> range(cur<span style="color:#f92672">+</span><span style="color:#ae81ff">1</span>, len_arr):
-                <span style="color:#66d9ef">if</span> item <span style="color:#f92672">&gt;</span> arr[i]:
-                    index <span style="color:#f92672">+=</span> <span style="color:#ae81ff">1</span>
+        while index != cur:
+            index = cur
+            for i in range(cur+1, len_arr):
+                if item &gt; arr[i]:
+                    index += 1
 
-            arr[index], item <span style="color:#f92672">=</span> item, arr[index]
+            arr[index], item = item, arr[index]
 
-    <span style="color:#66d9ef">return</span> arr
+    return arr
 
 
-<span style="color:#66d9ef">if</span> __name__ <span style="color:#f92672">==</span> <span style="color:#e6db74">&#34;__main__&#34;</span>:
-    arr <span style="color:#f92672">=</span> [<span style="color:#ae81ff">10</span>, <span style="color:#ae81ff">20</span>, <span style="color:#ae81ff">5</span>, <span style="color:#ae81ff">9</span>, <span style="color:#ae81ff">3</span>, <span style="color:#ae81ff">8</span>, <span style="color:#ae81ff">12</span>, <span style="color:#ae81ff">14</span>, <span style="color:#ae81ff">90</span>, <span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">60</span>, <span style="color:#ae81ff">40</span>, <span style="color:#ae81ff">23</span>, <span style="color:#ae81ff">35</span>, <span style="color:#ae81ff">95</span>, <span style="color:#ae81ff">18</span>]
-    <span style="color:#66d9ef">assert</span> cycle_sort(arr) <span style="color:#f92672">==</span> [<span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">3</span>, <span style="color:#ae81ff">5</span>, <span style="color:#ae81ff">8</span>, <span style="color:#ae81ff">9</span>, <span style="color:#ae81ff">10</span>, <span style="color:#ae81ff">12</span>,
-                               <span style="color:#ae81ff">14</span>, <span style="color:#ae81ff">18</span>, <span style="color:#ae81ff">20</span>, <span style="color:#ae81ff">23</span>, <span style="color:#ae81ff">35</span>, <span style="color:#ae81ff">40</span>, <span style="color:#ae81ff">60</span>, <span style="color:#ae81ff">90</span>, <span style="color:#ae81ff">95</span>]
-</code></pre></div><ul>
+if __name__ == &quot;__main__&quot;:
+    arr = [10, 20, 5, 9, 3, 8, 12, 14, 90, 0, 60, 40, 23, 35, 95, 18]
+    assert cycle_sort(arr) == [0, 3, 5, 8, 9, 10, 12,
+                               14, 18, 20, 23, 35, 40, 60, 90, 95]
+</code></pre><ul>
 <li>地精排序</li>
 </ul>
 <p>思路：从大到小遍历所有成员，如果index-1成员小于index，index加一，反之index减一</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">gnome_sort</span>(arr):
-    len_arr <span style="color:#f92672">=</span> len(arr)
-    index <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>
+<pre><code>def gnome_sort(arr):
+    len_arr = len(arr)
+    index = 0
 
-    <span style="color:#66d9ef">while</span> index <span style="color:#f92672">&lt;</span> len_arr:
-        <span style="color:#66d9ef">if</span> index <span style="color:#f92672">==</span> <span style="color:#ae81ff">0</span> <span style="color:#f92672">or</span> arr[index<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>] <span style="color:#f92672">&lt;</span> arr[index]:
-            index <span style="color:#f92672">+=</span> <span style="color:#ae81ff">1</span>
-        <span style="color:#66d9ef">else</span>:
-            arr[index<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>], arr[index] <span style="color:#f92672">=</span> arr[index], arr[index<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>]
-            index <span style="color:#f92672">-=</span> <span style="color:#ae81ff">1</span>
+    while index &lt; len_arr:
+        if index == 0 or arr[index-1] &lt; arr[index]:
+            index += 1
+        else:
+            arr[index-1], arr[index] = arr[index], arr[index-1]
+            index -= 1
 
-    <span style="color:#66d9ef">return</span> arr
+    return arr
 
 
-<span style="color:#66d9ef">if</span> __name__ <span style="color:#f92672">==</span> <span style="color:#e6db74">&#34;__main__&#34;</span>:
-    arr <span style="color:#f92672">=</span> [<span style="color:#ae81ff">10</span>, <span style="color:#ae81ff">20</span>, <span style="color:#ae81ff">5</span>, <span style="color:#ae81ff">9</span>, <span style="color:#ae81ff">3</span>, <span style="color:#ae81ff">8</span>, <span style="color:#ae81ff">12</span>, <span style="color:#ae81ff">14</span>, <span style="color:#ae81ff">90</span>, <span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">60</span>, <span style="color:#ae81ff">40</span>, <span style="color:#ae81ff">23</span>, <span style="color:#ae81ff">35</span>, <span style="color:#ae81ff">95</span>, <span style="color:#ae81ff">18</span>]
-    <span style="color:#66d9ef">assert</span> gnome_sort(arr) <span style="color:#f92672">==</span> [<span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">3</span>, <span style="color:#ae81ff">5</span>, <span style="color:#ae81ff">8</span>, <span style="color:#ae81ff">9</span>, <span style="color:#ae81ff">10</span>, <span style="color:#ae81ff">12</span>,
-                               <span style="color:#ae81ff">14</span>, <span style="color:#ae81ff">18</span>, <span style="color:#ae81ff">20</span>, <span style="color:#ae81ff">23</span>, <span style="color:#ae81ff">35</span>, <span style="color:#ae81ff">40</span>, <span style="color:#ae81ff">60</span>, <span style="color:#ae81ff">90</span>, <span style="color:#ae81ff">95</span>]
-</code></pre></div><ul>
+if __name__ == &quot;__main__&quot;:
+    arr = [10, 20, 5, 9, 3, 8, 12, 14, 90, 0, 60, 40, 23, 35, 95, 18]
+    assert gnome_sort(arr) == [0, 3, 5, 8, 9, 10, 12,
+                               14, 18, 20, 23, 35, 40, 60, 90, 95]
+</code></pre><ul>
 <li>堆排序</li>
 </ul>
 <p>思路：首先建立小顶对，从长度//2开始从大到小遍历，找出叶节点的儿子，2 * index+ 1和2 * index + 2，将两个儿子的最小值和叶节点替换，如果叶节点更大的话，最后按顺序剔除堆顶点，然后排序</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">heap_sort</span>(arr):
-    <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">swap</span>(arr, i, j):
-        arr[i], arr[j] <span style="color:#f92672">=</span> arr[j], arr[i]
+<pre><code>def heap_sort(arr):
+    def swap(arr, i, j):
+        arr[i], arr[j] = arr[j], arr[i]
 
-    <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">heapfy</span>(arr, index, end):
-        len_arr <span style="color:#f92672">=</span> len(arr[:end])
-        <span style="color:#66d9ef">while</span> index<span style="color:#f92672">*</span><span style="color:#ae81ff">2</span><span style="color:#f92672">+</span><span style="color:#ae81ff">1</span> <span style="color:#f92672">&lt;</span> len_arr:
-            child <span style="color:#f92672">=</span> index<span style="color:#f92672">*</span><span style="color:#ae81ff">2</span> <span style="color:#f92672">+</span> <span style="color:#ae81ff">1</span>
+    def heapfy(arr, index, end):
+        len_arr = len(arr[:end])
+        while index*2+1 &lt; len_arr:
+            child = index*2 + 1
 
-            <span style="color:#66d9ef">if</span> child<span style="color:#f92672">+</span><span style="color:#ae81ff">1</span> <span style="color:#f92672">&lt;</span> len_arr <span style="color:#f92672">and</span> arr[child] <span style="color:#f92672">&lt;</span> arr[child<span style="color:#f92672">+</span><span style="color:#ae81ff">1</span>]:
-                child <span style="color:#f92672">+=</span> <span style="color:#ae81ff">1</span>
+            if child+1 &lt; len_arr and arr[child] &lt; arr[child+1]:
+                child += 1
 
-            <span style="color:#66d9ef">if</span> arr[index] <span style="color:#f92672">&gt;</span> arr[child]:
-                <span style="color:#66d9ef">break</span>
+            if arr[index] &gt; arr[child]:
+                break
 
             swap(arr, index, child)
 
-            index <span style="color:#f92672">=</span> child
+            index = child
 
-    len_arr <span style="color:#f92672">=</span> len(arr)
-    <span style="color:#66d9ef">for</span> i <span style="color:#f92672">in</span> range(len_arr<span style="color:#f92672">//</span><span style="color:#ae81ff">2</span>, <span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>, <span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>):
-        heapfy(arr, i, len_arr<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>)
+    len_arr = len(arr)
+    for i in range(len_arr//2, -1, -1):
+        heapfy(arr, i, len_arr-1)
 
-    <span style="color:#66d9ef">for</span> i <span style="color:#f92672">in</span> range(len_arr<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">0</span>, <span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>):
-        swap(arr, <span style="color:#ae81ff">0</span>, i)
-        heapfy(arr, <span style="color:#ae81ff">0</span>, i)
+    for i in range(len_arr-1, 0, -1):
+        swap(arr, 0, i)
+        heapfy(arr, 0, i)
 
-    <span style="color:#66d9ef">return</span> arr
+    return arr
 
 
-<span style="color:#66d9ef">if</span> __name__ <span style="color:#f92672">==</span> <span style="color:#e6db74">&#34;__main__&#34;</span>:
-    arr <span style="color:#f92672">=</span> [<span style="color:#ae81ff">10</span>, <span style="color:#ae81ff">20</span>, <span style="color:#ae81ff">5</span>, <span style="color:#ae81ff">9</span>, <span style="color:#ae81ff">3</span>, <span style="color:#ae81ff">8</span>, <span style="color:#ae81ff">12</span>, <span style="color:#ae81ff">14</span>, <span style="color:#ae81ff">90</span>, <span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">60</span>, <span style="color:#ae81ff">40</span>, <span style="color:#ae81ff">23</span>, <span style="color:#ae81ff">35</span>, <span style="color:#ae81ff">95</span>, <span style="color:#ae81ff">18</span>]
-    <span style="color:#66d9ef">assert</span> heap_sort(arr) <span style="color:#f92672">==</span> [<span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">3</span>, <span style="color:#ae81ff">5</span>, <span style="color:#ae81ff">8</span>, <span style="color:#ae81ff">9</span>, <span style="color:#ae81ff">10</span>, <span style="color:#ae81ff">12</span>,
-                              <span style="color:#ae81ff">14</span>, <span style="color:#ae81ff">18</span>, <span style="color:#ae81ff">20</span>, <span style="color:#ae81ff">23</span>, <span style="color:#ae81ff">35</span>, <span style="color:#ae81ff">40</span>, <span style="color:#ae81ff">60</span>, <span style="color:#ae81ff">90</span>, <span style="color:#ae81ff">95</span>]
-</code></pre></div><ul>
+if __name__ == &quot;__main__&quot;:
+    arr = [10, 20, 5, 9, 3, 8, 12, 14, 90, 0, 60, 40, 23, 35, 95, 18]
+    assert heap_sort(arr) == [0, 3, 5, 8, 9, 10, 12,
+                              14, 18, 20, 23, 35, 40, 60, 90, 95]
+</code></pre><ul>
 <li>插入排序</li>
 </ul>
 <p>思路：从小到大遍历数组，每次循环中将当前成员插入到前方所有成员中第一个大于他的前面</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">insertion_sort</span>(arr):
-    <span style="color:#66d9ef">for</span> index <span style="color:#f92672">in</span> range(<span style="color:#ae81ff">1</span>, len(arr)):
-        item <span style="color:#f92672">=</span> arr[index]
-        <span style="color:#66d9ef">for</span> i <span style="color:#f92672">in</span> range(index):
-            <span style="color:#66d9ef">if</span> item <span style="color:#f92672">&lt;</span> arr[i]:
-                arr<span style="color:#f92672">.</span>pop(index)
-                arr<span style="color:#f92672">.</span>insert(i, item)
-                <span style="color:#66d9ef">break</span>
+<pre><code>def insertion_sort(arr):
+    for index in range(1, len(arr)):
+        item = arr[index]
+        for i in range(index):
+            if item &lt; arr[i]:
+                arr.pop(index)
+                arr.insert(i, item)
+                break
 
-    <span style="color:#66d9ef">return</span> arr
+    return arr
 
 
-<span style="color:#66d9ef">if</span> __name__ <span style="color:#f92672">==</span> <span style="color:#e6db74">&#34;__main__&#34;</span>:
-    arr <span style="color:#f92672">=</span> [<span style="color:#ae81ff">10</span>, <span style="color:#ae81ff">20</span>, <span style="color:#ae81ff">5</span>, <span style="color:#ae81ff">9</span>, <span style="color:#ae81ff">3</span>, <span style="color:#ae81ff">8</span>, <span style="color:#ae81ff">12</span>, <span style="color:#ae81ff">14</span>, <span style="color:#ae81ff">90</span>, <span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">60</span>, <span style="color:#ae81ff">40</span>, <span style="color:#ae81ff">23</span>, <span style="color:#ae81ff">35</span>, <span style="color:#ae81ff">95</span>, <span style="color:#ae81ff">18</span>]
-    <span style="color:#66d9ef">assert</span> insertion_sort(arr) <span style="color:#f92672">==</span> [<span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">3</span>, <span style="color:#ae81ff">5</span>, <span style="color:#ae81ff">8</span>, <span style="color:#ae81ff">9</span>,
-                                   <span style="color:#ae81ff">10</span>, <span style="color:#ae81ff">12</span>, <span style="color:#ae81ff">14</span>, <span style="color:#ae81ff">18</span>, <span style="color:#ae81ff">20</span>, <span style="color:#ae81ff">23</span>, <span style="color:#ae81ff">35</span>, <span style="color:#ae81ff">40</span>, <span style="color:#ae81ff">60</span>, <span style="color:#ae81ff">90</span>, <span style="color:#ae81ff">95</span>]
-</code></pre></div><ul>
+if __name__ == &quot;__main__&quot;:
+    arr = [10, 20, 5, 9, 3, 8, 12, 14, 90, 0, 60, 40, 23, 35, 95, 18]
+    assert insertion_sort(arr) == [0, 3, 5, 8, 9,
+                                   10, 12, 14, 18, 20, 23, 35, 40, 60, 90, 95]
+</code></pre><ul>
 <li>融合排序</li>
 </ul>
 <p>思路：递归，将数组逐步分为左右两部分，然后将两部分逐一成员比较大小然后排序</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">merge_sort</span>(arr):
-    <span style="color:#66d9ef">if</span> len(arr) <span style="color:#f92672">&lt;=</span> <span style="color:#ae81ff">1</span>:
-        <span style="color:#66d9ef">return</span> arr
+<pre><code>def merge_sort(arr):
+    if len(arr) &lt;= 1:
+        return arr
 
-    mid <span style="color:#f92672">=</span> len(arr) <span style="color:#f92672">//</span> <span style="color:#ae81ff">2</span>
-    left <span style="color:#f92672">=</span> merge_sort(arr[:mid])
-    right <span style="color:#f92672">=</span> merge_sort(arr[mid:])
+    mid = len(arr) // 2
+    left = merge_sort(arr[:mid])
+    right = merge_sort(arr[mid:])
 
-    <span style="color:#66d9ef">return</span> merge(left, right, arr<span style="color:#f92672">.</span>copy())
-
-
-<span style="color:#66d9ef">def</span> <span style="color:#a6e22e">merge</span>(left, right, arr):
-    l_index <span style="color:#f92672">=</span> r_index <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>
-    <span style="color:#66d9ef">while</span> l_index <span style="color:#f92672">&lt;</span> len(left) <span style="color:#f92672">and</span> r_index <span style="color:#f92672">&lt;</span> len(right):
-        <span style="color:#66d9ef">if</span> left[l_index] <span style="color:#f92672">&lt;</span> right[r_index]:
-            arr[l_index<span style="color:#f92672">+</span>r_index] <span style="color:#f92672">=</span> left[l_index]
-            l_index <span style="color:#f92672">+=</span> <span style="color:#ae81ff">1</span>
-        <span style="color:#66d9ef">else</span>:
-            arr[l_index<span style="color:#f92672">+</span>r_index] <span style="color:#f92672">=</span> right[r_index]
-            r_index <span style="color:#f92672">+=</span> <span style="color:#ae81ff">1</span>
-
-    <span style="color:#66d9ef">for</span> i <span style="color:#f92672">in</span> range(l_index, len(left)):
-        arr[i<span style="color:#f92672">+</span>r_index] <span style="color:#f92672">=</span> left[i]
-
-    <span style="color:#66d9ef">for</span> i <span style="color:#f92672">in</span> range(r_index, len(right)):
-        arr[l_index<span style="color:#f92672">+</span>i] <span style="color:#f92672">=</span> right[i]
-
-    <span style="color:#66d9ef">return</span> arr
+    return merge(left, right, arr.copy())
 
 
-<span style="color:#66d9ef">if</span> __name__ <span style="color:#f92672">==</span> <span style="color:#e6db74">&#34;__main__&#34;</span>:
-    arr <span style="color:#f92672">=</span> [<span style="color:#ae81ff">10</span>, <span style="color:#ae81ff">20</span>, <span style="color:#ae81ff">5</span>, <span style="color:#ae81ff">9</span>, <span style="color:#ae81ff">3</span>, <span style="color:#ae81ff">8</span>, <span style="color:#ae81ff">12</span>, <span style="color:#ae81ff">14</span>, <span style="color:#ae81ff">90</span>, <span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">60</span>, <span style="color:#ae81ff">40</span>, <span style="color:#ae81ff">23</span>, <span style="color:#ae81ff">35</span>, <span style="color:#ae81ff">95</span>, <span style="color:#ae81ff">18</span>]
-    <span style="color:#66d9ef">assert</span> len(merge_sort(arr)) <span style="color:#f92672">==</span> len(arr)
-    <span style="color:#66d9ef">assert</span> merge_sort(arr) <span style="color:#f92672">==</span> [<span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">3</span>, <span style="color:#ae81ff">5</span>, <span style="color:#ae81ff">8</span>, <span style="color:#ae81ff">9</span>, <span style="color:#ae81ff">10</span>, <span style="color:#ae81ff">12</span>,
-                               <span style="color:#ae81ff">14</span>, <span style="color:#ae81ff">18</span>, <span style="color:#ae81ff">20</span>, <span style="color:#ae81ff">23</span>, <span style="color:#ae81ff">35</span>, <span style="color:#ae81ff">40</span>, <span style="color:#ae81ff">60</span>, <span style="color:#ae81ff">90</span>, <span style="color:#ae81ff">95</span>]
-</code></pre></div><ul>
+def merge(left, right, arr):
+    l_index = r_index = 0
+    while l_index &lt; len(left) and r_index &lt; len(right):
+        if left[l_index] &lt; right[r_index]:
+            arr[l_index+r_index] = left[l_index]
+            l_index += 1
+        else:
+            arr[l_index+r_index] = right[r_index]
+            r_index += 1
+
+    for i in range(l_index, len(left)):
+        arr[i+r_index] = left[i]
+
+    for i in range(r_index, len(right)):
+        arr[l_index+i] = right[i]
+
+    return arr
+
+
+if __name__ == &quot;__main__&quot;:
+    arr = [10, 20, 5, 9, 3, 8, 12, 14, 90, 0, 60, 40, 23, 35, 95, 18]
+    assert len(merge_sort(arr)) == len(arr)
+    assert merge_sort(arr) == [0, 3, 5, 8, 9, 10, 12,
+                               14, 18, 20, 23, 35, 40, 60, 90, 95]
+</code></pre><ul>
 <li>快排</li>
 </ul>
 <p>思路：递归，随机找出其中一个成员，将大于它的放右变，小于的放左边，然后再将左右两边分别重复上述排列，直到长度小于等于1</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">quick_sort</span>(arr):
-    <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">partition</span>(arr, left, right):
-        store_index <span style="color:#f92672">=</span> left
-        <span style="color:#66d9ef">for</span> i <span style="color:#f92672">in</span> range(left, right):
-            <span style="color:#66d9ef">if</span> arr[i] <span style="color:#f92672">&lt;</span> arr[right]:
-                arr[i], arr[store_index] <span style="color:#f92672">=</span> arr[store_index], arr[i]
-                store_index <span style="color:#f92672">+=</span> <span style="color:#ae81ff">1</span>
+<pre><code>def quick_sort(arr):
+    def partition(arr, left, right):
+        store_index = left
+        for i in range(left, right):
+            if arr[i] &lt; arr[right]:
+                arr[i], arr[store_index] = arr[store_index], arr[i]
+                store_index += 1
 
-        arr[right], arr[store_index] <span style="color:#f92672">=</span> arr[store_index], arr[right]
+        arr[right], arr[store_index] = arr[store_index], arr[right]
 
-        <span style="color:#66d9ef">return</span> store_index
+        return store_index
 
-    <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">quick_sort_recur</span>(arr, left, right):
-        <span style="color:#66d9ef">if</span> left <span style="color:#f92672">&lt;</span> right:
-            store_index <span style="color:#f92672">=</span> partition(arr, left, right)
+    def quick_sort_recur(arr, left, right):
+        if left &lt; right:
+            store_index = partition(arr, left, right)
 
-            quick_sort_recur(arr, left, store_index<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>)
-            quick_sort_recur(arr, store_index<span style="color:#f92672">+</span><span style="color:#ae81ff">1</span>, right)
+            quick_sort_recur(arr, left, store_index-1)
+            quick_sort_recur(arr, store_index+1, right)
 
-    quick_sort_recur(arr, <span style="color:#ae81ff">0</span>, len(arr)<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>)
+    quick_sort_recur(arr, 0, len(arr)-1)
 
-    <span style="color:#66d9ef">return</span> arr
+    return arr
 
 
-<span style="color:#66d9ef">if</span> __name__ <span style="color:#f92672">==</span> <span style="color:#e6db74">&#34;__main__&#34;</span>:
-    arr <span style="color:#f92672">=</span> [<span style="color:#ae81ff">10</span>, <span style="color:#ae81ff">20</span>, <span style="color:#ae81ff">5</span>, <span style="color:#ae81ff">9</span>, <span style="color:#ae81ff">3</span>, <span style="color:#ae81ff">8</span>, <span style="color:#ae81ff">12</span>, <span style="color:#ae81ff">14</span>, <span style="color:#ae81ff">90</span>, <span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">60</span>, <span style="color:#ae81ff">40</span>, <span style="color:#ae81ff">23</span>, <span style="color:#ae81ff">35</span>, <span style="color:#ae81ff">95</span>, <span style="color:#ae81ff">18</span>]
-    <span style="color:#66d9ef">assert</span> len(quick_sort(arr)) <span style="color:#f92672">==</span> len(arr)
-    <span style="color:#66d9ef">assert</span> quick_sort(arr) <span style="color:#f92672">==</span> [<span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">3</span>, <span style="color:#ae81ff">5</span>, <span style="color:#ae81ff">8</span>, <span style="color:#ae81ff">9</span>, <span style="color:#ae81ff">10</span>, <span style="color:#ae81ff">12</span>,
-                               <span style="color:#ae81ff">14</span>, <span style="color:#ae81ff">18</span>, <span style="color:#ae81ff">20</span>, <span style="color:#ae81ff">23</span>, <span style="color:#ae81ff">35</span>, <span style="color:#ae81ff">40</span>, <span style="color:#ae81ff">60</span>, <span style="color:#ae81ff">90</span>, <span style="color:#ae81ff">95</span>]
-</code></pre></div><ul>
+if __name__ == &quot;__main__&quot;:
+    arr = [10, 20, 5, 9, 3, 8, 12, 14, 90, 0, 60, 40, 23, 35, 95, 18]
+    assert len(quick_sort(arr)) == len(arr)
+    assert quick_sort(arr) == [0, 3, 5, 8, 9, 10, 12,
+                               14, 18, 20, 23, 35, 40, 60, 90, 95]
+</code></pre><ul>
 <li>选择排序</li>
 </ul>
 <p>思路：从小打到遍历数组逐一将最小的排到前面</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">selection_sort</span>(arr):
-    <span style="color:#66d9ef">for</span> i <span style="color:#f92672">in</span> range(len(arr)):
-        cor_index <span style="color:#f92672">=</span> i
-        <span style="color:#66d9ef">for</span> j <span style="color:#f92672">in</span> range(i, len(arr)):
-            <span style="color:#66d9ef">if</span> arr[j] <span style="color:#f92672">&lt;</span> arr[cor_index]:
-                cor_index <span style="color:#f92672">=</span> j
-        arr[i], arr[cor_index] <span style="color:#f92672">=</span> arr[cor_index], arr[i]
+<pre><code>def selection_sort(arr):
+    for i in range(len(arr)):
+        cor_index = i
+        for j in range(i, len(arr)):
+            if arr[j] &lt; arr[cor_index]:
+                cor_index = j
+        arr[i], arr[cor_index] = arr[cor_index], arr[i]
 
-    <span style="color:#66d9ef">return</span> arr
+    return arr
 
 
-<span style="color:#66d9ef">if</span> __name__ <span style="color:#f92672">==</span> <span style="color:#e6db74">&#34;__main__&#34;</span>:
-    arr <span style="color:#f92672">=</span> [<span style="color:#ae81ff">10</span>, <span style="color:#ae81ff">20</span>, <span style="color:#ae81ff">5</span>, <span style="color:#ae81ff">9</span>, <span style="color:#ae81ff">3</span>, <span style="color:#ae81ff">8</span>, <span style="color:#ae81ff">12</span>, <span style="color:#ae81ff">14</span>, <span style="color:#ae81ff">90</span>, <span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">60</span>, <span style="color:#ae81ff">40</span>, <span style="color:#ae81ff">23</span>, <span style="color:#ae81ff">35</span>, <span style="color:#ae81ff">95</span>, <span style="color:#ae81ff">18</span>]
-    <span style="color:#66d9ef">assert</span> len(selection_sort(arr)) <span style="color:#f92672">==</span> len(arr)
-    <span style="color:#66d9ef">assert</span> selection_sort(arr) <span style="color:#f92672">==</span> [<span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">3</span>, <span style="color:#ae81ff">5</span>, <span style="color:#ae81ff">8</span>, <span style="color:#ae81ff">9</span>, <span style="color:#ae81ff">10</span>, <span style="color:#ae81ff">12</span>,
-                                   <span style="color:#ae81ff">14</span>, <span style="color:#ae81ff">18</span>, <span style="color:#ae81ff">20</span>, <span style="color:#ae81ff">23</span>, <span style="color:#ae81ff">35</span>, <span style="color:#ae81ff">40</span>, <span style="color:#ae81ff">60</span>, <span style="color:#ae81ff">90</span>, <span style="color:#ae81ff">95</span>]
-</code></pre></div><ul>
+if __name__ == &quot;__main__&quot;:
+    arr = [10, 20, 5, 9, 3, 8, 12, 14, 90, 0, 60, 40, 23, 35, 95, 18]
+    assert len(selection_sort(arr)) == len(arr)
+    assert selection_sort(arr) == [0, 3, 5, 8, 9, 10, 12,
+                                   14, 18, 20, 23, 35, 40, 60, 90, 95]
+</code></pre><ul>
 <li>颜色排序</li>
 </ul>
 <p>思路：遍历一次数组，找出等于2的成员，并且计算出非2的总和，即为1的个数</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">sort_colors</span>(arr):
-    n <span style="color:#f92672">=</span> len(arr)
-    index <span style="color:#f92672">=</span> n<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>
-    res_arr, sums <span style="color:#f92672">=</span> [<span style="color:#ae81ff">1</span>]<span style="color:#f92672">*</span>n, <span style="color:#ae81ff">0</span>
+<pre><code>def sort_colors(arr):
+    n = len(arr)
+    index = n-1
+    res_arr, sums = [1]*n, 0
 
-    <span style="color:#66d9ef">for</span> v <span style="color:#f92672">in</span> arr:
-        <span style="color:#66d9ef">if</span> v <span style="color:#f92672">==</span> <span style="color:#ae81ff">2</span>:
-            res_arr[index] <span style="color:#f92672">=</span> v
-            index <span style="color:#f92672">-=</span> <span style="color:#ae81ff">1</span>
+    for v in arr:
+        if v == 2:
+            res_arr[index] = v
+            index -= 1
 
-        <span style="color:#66d9ef">else</span>:
-            sums <span style="color:#f92672">+=</span> v
+        else:
+            sums += v
 
-    zero_nums <span style="color:#f92672">=</span> index<span style="color:#f92672">+</span><span style="color:#ae81ff">1</span><span style="color:#f92672">-</span>sums
-    zeros <span style="color:#f92672">=</span> [<span style="color:#ae81ff">0</span>]<span style="color:#f92672">*</span>(zero_nums)
-    zeros<span style="color:#f92672">.</span>extend(res_arr[zero_nums:])
+    zero_nums = index+1-sums
+    zeros = [0]*(zero_nums)
+    zeros.extend(res_arr[zero_nums:])
 
-    <span style="color:#66d9ef">return</span> zeros
+    return zeros
 
 
-<span style="color:#66d9ef">if</span> __name__ <span style="color:#f92672">==</span> <span style="color:#e6db74">&#34;__main__&#34;</span>:
-    arr <span style="color:#f92672">=</span> [<span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">2</span>, <span style="color:#ae81ff">2</span>, <span style="color:#ae81ff">2</span>, <span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">2</span>, <span style="color:#ae81ff">2</span>]
-    <span style="color:#66d9ef">assert</span> len(sort_colors(arr)) <span style="color:#f92672">==</span> len(arr)
-    <span style="color:#66d9ef">assert</span> sort_colors(arr) <span style="color:#f92672">==</span> [<span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">0</span>,
-                                <span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">2</span>, <span style="color:#ae81ff">2</span>, <span style="color:#ae81ff">2</span>, <span style="color:#ae81ff">2</span>, <span style="color:#ae81ff">2</span>]
-</code></pre></div>
+if __name__ == &quot;__main__&quot;:
+    arr = [0, 1, 1, 1, 2, 2, 2, 1, 1, 1, 0, 0, 0, 0, 1, 1, 1, 0, 0, 2, 2]
+    assert len(sort_colors(arr)) == len(arr)
+    assert sort_colors(arr) == [0, 0, 0, 0, 0, 0, 0,
+                                1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2]
+</code></pre>
             </article>
           </div>
           

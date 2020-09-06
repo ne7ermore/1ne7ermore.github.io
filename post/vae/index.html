@@ -192,152 +192,152 @@
 <img src="/img/vae/5.jpg" alt="pic"></p>
 <p><a href="https://github.com/ne7ermore/torch_light/tree/master/vae-nlg">全部代码</a></p>
 <p>encoder由一层双向lstm构成，输出时间序列的总体特征。</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Encoder</span>(nn<span style="color:#f92672">.</span>Module):
-    <span style="color:#66d9ef">def</span> __init__(self, embed_dim, hidden_size, num_layers, dropout):
-        super()<span style="color:#f92672">.</span>__init__()
+<pre><code>class Encoder(nn.Module):
+    def __init__(self, embed_dim, hidden_size, num_layers, dropout):
+        super().__init__()
 
-        self<span style="color:#f92672">.</span>num_layers <span style="color:#f92672">=</span> num_layers
-        self<span style="color:#f92672">.</span>hidden_size <span style="color:#f92672">=</span> hidden_size
-        self<span style="color:#f92672">.</span>dropout <span style="color:#f92672">=</span> dropout
+        self.num_layers = num_layers
+        self.hidden_size = hidden_size
+        self.dropout = dropout
 
-        self<span style="color:#f92672">.</span>rnn <span style="color:#f92672">=</span> nn<span style="color:#f92672">.</span>LSTM(embed_dim, hidden_size,
-                num_layers, dropout, bidirectional<span style="color:#f92672">=</span>True)
+        self.rnn = nn.LSTM(embed_dim, hidden_size,
+                num_layers, dropout, bidirectional=True)
 
-    <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">forward</span>(self, input, hidden):
-        _, hidden <span style="color:#f92672">=</span> self<span style="color:#f92672">.</span>rnn(input<span style="color:#f92672">.</span>transpose(<span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">1</span>), hidden)
-        out <span style="color:#f92672">=</span> F<span style="color:#f92672">.</span>dropout(torch<span style="color:#f92672">.</span>cat((hidden[<span style="color:#ae81ff">0</span>][<span style="color:#f92672">-</span><span style="color:#ae81ff">2</span>],
-                    hidden[<span style="color:#ae81ff">0</span>][<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>]), <span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>), p<span style="color:#f92672">=</span>self<span style="color:#f92672">.</span>dropout)
+    def forward(self, input, hidden):
+        _, hidden = self.rnn(input.transpose(0, 1), hidden)
+        out = F.dropout(torch.cat((hidden[0][-2],
+                    hidden[0][-1]), -1), p=self.dropout)
 
-        <span style="color:#66d9ef">return</span> out, hidden
+        return out, hidden
 
-    <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">init_hidden</span>(self, bsz):
-        size <span style="color:#f92672">=</span> (self<span style="color:#f92672">.</span>num_layers<span style="color:#f92672">*</span><span style="color:#ae81ff">2</span>, bsz, self<span style="color:#f92672">.</span>hidden_size)
+    def init_hidden(self, bsz):
+        size = (self.num_layers*2, bsz, self.hidden_size)
 
-        weight <span style="color:#f92672">=</span> next(self<span style="color:#f92672">.</span>parameters())<span style="color:#f92672">.</span>data
-        <span style="color:#66d9ef">return</span> (Variable(weight<span style="color:#f92672">.</span>new(<span style="color:#f92672">*</span>size)<span style="color:#f92672">.</span>zero_()),
-                Variable(weight<span style="color:#f92672">.</span>new(<span style="color:#f92672">*</span>size)<span style="color:#f92672">.</span>zero_()))
-</code></pre></div><p>decoder为标准rnnlms</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Decoder</span>(nn<span style="color:#f92672">.</span>Module):
-    <span style="color:#66d9ef">def</span> __init__(self, embed_dim, latent_dim, hidden_size, num_layers, dropout, vocab_size):
-        super()<span style="color:#f92672">.</span>__init__()
+        weight = next(self.parameters()).data
+        return (Variable(weight.new(*size).zero_()),
+                Variable(weight.new(*size).zero_()))
+</code></pre><p>decoder为标准rnnlms</p>
+<pre><code>class Decoder(nn.Module):
+    def __init__(self, embed_dim, latent_dim, hidden_size, num_layers, dropout, vocab_size):
+        super().__init__()
 
-        self<span style="color:#f92672">.</span>hidden_size <span style="color:#f92672">=</span> hidden_size
-        self<span style="color:#f92672">.</span>dropout <span style="color:#f92672">=</span> dropout
-        self<span style="color:#f92672">.</span>num_layers <span style="color:#f92672">=</span> num_layers
-        self<span style="color:#f92672">.</span>latent_dim <span style="color:#f92672">=</span> latent_dim
+        self.hidden_size = hidden_size
+        self.dropout = dropout
+        self.num_layers = num_layers
+        self.latent_dim = latent_dim
 
-        self<span style="color:#f92672">.</span>rnn <span style="color:#f92672">=</span> nn<span style="color:#f92672">.</span>LSTM(embed_dim<span style="color:#f92672">+</span>latent_dim, hidden_size,
-                num_layers, dropout<span style="color:#f92672">=</span>dropout, batch_first<span style="color:#f92672">=</span>True)
-        self<span style="color:#f92672">.</span>lr <span style="color:#f92672">=</span> nn<span style="color:#f92672">.</span>Linear(hidden_size, vocab_size)
+        self.rnn = nn.LSTM(embed_dim+latent_dim, hidden_size,
+                num_layers, dropout=dropout, batch_first=True)
+        self.lr = nn.Linear(hidden_size, vocab_size)
 
-        self<span style="color:#f92672">.</span>_init_weight()
+        self._init_weight()
 
-    <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">forward</span>(self, input, z, hidden):
-        bsz, _len, _ <span style="color:#f92672">=</span> input<span style="color:#f92672">.</span>size()
-        z <span style="color:#f92672">=</span> z<span style="color:#f92672">.</span>unsqueeze(<span style="color:#ae81ff">1</span>)<span style="color:#f92672">.</span>expand(bsz, _len, self<span style="color:#f92672">.</span>latent_dim)
-        input <span style="color:#f92672">=</span> torch<span style="color:#f92672">.</span>cat((input, z), <span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>)
+    def forward(self, input, z, hidden):
+        bsz, _len, _ = input.size()
+        z = z.unsqueeze(1).expand(bsz, _len, self.latent_dim)
+        input = torch.cat((input, z), -1)
 
-        rnn_out, hidden <span style="color:#f92672">=</span> self<span style="color:#f92672">.</span>rnn(input, hidden)
-        rnn_out <span style="color:#f92672">=</span> F<span style="color:#f92672">.</span>dropout(rnn_out, p<span style="color:#f92672">=</span>self<span style="color:#f92672">.</span>dropout)
-        out <span style="color:#f92672">=</span> self<span style="color:#f92672">.</span>lr(rnn_out<span style="color:#f92672">.</span>contiguous()<span style="color:#f92672">.</span>view(<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>, self<span style="color:#f92672">.</span>hidden_size))
+        rnn_out, hidden = self.rnn(input, hidden)
+        rnn_out = F.dropout(rnn_out, p=self.dropout)
+        out = self.lr(rnn_out.contiguous().view(-1, self.hidden_size))
 
-        <span style="color:#66d9ef">return</span> F<span style="color:#f92672">.</span>log_softmax(out), hidden
+        return F.log_softmax(out), hidden
 
-    <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">init_hidden</span>(self, bsz):
-        size <span style="color:#f92672">=</span> (self<span style="color:#f92672">.</span>num_layers, bsz, self<span style="color:#f92672">.</span>hidden_size)
+    def init_hidden(self, bsz):
+        size = (self.num_layers, bsz, self.hidden_size)
 
-        weight <span style="color:#f92672">=</span> next(self<span style="color:#f92672">.</span>parameters())<span style="color:#f92672">.</span>data
-        <span style="color:#66d9ef">return</span> (Variable(weight<span style="color:#f92672">.</span>new(<span style="color:#f92672">*</span>size)<span style="color:#f92672">.</span>zero_()),
-                Variable(weight<span style="color:#f92672">.</span>new(<span style="color:#f92672">*</span>size)<span style="color:#f92672">.</span>zero_()))
+        weight = next(self.parameters()).data
+        return (Variable(weight.new(*size).zero_()),
+                Variable(weight.new(*size).zero_()))
 
-    <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">_init_weight</span>(self, scope<span style="color:#f92672">=.</span><span style="color:#ae81ff">1</span>):
-        self<span style="color:#f92672">.</span>lr<span style="color:#f92672">.</span>weight<span style="color:#f92672">.</span>data<span style="color:#f92672">.</span>uniform_(<span style="color:#f92672">-</span>scope, scope)
-        self<span style="color:#f92672">.</span>lr<span style="color:#f92672">.</span>bias<span style="color:#f92672">.</span>data<span style="color:#f92672">.</span>fill_(<span style="color:#ae81ff">0</span>)
-</code></pre></div><p>vae由embedding，highway，encoder， W_mu，W_alpha ，decoder组成</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">VAE</span>(nn<span style="color:#f92672">.</span>Module):
-    <span style="color:#66d9ef">def</span> __init__(self, args):
-        super()<span style="color:#f92672">.</span>__init__()
+    def _init_weight(self, scope=.1):
+        self.lr.weight.data.uniform_(-scope, scope)
+        self.lr.bias.data.fill_(0)
+</code></pre><p>vae由embedding，highway，encoder， W_mu，W_alpha ，decoder组成</p>
+<pre><code>class VAE(nn.Module):
+    def __init__(self, args):
+        super().__init__()
 
-        <span style="color:#66d9ef">for</span> k, v <span style="color:#f92672">in</span> args<span style="color:#f92672">.</span>__dict__<span style="color:#f92672">.</span>items():
-            self<span style="color:#f92672">.</span>__setattr__(k, v)
+        for k, v in args.__dict__.items():
+            self.__setattr__(k, v)
 
-        self<span style="color:#f92672">.</span>lookup_table <span style="color:#f92672">=</span> nn<span style="color:#f92672">.</span>Embedding(self<span style="color:#f92672">.</span>vocab_size, self<span style="color:#f92672">.</span>embed_dim)
-        self<span style="color:#f92672">.</span>lookup_table<span style="color:#f92672">.</span>weight<span style="color:#f92672">.</span>data<span style="color:#f92672">.</span>copy_(torch<span style="color:#f92672">.</span>from_numpy(self<span style="color:#f92672">.</span>pre_w2v))
+        self.lookup_table = nn.Embedding(self.vocab_size, self.embed_dim)
+        self.lookup_table.weight.data.copy_(torch.from_numpy(self.pre_w2v))
 
-        self<span style="color:#f92672">.</span>hw <span style="color:#f92672">=</span> Highway(self<span style="color:#f92672">.</span>hw_layers, self<span style="color:#f92672">.</span>hw_hsz, F<span style="color:#f92672">.</span>relu)
-        self<span style="color:#f92672">.</span>encode <span style="color:#f92672">=</span> Encoder(self<span style="color:#f92672">.</span>embed_dim,
-                    self<span style="color:#f92672">.</span>enc_hsz, self<span style="color:#f92672">.</span>enc_layers, self<span style="color:#f92672">.</span>dropout)
+        self.hw = Highway(self.hw_layers, self.hw_hsz, F.relu)
+        self.encode = Encoder(self.embed_dim,
+                    self.enc_hsz, self.enc_layers, self.dropout)
 
-        self<span style="color:#f92672">.</span>_enc_mu <span style="color:#f92672">=</span> nn<span style="color:#f92672">.</span>Linear(self<span style="color:#f92672">.</span>enc_hsz<span style="color:#f92672">*</span><span style="color:#ae81ff">2</span>, self<span style="color:#f92672">.</span>latent_dim)
-        self<span style="color:#f92672">.</span>_enc_log_sigma <span style="color:#f92672">=</span> nn<span style="color:#f92672">.</span>Linear(self<span style="color:#f92672">.</span>enc_hsz<span style="color:#f92672">*</span><span style="color:#ae81ff">2</span>, self<span style="color:#f92672">.</span>latent_dim)
+        self._enc_mu = nn.Linear(self.enc_hsz*2, self.latent_dim)
+        self._enc_log_sigma = nn.Linear(self.enc_hsz*2, self.latent_dim)
 
-        self<span style="color:#f92672">.</span>decode <span style="color:#f92672">=</span> Decoder(self<span style="color:#f92672">.</span>embed_dim, self<span style="color:#f92672">.</span>latent_dim,
-                self<span style="color:#f92672">.</span>dec_hsz, self<span style="color:#f92672">.</span>dec_layers, self<span style="color:#f92672">.</span>dropout, self<span style="color:#f92672">.</span>vocab_size)
+        self.decode = Decoder(self.embed_dim, self.latent_dim,
+                self.dec_hsz, self.dec_layers, self.dropout, self.vocab_size)
 
-        self<span style="color:#f92672">.</span>_init_weight()
+        self._init_weight()
 
-    <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">forward</span>(self, enc_input, dec_input, enc_hidden, dec_hidden):
-        enc_ <span style="color:#f92672">=</span> self<span style="color:#f92672">.</span>lookup_table(enc_input)
-        enc_ <span style="color:#f92672">=</span> F<span style="color:#f92672">.</span>dropout(self<span style="color:#f92672">.</span>hw(enc_), p<span style="color:#f92672">=</span>self<span style="color:#f92672">.</span>dropout)
-        enc_output, enc_hidden <span style="color:#f92672">=</span> self<span style="color:#f92672">.</span>encode(enc_, enc_hidden)
+    def forward(self, enc_input, dec_input, enc_hidden, dec_hidden):
+        enc_ = self.lookup_table(enc_input)
+        enc_ = F.dropout(self.hw(enc_), p=self.dropout)
+        enc_output, enc_hidden = self.encode(enc_, enc_hidden)
 
-        z <span style="color:#f92672">=</span> self<span style="color:#f92672">.</span>_gaussian(enc_output)
+        z = self._gaussian(enc_output)
 
-        dec_ <span style="color:#f92672">=</span> self<span style="color:#f92672">.</span>lookup_table(dec_input)
-        dec, dec_hidden <span style="color:#f92672">=</span> self<span style="color:#f92672">.</span>decode(dec_, z, dec_hidden)
+        dec_ = self.lookup_table(dec_input)
+        dec, dec_hidden = self.decode(dec_, z, dec_hidden)
 
-        <span style="color:#66d9ef">return</span> dec, self<span style="color:#f92672">.</span>latent_loss, enc_hidden, dec_hidden
+        return dec, self.latent_loss, enc_hidden, dec_hidden
 
-    <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">_gaussian</span>(self, enc_output):
-        <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">latent_loss</span>(mu, sigma):
-            pow_mu <span style="color:#f92672">=</span> mu <span style="color:#f92672">*</span> mu
-            pow_sigma <span style="color:#f92672">=</span> sigma <span style="color:#f92672">*</span> sigma
-            <span style="color:#66d9ef">return</span> <span style="color:#ae81ff">0.5</span> <span style="color:#f92672">*</span> torch<span style="color:#f92672">.</span>mean(pow_mu <span style="color:#f92672">+</span> pow_sigma <span style="color:#f92672">-</span> torch<span style="color:#f92672">.</span>log(pow_sigma) <span style="color:#f92672">-</span> <span style="color:#ae81ff">1</span>)
+    def _gaussian(self, enc_output):
+        def latent_loss(mu, sigma):
+            pow_mu = mu * mu
+            pow_sigma = sigma * sigma
+            return 0.5 * torch.mean(pow_mu + pow_sigma - torch.log(pow_sigma) - 1)
 
-        mu <span style="color:#f92672">=</span> self<span style="color:#f92672">.</span>_enc_mu(enc_output)
-        sigma <span style="color:#f92672">=</span> torch<span style="color:#f92672">.</span>exp(<span style="color:#f92672">.</span><span style="color:#ae81ff">5</span> <span style="color:#f92672">*</span> self<span style="color:#f92672">.</span>_enc_log_sigma(enc_output))
-        self<span style="color:#f92672">.</span>latent_loss <span style="color:#f92672">=</span> latent_loss(mu, sigma)
+        mu = self._enc_mu(enc_output)
+        sigma = torch.exp(.5 * self._enc_log_sigma(enc_output))
+        self.latent_loss = latent_loss(mu, sigma)
 
-        weight <span style="color:#f92672">=</span> next(self<span style="color:#f92672">.</span>parameters())<span style="color:#f92672">.</span>data
-        std_z <span style="color:#f92672">=</span> Variable(weight<span style="color:#f92672">.</span>new(<span style="color:#f92672">*</span>sigma<span style="color:#f92672">.</span>size()), requires_grad<span style="color:#f92672">=</span>False)
-        std_z<span style="color:#f92672">.</span>data<span style="color:#f92672">.</span>copy_(torch<span style="color:#f92672">.</span>from_numpy(
-                np<span style="color:#f92672">.</span>random<span style="color:#f92672">.</span>normal(size<span style="color:#f92672">=</span>sigma<span style="color:#f92672">.</span>size())))
+        weight = next(self.parameters()).data
+        std_z = Variable(weight.new(*sigma.size()), requires_grad=False)
+        std_z.data.copy_(torch.from_numpy(
+                np.random.normal(size=sigma.size())))
 
-        <span style="color:#66d9ef">return</span> mu <span style="color:#f92672">+</span> sigma <span style="color:#f92672">*</span> std_z
+        return mu + sigma * std_z
 
-    <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">_init_weight</span>(self):
-        init<span style="color:#f92672">.</span>xavier_normal(self<span style="color:#f92672">.</span>_enc_mu<span style="color:#f92672">.</span>weight)
-        init<span style="color:#f92672">.</span>xavier_normal(self<span style="color:#f92672">.</span>_enc_log_sigma<span style="color:#f92672">.</span>weight)
+    def _init_weight(self):
+        init.xavier_normal(self._enc_mu.weight)
+        init.xavier_normal(self._enc_log_sigma.weight)
 
-    <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">generate</span>(self, max_len):
-        size <span style="color:#f92672">=</span> (<span style="color:#ae81ff">1</span>, self<span style="color:#f92672">.</span>latent_dim)
+    def generate(self, max_len):
+        size = (1, self.latent_dim)
 
-        weight <span style="color:#f92672">=</span> next(self<span style="color:#f92672">.</span>parameters())<span style="color:#f92672">.</span>data
-        z <span style="color:#f92672">=</span> Variable(weight<span style="color:#f92672">.</span>new(<span style="color:#f92672">*</span>size), volatile<span style="color:#f92672">=</span>True)
-        z<span style="color:#f92672">.</span>data<span style="color:#f92672">.</span>copy_(torch<span style="color:#f92672">.</span>from_numpy(
-                np<span style="color:#f92672">.</span>random<span style="color:#f92672">.</span>normal(size<span style="color:#f92672">=</span>size)))
+        weight = next(self.parameters()).data
+        z = Variable(weight.new(*size), volatile=True)
+        z.data.copy_(torch.from_numpy(
+                np.random.normal(size=size)))
 
-        prob <span style="color:#f92672">=</span> torch<span style="color:#f92672">.</span>LongTensor([BOS])
-        input <span style="color:#f92672">=</span> Variable(prob<span style="color:#f92672">.</span>unsqueeze(<span style="color:#ae81ff">1</span>), volatile<span style="color:#f92672">=</span>True)
-        <span style="color:#66d9ef">if</span> weight<span style="color:#f92672">.</span>is_cuda:
-            input <span style="color:#f92672">=</span> input<span style="color:#f92672">.</span>cuda()
-        portry <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;&#34;</span>
-        hidden <span style="color:#f92672">=</span> self<span style="color:#f92672">.</span>decode<span style="color:#f92672">.</span>init_hidden(<span style="color:#ae81ff">1</span>)
+        prob = torch.LongTensor([BOS])
+        input = Variable(prob.unsqueeze(1), volatile=True)
+        if weight.is_cuda:
+            input = input.cuda()
+        portry = &quot;&quot;
+        hidden = self.decode.init_hidden(1)
 
-        <span style="color:#66d9ef">for</span> index <span style="color:#f92672">in</span> range(<span style="color:#ae81ff">1</span>, max_len<span style="color:#f92672">+</span><span style="color:#ae81ff">1</span>):
-            encode <span style="color:#f92672">=</span> self<span style="color:#f92672">.</span>lookup_table(input)
-            output, hidden <span style="color:#f92672">=</span> self<span style="color:#f92672">.</span>decode(encode, z, hidden)
-            prob <span style="color:#f92672">=</span> output<span style="color:#f92672">.</span>squeeze()<span style="color:#f92672">.</span>data
-            next_word <span style="color:#f92672">=</span> torch<span style="color:#f92672">.</span>max(prob, <span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>)[<span style="color:#ae81ff">1</span>]<span style="color:#f92672">.</span>tolist()[<span style="color:#ae81ff">0</span>]
-            input<span style="color:#f92672">.</span>data<span style="color:#f92672">.</span>fill_(next_word)
-            <span style="color:#66d9ef">if</span> index<span style="color:#f92672">%</span><span style="color:#ae81ff">5</span> <span style="color:#f92672">==</span> <span style="color:#ae81ff">0</span>:
-                portry <span style="color:#f92672">+=</span> self<span style="color:#f92672">.</span>idx2word[next_word]
-                portry <span style="color:#f92672">+=</span> <span style="color:#e6db74">&#34;，&#34;</span>
-            <span style="color:#66d9ef">else</span>:
-                portry <span style="color:#f92672">+=</span> self<span style="color:#f92672">.</span>idx2word[next_word]
+        for index in range(1, max_len+1):
+            encode = self.lookup_table(input)
+            output, hidden = self.decode(encode, z, hidden)
+            prob = output.squeeze().data
+            next_word = torch.max(prob, -1)[1].tolist()[0]
+            input.data.fill_(next_word)
+            if index%5 == 0:
+                portry += self.idx2word[next_word]
+                portry += &quot;，&quot;
+            else:
+                portry += self.idx2word[next_word]
 
-        <span style="color:#66d9ef">return</span> portry[:<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>] <span style="color:#f92672">+</span> <span style="color:#e6db74">&#34;。&#34;</span>
-</code></pre></div>
+        return portry[:-1] + &quot;。&quot;
+</code></pre>
             </article>
           </div>
           
